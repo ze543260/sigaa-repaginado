@@ -54,6 +54,7 @@ public final class Lembretes extends BroadcastReceiver {
         prefs.edit().putInt(QTD, n).apply();
         JSONObject prazo = null;
         try {
+            JSONArray lista = new JSONArray(json);
             long agoraPrazo = System.currentTimeMillis();
             for (int i = 0; i < lista.length(); i++) {
                 JSONObject l = lista.getJSONObject(i);
