@@ -161,7 +161,8 @@ export function App({ pagina, onVerOriginal }: Props) {
   }, []);
 
   useEffect(() => {
-    const pai = window.parent as Window & { __sigaaVoltar?: () => boolean };
+    const pai = window.parent as Window & { __sigaaVoltar?: () => boolean; __sigaaRelatar?: () => void };
+    pai.__sigaaRelatar = abrirRelato;
     pai.__sigaaVoltar = () => {
       if (configAberta) {
         setConfigAberta(false);
@@ -195,7 +196,7 @@ export function App({ pagina, onVerOriginal }: Props) {
     const { clientX: x, clientY: y } = e;
     const raio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
     const circulo = document.createElement('div');
-    circulo.style.cssText = `position:fixed;left:${x - raio}px;top:${y - raio}px;width:${raio * 2}px;height:${raio * 2}px;border-radius:50%;background:${cor};z-index:2147483647;pointer-events:none;transform:scale(0);will-change:transform,opacity;transition:transform 420ms cubic-bezier(0.65,0,0.35,1),opacity 260ms ease-out`;
+    circulo.style.cssText = `position:fixed;left:${x - raio}px;top:${y - raio}px;width:${raio * 2}px;height:${raio * 2}px;border-radius:50%;background:${cor};z-index:2147483647;pointer-events:none;transform:scale(0);transition:transform 420ms cubic-bezier(0.65,0,0.35,1),opacity 260ms ease-out`;
     document.body.append(circulo);
     requestAnimationFrame(() => {
       circulo.style.transform = 'scale(1)';

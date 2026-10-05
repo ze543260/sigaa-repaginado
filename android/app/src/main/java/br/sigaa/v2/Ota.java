@@ -32,6 +32,8 @@ final class Ota {
     private static final long INTERVALO_MS = 4L * 60 * 60 * 1000;
     private static final int FALHAS_MAX = 2;
 
+    static boolean usandoBaixada;
+
     private Ota() {}
 
     private static SharedPreferences prefs(Context ctx) {
@@ -44,6 +46,7 @@ final class Ota {
 
     /** Script a injetar: o baixado, se for mais novo e saudável; senão o que veio no APK. */
     static String script(Context ctx, String embutido) {
+        usandoBaixada = false;
         SharedPreferences p = prefs(ctx);
         String versao = p.getString("versao", null);
         File arquivo = new File(pasta(ctx), "sigaa.js");
@@ -61,6 +64,7 @@ final class Ota {
             String js = new String(Files.readAllBytes(arquivo.toPath()), StandardCharsets.UTF_8);
             // Conta como falha até a interface avisar que montou (confirmar()).
             p.edit().putInt("falhas", falhas + 1).apply();
+            usandoBaixada = true;
             return js;
         } catch (Exception e) {
             descartar(ctx);

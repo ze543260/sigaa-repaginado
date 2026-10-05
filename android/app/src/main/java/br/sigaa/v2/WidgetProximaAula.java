@@ -21,10 +21,14 @@ public final class WidgetProximaAula extends AppWidgetProvider {
 
     private static final String PREFS = "widget";
     private static final String AULAS = "aulas";
+    private static final String PRAZO = "prazo";
     private static final Locale PT_BR = new Locale("pt", "BR");
 
-    static void salvarAulas(Context ctx, JSONArray aulas) {
-        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(AULAS, aulas.toString()).apply();
+    static void salvarAulas(Context ctx, JSONArray aulas, JSONObject prazo) {
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                .putString(AULAS, aulas.toString())
+                .putString(PRAZO, prazo == null ? "" : prazo.toString())
+                .apply();
         AppWidgetManager gerente = AppWidgetManager.getInstance(ctx);
         int[] ids = gerente.getAppWidgetIds(new ComponentName(ctx, WidgetProximaAula.class));
         if (ids.length > 0) desenhar(ctx, gerente, ids);
@@ -52,6 +56,18 @@ public final class WidgetProximaAula extends AppWidgetProvider {
             v.setTextViewText(R.id.quando, emAndamento ? "até " + hora(aula.optLong("fim")) : quando(aula.optLong("inicio")));
             v.setTextViewText(R.id.nome, capitalizar(aula.optString("nome")));
             v.setTextViewText(R.id.local, aula.optString("local"));
+        }
+        JSONObject prazo = null;
+        try {
+            String bruto = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(PRAZO, "");
+            if (!bruto.isEmpty()) prazo = new JSONObject(bruto);
+        } catch (JSONException e) {
+            prazo = null;
+        }
+        if (prazo == null || prazo.optLong("prazo") <= System.currentTimeMillis()) {
+            v.setTextViewText(R.id.prazo, "Nenhum prazo pendente");
+        } else {
+            v.setTextViewText(R.id.prazo, quando(prazo.optLong("prazo")) + " · " + prazo.optString("texto"));
         }
         gerente.updateAppWidget(ids, v);
     }

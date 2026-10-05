@@ -16,6 +16,8 @@ export interface Lembrete {
   readonly quando: number;
   /** Só em aulas: alimenta o widget de próxima aula. */
   readonly aula?: { readonly nome: string; readonly local: string; readonly inicio: number; readonly fim: number };
+  /** Só em prazos: o vencimento real, para o widget. */
+  readonly prazo?: number;
 }
 
 export interface Plataforma {
@@ -35,6 +37,8 @@ export interface Plataforma {
   verificarAtualizacao: (() => void) | null;
   /** Cores e estilo da abertura nativa do app, em JSON. */
   coresAbertura: ((json: string) => void) | null;
+  /** Versão nativa e de onde veio a interface em uso; null fora do Android. */
+  infoApp: (() => { readonly nativo: string; readonly interface: 'baixada' | 'embutida' } | null) | null;
 }
 
 export const plataforma: Plataforma = {
@@ -55,4 +59,5 @@ export const plataforma: Plataforma = {
   bloqueio: null,
   verificarAtualizacao: null,
   coresAbertura: null,
+  infoApp: null,
 };

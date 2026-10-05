@@ -21,6 +21,7 @@ const Botao = ({ href, children }: { readonly href: string; readonly children: R
 
 export function Sobre({ pagina }: { readonly pagina: Pagina }) {
   const android = !!plataforma.agendarLembretes;
+  const info = plataforma.infoApp?.() ?? null;
   return (
     <section className="space-y-4" aria-label="Sobre o app">
       <div className="flex items-center gap-3">
@@ -32,6 +33,7 @@ export function Sobre({ pagina }: { readonly pagina: Pagina }) {
       <dl className="divide-y text-sm">
         <Linha rotulo="Versão" valor={version} />
         <Linha rotulo="Plataforma" valor={android ? 'App Android' : 'Extensão'} />
+        {info && <Linha rotulo="App instalado" valor={`${info.nativo} · interface ${info.interface === 'baixada' ? 'atualizada pela internet' : 'do instalador'}`} />}
         <Linha rotulo="Desenvolvedor" valor={<a href={`https://github.com/${AUTOR}`} target="_blank" rel="noreferrer" className="underline underline-offset-4">@{AUTOR}</a>} />
         <Linha rotulo="Licença" valor={<a href={`${REPOSITORIO}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className="underline underline-offset-4">MIT</a>} />
       </dl>

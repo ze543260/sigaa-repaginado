@@ -3,9 +3,9 @@
     android:description="@string/widget_descricao"
     android:initialLayout="@layout/widget_proxima"
     android:minWidth="180dp"
-    android:minHeight="80dp"
+    android:minHeight="140dp"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"
-    android:targetCellHeight="1"
+    android:targetCellHeight="2"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen" />

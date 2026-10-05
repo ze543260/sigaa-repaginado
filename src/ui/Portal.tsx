@@ -576,6 +576,7 @@ function useLembretes(portal: PortalDiscente, feita: (a: Atividade) => boolean):
           titulo: `${a.tipo || 'Atividade'} vence ${rotulo}`,
           texto: a.descricao,
           quando: prazo - antes,
+          prazo,
         });
       }
     }

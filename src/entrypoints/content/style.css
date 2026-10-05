@@ -171,7 +171,6 @@ details[open] > :not(summary) {
   inset: 0 0 0 -12px;
   background-image: radial-gradient(circle, hsl(var(--destaque)) 1.5px, transparent 2px);
   background-size: 12px 4px;
-  will-change: transform;
   animation: marchar-barra 400ms linear infinite;
 }
 @keyframes marchar-barra { to { transform: translateX(12px); } }
@@ -1597,8 +1596,5 @@ details[open] > :not(summary) {
 .ilu-sessao { transform-origin: left; animation: ilu-sessao 6s linear infinite; }
 @keyframes ilu-sessao { from { transform: scaleX(1); } to { transform: scaleX(0.05); } }
 
-/* Desempenho: cenas congeladas fora da tela, camadas próprias para o que se move sempre
-   e seções fora da tela sem layout nem pintura. */
+/* Cenas congeladas fora da tela. Sem will-change nem content-visibility: em alguns WebViews deixavam a tela toda preta. */
 .ilu-pausada, .ilu-pausada * { animation-play-state: paused !important; }
-.ilu-girar, .ilu-girar-inverso, .ilu-rolar, .ilu-icar, .ilu-mover-cartao, .ilu-pular, .ilu-bolha, .ilu-gota, .ilu-sessao { will-change: transform; }
-.tema main > div > section, .tema main > div > div > section { content-visibility: auto; contain-intrinsic-size: auto 320px; }

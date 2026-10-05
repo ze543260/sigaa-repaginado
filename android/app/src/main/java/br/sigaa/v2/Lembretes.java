@@ -52,7 +52,19 @@ public final class Lembretes extends BroadcastReceiver {
             // Lista inválida: fica sem lembretes até a próxima abertura do portal.
         }
         prefs.edit().putInt(QTD, n).apply();
-        WidgetProximaAula.salvarAulas(ctx, aulas);
+        JSONObject prazo = null;
+        try {
+            long agoraPrazo = System.currentTimeMillis();
+            for (int i = 0; i < lista.length(); i++) {
+                JSONObject l = lista.getJSONObject(i);
+                long fim = l.optLong("prazo");
+                if (fim <= agoraPrazo) continue;
+                if (prazo == null || fim < prazo.optLong("prazo")) prazo = l;
+            }
+        } catch (JSONException e) {
+            prazo = null;
+        }
+        WidgetProximaAula.salvarAulas(ctx, aulas, prazo);
     }
 
     private static PendingIntent intencao(Context ctx, int codigo, String titulo, String texto) {

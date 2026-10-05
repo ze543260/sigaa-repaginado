@@ -25,6 +25,11 @@ final class Ponte {
 
     /** {"disponivel": bool, "salvo": bool} */
     @JavascriptInterface
+    public String infoApp() {
+        return "{\"nativo\":\"" + BuildConfig.VERSION_NAME + "\",\"interface\":\"" + (Ota.usandoBaixada ? "baixada" : "embutida") + "\"}";
+    }
+
+    @JavascriptInterface
     public String loginInfo() {
         return "{\"disponivel\":" + cofre.disponivel() + ",\"salvo\":" + cofre.temSalvo() + "}";
     }

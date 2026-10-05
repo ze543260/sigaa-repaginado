@@ -61,4 +61,30 @@
         android:maxLines="1"
         android:textColor="#B3FFFFFF"
         android:textSize="13sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#26FFFFFF" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="monospace"
+        android:text="PRÓXIMO PRAZO"
+        android:textColor="#B3FFFFFF"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/prazo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Abra o app para carregar"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp" />
 </LinearLayout>

@@ -63,6 +63,13 @@ function iniciar(): void {
     plataforma.bloqueio = { ativo: () => android.bloqueioAtivo(), definir: (ligado) => android.definirBloqueio(ligado) };
     plataforma.verificarAtualizacao = () => android.verificarAtualizacao();
     plataforma.coresAbertura = (json) => android.coresAbertura?.(json);
+    plataforma.infoApp = () => {
+      try {
+        return android.infoApp ? JSON.parse(android.infoApp()) : null;
+      } catch {
+        return null;
+      }
+    };
   }
 
   const estilo = document.createElement('style');

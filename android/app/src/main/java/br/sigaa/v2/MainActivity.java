@@ -327,9 +327,42 @@ public class MainActivity extends Activity {
         bloqueio.aoSair();
     }
 
+    private android.hardware.SensorManager sensores;
+    private long ultimoSacolejo;
+    private long primeiroSacolejo;
+    private final android.hardware.SensorEventListener sacolejo = new android.hardware.SensorEventListener() {
+        @Override
+        public void onSensorChanged(android.hardware.SensorEvent e) {
+            float g = (float) Math.sqrt(e.values[0] * e.values[0] + e.values[1] * e.values[1] + e.values[2] * e.values[2])
+                    / android.hardware.SensorManager.GRAVITY_EARTH;
+            if (g < 2.6f) return;
+            long agora = System.currentTimeMillis();
+            // Dois trancos em menos de 700 ms; um só acontece ao guardar o celular no bolso.
+            if (agora - primeiroSacolejo > 700) {
+                primeiroSacolejo = agora;
+                return;
+            }
+            if (agora - ultimoSacolejo < 3000) return;
+            ultimoSacolejo = agora;
+            webView.evaluateJavascript("window.__sigaaRelatar && window.__sigaaRelatar()", null);
+        }
+
+        @Override
+        public void onAccuracyChanged(android.hardware.Sensor s, int precisao) {}
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sensores == null) sensores = getSystemService(android.hardware.SensorManager.class);
+        android.hardware.Sensor acel = sensores == null ? null : sensores.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER);
+        if (acel != null) sensores.registerListener(sacolejo, acel, android.hardware.SensorManager.SENSOR_DELAY_UI);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
+        if (sensores != null) sensores.unregisterListener(sacolejo);
         CookieManager.getInstance().flush();
     }
 

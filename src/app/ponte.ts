@@ -12,6 +12,7 @@ export interface PonteAndroid {
   verificarAtualizacao(): void;
   pronto(): void;
   coresAbertura(json: string): void;
+  infoApp?(): string;
 }
 
 /** Exposta pelo bootstrap em window.__sigaaV2 para a interface que roda no iframe. */
