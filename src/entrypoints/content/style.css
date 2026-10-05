@@ -1481,3 +1481,9 @@ details[open] > :not(summary) {
 @keyframes crescer-vertical { from { transform: scaleY(0); } }
 .ilu-traco { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ilu-traco 1.4s 0.8s ease forwards; }
 @keyframes ilu-traco { to { stroke-dashoffset: 0; } }
+
+/* Planilha: toda tabela ganha grade de células e cabeçalho cinza. */
+.tema[data-estilo='admin'] table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.tema[data-estilo='admin'] th,
+.tema[data-estilo='admin'] td { border: 1px solid hsl(var(--border)); }
+.tema[data-estilo='admin'] thead th { background: hsl(var(--secondary)); font-weight: 600; }

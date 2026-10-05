@@ -9,6 +9,7 @@ import { GraficoBarras, Medidor } from './components/Graficos';
 import { Card, CardContent, CardHeader, CardTitle } from './components/Card';
 import { Sinal } from './components/Glifos';
 import { cn } from './cn';
+import { usarPreferencias } from './tema';
 
 const corSituacao = (valor: string): string => {
   if (/REPROVADO|TRANCADO|CANCELADO|Falta/i.test(valor)) return 'font-medium text-destaque-texto';
@@ -288,6 +289,39 @@ export function Avisos({ avisos }: { readonly avisos: readonly string[] }) {
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 
 /** Cada aula registrada vira um quadrado: presença, falta (com quantas) ou ainda sem registro. */
+function ToleranciaFaltas({ registros, maximo }: { readonly registros: readonly RegistroAula[]; readonly maximo: number }) {
+  let acumulado = 0;
+  const celula = 'border border-foreground/40 px-2 py-1.5';
+  return (
+    <div className="overflow-x-auto sm:col-span-2">
+      <table className="w-full border-collapse border-2 border-foreground/60 text-left text-xs uppercase tracking-wide">
+        <thead>
+          <tr className="font-semibold">
+            <th className={celula}>Data</th>
+            <th className={cn(celula, 'text-center')}>Desvio</th>
+            <th className={cn(celula, 'text-center')}>Acum.</th>
+            <th className={cn(celula, 'text-center')}>Tol. {maximo}</th>
+          </tr>
+        </thead>
+        <tbody className="font-mono">
+          {registros.map((r) => {
+            acumulado += r.faltas ?? 0;
+            const situacao = acumulado > maximo ? 'FORA' : acumulado >= maximo * 0.75 ? 'LIMITE' : 'OK';
+            return (
+              <tr key={r.data} className={cn(r.faltas === null && 'text-muted-foreground')}>
+                <td className={celula}>{r.data}</td>
+                <td className={cn(celula, 'text-center')}>{r.faltas === null ? '—' : r.faltas ? `+${r.faltas}` : '0'}</td>
+                <td className={cn(celula, 'text-center')}>{acumulado}</td>
+                <td className={cn(celula, 'text-center font-semibold', situacao !== 'OK' && 'text-destaque-texto')}>{situacao}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function CalendarioFrequencia({ registros }: { readonly registros: readonly RegistroAula[] }) {
   const porMes = registros.reduce<Map<string, RegistroAula[]>>((acc, r) => {
     const [, mes = '', ano = ''] = r.data.split('/');
@@ -336,6 +370,7 @@ function CalendarioFrequencia({ registros }: { readonly registros: readonly Regi
 }
 
 function ResumoDesempenho({ blocos }: { readonly blocos: readonly Bloco[] }) {
+  const estilo = usarPreferencias().prefs.estilo;
   const semestres = semestresDeNotas(blocos);
   if (semestres.length > 0) return <PainelSemestres semestres={semestres} />;
   const faltas = analisarFaltas(blocos);
@@ -361,7 +396,8 @@ function ResumoDesempenho({ blocos }: { readonly blocos: readonly Bloco[] }) {
           </p>
         </Card>
       )}
-      {registros.length > 0 && <CalendarioFrequencia registros={registros} />}
+      {registros.length > 0 &&
+        (estilo === 'mecanica' && faltas ? <ToleranciaFaltas registros={registros} maximo={faltas.maximo} /> : <CalendarioFrequencia registros={registros} />)}
       {unica && unica.avaliacoes.length > 0 && (
         <Card className="space-y-4 p-5">
           <p className="text-sm text-muted-foreground">Notas · média {MEDIA_APROVACAO}</p>

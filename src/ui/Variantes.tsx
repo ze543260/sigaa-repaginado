@@ -379,3 +379,139 @@ export function ListaPecas({ turmas }: { readonly turmas: readonly Turma[] }) {
     </div>
   );
 }
+
+/** Glifo de pontos: cada ponto é meia hora entre 7h e 23h; acende onde há aula. */
+export function GlifoHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
+  const agora = useAgora();
+  const hoje = useHoje(turmas).filter((a) => a.tempo);
+  if (hoje.length === 0) return null;
+  const meia = (d: Date) => Math.floor((d.getHours() + d.getMinutes() / 60 - INICIO_DIA) * 2);
+  const atual = meia(agora);
+  return (
+    <Card className="space-y-4 p-5">
+      <div className="grid grid-cols-[repeat(32,minmax(0,1fr))] gap-[3px]" aria-hidden="true">
+        {Array.from({ length: 32 }, (_, i) => {
+          const aula = hoje.some(({ tempo }) => i >= meia(tempo!.inicio) && i < meia(tempo!.fim));
+          return <span key={i} className={cn('aspect-square rounded-full', aula ? 'bg-foreground' : 'bg-foreground/15', i === atual && 'bg-destaque pulso')} />;
+        })}
+      </div>
+      <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
+        <span>07</span><span>11</span><span>15</span><span>19</span><span>23</span>
+      </div>
+      <ul className="space-y-2">
+        {hoje.map(({ turma, quando, estado }) => (
+          <li key={turma.codigo || turma.nome}>
+            <button type="button" onClick={turma.acessar} className={cn('flex w-full items-baseline gap-3 text-left', estado === 'passou' && 'opacity-40')}>
+              <span className={cn('font-dot text-lg font-extrabold', estado === 'agora' && 'text-destaque-texto')}>{quando.split('-')[0]}</span>
+              <span className="min-w-0 truncate text-sm">{tituloBr(turma.nome)}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
+/** Atividades como caderno pautado, com margem vermelha. */
+export function CadernoAtividades({ atividades, feita, alternar }: PropsKanban) {
+  const abertas = atividades.filter((a) => a.status !== 'passada');
+  if (abertas.length === 0) return null;
+  return (
+    <div
+      className="casca-card rounded-md border bg-card py-2 pl-12 pr-4"
+      style={{
+        backgroundImage: 'linear-gradient(90deg, transparent 2.4rem, #e0525288 2.4rem, #e0525288 calc(2.4rem + 2px), transparent 0), repeating-linear-gradient(transparent 0 2.45rem, hsl(var(--foreground) / 0.14) 2.45rem 2.5rem)',
+      }}
+    >
+      <ul>
+        {abertas.map((a, n) => (
+          <li key={n} className="flex min-h-[2.5rem] items-center gap-3">
+            <button type="button" onClick={() => alternar(a)} aria-label={feita(a) ? 'Marcar como pendente' : 'Marcar como feita'} className="-ml-9 w-6 font-dot text-2xl leading-none">
+              {feita(a) ? '☑' : '☐'}
+            </button>
+            <button type="button" disabled={!a.abrir} onClick={a.abrir ?? undefined} className="min-w-0 flex-1 text-left">
+              <span className={cn('block truncate text-lg leading-tight', feita(a) && 'line-through opacity-60', a.status === 'semana' && !feita(a) && 'text-destaque-texto')}>
+                {a.descricao} <span className="text-sm text-muted-foreground">· {tituloBr(a.turma)}</span>
+              </span>
+            </button>
+            <span className="shrink-0 font-mono text-xs text-muted-foreground">{a.data.slice(0, 5)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Aulas de hoje como estações de uma trilha. */
+export function TrilhaHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
+  const hoje = useHoje(turmas);
+  if (hoje.length === 0) return null;
+  return (
+    <ol className="relative">
+      {hoje.map(({ turma, quando, estado }, n) => {
+        const esquerda = n % 2 === 0;
+        return (
+          <li key={turma.codigo || turma.nome} className="relative flex min-h-24 items-center">
+            <svg viewBox="0 0 100 96" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+              <path
+                d={esquerda ? 'M50 0 C50 30 20 30 20 48 S50 70 50 96' : 'M50 0 C50 30 80 30 80 48 S50 70 50 96'}
+                fill="none"
+                stroke="hsl(var(--muted-foreground) / 0.5)"
+                strokeWidth="1.5"
+                strokeDasharray="4 4"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+            <button
+              type="button"
+              onClick={turma.acessar}
+              className={cn(
+                'casca-card relative z-[1] flex max-w-[70%] items-center gap-3 rounded-full border bg-card px-4 py-2 text-left',
+                esquerda ? 'ml-[8%]' : 'ml-auto mr-[8%]',
+                estado === 'passou' && 'opacity-50',
+                estado === 'agora' && 'border-destaque',
+              )}
+            >
+              <span className={cn('h-3 w-3 shrink-0 rounded-full', estado === 'agora' ? 'bg-destaque pulso' : estado === 'passou' ? 'bg-muted-foreground' : 'border-2 border-destaque')} />
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">{tituloBr(turma.nome)}</span>
+                <span className="block font-mono text-[11px] text-muted-foreground">{quando}</span>
+              </span>
+            </button>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/** Turmas como favo hexagonal. */
+export function FavoTurmas({ turmas }: { readonly turmas: readonly Turma[] }) {
+  const linhas: Turma[][] = [];
+  turmas.forEach((t, i) => {
+    const linha = Math.floor(i / 3);
+    (linhas[linha] ??= []).push(t);
+  });
+  return (
+    <div className="space-y-[-0.8rem] pb-2">
+      {linhas.map((linha, l) => (
+        <div key={l} className={cn('flex gap-1.5', l % 2 === 1 && 'pl-[16.5%]')}>
+          {linha.map((t) => (
+            <button
+              key={t.codigo || t.nome}
+              type="button"
+              onClick={t.acessar}
+              className="grid aspect-[1/1.12] w-[32%] place-items-center bg-destaque/15 p-3 text-center transition-transform hover:bg-destaque/25 active:scale-95"
+              style={{ clipPath: 'polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)' }}
+            >
+              <span>
+                <span className="block font-dot text-lg font-semibold">{siglaDisciplina(t.nome)}</span>
+                <span className="line-clamp-2 block text-[10px] leading-tight text-muted-foreground">{tituloBr(t.nome)}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}

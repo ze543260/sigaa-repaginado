@@ -11,14 +11,15 @@ import { useNotas } from './notas';
 import { LinhaDisciplina } from './PainelNotas';
 import { CHAVE_FEITAS, useConjunto } from './memoria';
 import { usarPreferencias } from './tema';
+import { EstadoVazio } from './IlustracaoLogin';
 import { Button } from './components/Button';
 import { Card, CardContent, CardHeader, CardTitle } from './components/Card';
 import { BarraPontos, ContagemPontos, Sinal } from './components/Glifos';
-import { BateriaSolar, HudRetro, KanbanAtividades, LadderHoje, LinhaDoTempo, ListaPecas, PlanilhaTurmas, TabelaPeriodicaTurmas, TerminalHoje, TerminalTurmas } from './Variantes';
+import { CadernoAtividades, FavoTurmas, GlifoHoje, TrilhaHoje, BateriaSolar, HudRetro, KanbanAtividades, LadderHoje, LinhaDoTempo, ListaPecas, PlanilhaTurmas, TabelaPeriodicaTurmas, TerminalHoje, TerminalTurmas } from './Variantes';
 import { AnelProgresso, GraficoBarras } from './components/Graficos';
 import { cn } from './cn';
 import { GradeSemanal } from './GradeSemanal';
-import { AulasDeHoje, ListaTurmas } from './ListaTurmas';
+import { aulasDoDia, AulasDeHoje, ListaTurmas } from './ListaTurmas';
 
 export type AbaPortal = 'inicio' | 'turmas' | 'atividades';
 
@@ -160,8 +161,8 @@ function ListaAtividades({ atividades }: { readonly atividades: readonly Ativida
 
   if (atividades.length === 0) {
     return (
-      <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">
-        {piadaVazia ? <Digitando texto={piadaVazia} className="font-mono" /> : 'Nada pendente por enquanto.'}
+      <Card className="border-dashed">
+        <EstadoVazio>{piadaVazia ? <Digitando texto={piadaVazia} className="font-mono" /> : 'Nada pendente por enquanto.'}</EstadoVazio>
       </Card>
     );
   }
@@ -260,6 +261,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
   const outrosIndices = portal.indices.filter((i) => i.rotulo !== 'IRA');
   const { feita, alternar } = useFeitas();
   const estilo = usarPreferencias().prefs.estilo;
+  const temAulaHoje = aulasDoDia(portal.turmas, new Date()).length > 0;
   const urgentes = portal.atividades.filter((a) => a.status === 'semana' && !feita(a)).length;
   const proximas = portal.atividades.filter((a) => a.status !== 'passada' && !feita(a)).slice(0, 3);
   useLembretes(portal, feita);
@@ -324,6 +326,10 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
             <TerminalHoje turmas={portal.turmas} />
           ) : estilo === 'controle' ? (
             <LadderHoje turmas={portal.turmas} />
+          ) : estilo === 'minimalista' && temAulaHoje ? (
+            <GlifoHoje turmas={portal.turmas} />
+          ) : estilo === 'ambiental' && temAulaHoje ? (
+            <TrilhaHoje turmas={portal.turmas} />
           ) : estilo === 'eletrica' || estilo === 'civil' ? (
             <LinhaDoTempo turmas={portal.turmas} modo={estilo === 'eletrica' ? 'onda' : 'gantt'} />
           ) : (
@@ -353,7 +359,9 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
         )}
 
         <Secao titulo="Minhas atividades" className={naAba(aba, 'atividades')}>
-          {estilo === 'producao' ? (
+          {estilo === 'lousa' && portal.atividades.some((a) => a.status !== 'passada') ? (
+            <CadernoAtividades atividades={portal.atividades} feita={feita} alternar={alternar} />
+          ) : estilo === 'producao' ? (
             <KanbanAtividades atividades={portal.atividades} feita={feita} alternar={alternar} />
           ) : (
             <ListaAtividades atividades={portal.atividades} />
@@ -384,6 +392,8 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
             <PlanilhaTurmas turmas={portal.turmas} />
           ) : estilo === 'quimica' ? (
             <TabelaPeriodicaTurmas turmas={portal.turmas} />
+          ) : estilo === 'materiais' ? (
+            <FavoTurmas turmas={portal.turmas} />
           ) : estilo === 'mecanica' ? (
             <ListaPecas turmas={portal.turmas} />
           ) : estilo === 'terminal' ? (

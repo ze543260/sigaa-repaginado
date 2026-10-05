@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { cn } from './cn';
+import { definicao } from './estilos';
+import { IlustracaoLogin } from './IlustracaoLogin';
 import { SeletorEstilo } from './SeletorEstilo';
+import { Digitando, usePiada } from './Surpresas';
 import { ACENTOS, TEMAS, usarPreferencias, type Acento, type Tema } from './tema';
 
 const CHAVE = 'sigaa-v2:boas-vindas';
@@ -66,7 +69,9 @@ const DESTAQUES: readonly (readonly [string, string])[] = [
 export function BoasVindas({ onFim }: { readonly onFim: () => void }) {
   const [passo, setPasso] = useState(0);
   const { prefs, alterar } = usarPreferencias();
-  const ultimo = 2;
+  const ultimo = 3;
+  const info = definicao(prefs.estilo);
+  const piada = usePiada('saudacao');
 
   const concluir = () => {
     marcarVisto();
@@ -124,6 +129,7 @@ export function BoasVindas({ onFim }: { readonly onFim: () => void }) {
 
           {passo === 2 && (
             <>
+              <IlustracaoLogin key={prefs.estilo} className="max-h-28" />
               <h1 className="font-dot text-5xl font-extrabold leading-[0.95]">do seu jeito</h1>
               <p className="text-[15px] text-muted-foreground">Dá para mudar depois na engrenagem, no topo da tela.</p>
               <div className="space-y-2">
@@ -164,11 +170,21 @@ export function BoasVindas({ onFim }: { readonly onFim: () => void }) {
               </div>
             </>
           )}
+
+          {passo === 3 && (
+            <>
+              <IlustracaoLogin className="max-h-40" />
+              <p className="font-mono text-xs uppercase tracking-wide text-destaque-texto">{info.curso || info.nome}</p>
+              <h1 className="font-dot text-5xl font-extrabold leading-[0.95]">tudo pronto</h1>
+              <p className="text-[15px] text-muted-foreground">{info.descricao}</p>
+              {piada && <Digitando texto={piada} className="block font-mono text-sm text-destaque-texto" />}
+            </>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-4">
           <div className="flex gap-2" aria-label={`Passo ${passo + 1} de ${ultimo + 1}`}>
-            {[0, 1, 2].map((i) => (
+            {[0, 1, 2, 3].map((i) => (
               <span key={i} className={cn('h-2 rounded-full transition-all duration-300', i === passo ? 'w-6 bg-destaque' : 'w-2 bg-foreground/20')} />
             ))}
           </div>

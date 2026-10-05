@@ -8,6 +8,7 @@ import { FormularioTarefa, ListaTarefas } from './TarefasUI';
 import { Button } from './components/Button';
 import { Card } from './components/Card';
 import { cn } from './cn';
+import { usarPreferencias } from './tema';
 
 interface Props {
   readonly turma: PaginaTurma;
@@ -178,10 +179,42 @@ function BaixarTodos({ topicos }: { readonly topicos: readonly Topico[] }) {
   );
 }
 
+function hashCurto(texto: string): string {
+  let h = 2166136261;
+  for (const c of texto) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return (h >>> 0).toString(16).padStart(8, '0').slice(0, 7);
+}
+
+function GitLog({ topicos }: { readonly topicos: readonly Topico[] }) {
+  return (
+    <Card className="space-y-4 overflow-hidden p-4 font-mono text-xs leading-relaxed">
+      <p className="text-muted-foreground">$ git log --stat</p>
+      {topicos.map((t, i) => (
+        <div key={`${t.periodo}-${t.titulo}`} className="space-y-0.5">
+          <p className="text-destaque-texto">
+            commit {hashCurto(t.periodo + t.titulo)}
+            {i === 0 && <span className="text-muted-foreground"> (HEAD -&gt; main)</span>}
+          </p>
+          <p className="text-muted-foreground">Date: {t.periodo}</p>
+          <p className="py-1 pl-4 font-sans text-sm font-medium">{t.titulo}</p>
+          {t.paragrafos.map((p, j) => <p key={j} className="pl-4 text-muted-foreground">{p}</p>)}
+          {t.materiais.map((m, j) => (
+            <button key={j} type="button" disabled={!m.abrir} onClick={m.abrir ?? undefined} className="block w-full truncate pl-4 text-left hover:underline">
+              <span className="text-destaque-texto">+</span> {m.nome}
+            </button>
+          ))}
+          {t.materiais.length > 0 && <p className="pl-4 text-muted-foreground">{t.materiais.length} file{t.materiais.length > 1 ? 's' : ''} changed</p>}
+        </div>
+      ))}
+    </Card>
+  );
+}
+
 function Principal({ noticia, topicos }: { readonly noticia: Noticia | null; readonly topicos: readonly Topico[] }) {
   const recentes = [...topicos].reverse();
   const [mostrarTodas, setMostrarTodas] = useState(false);
   const visiveis = mostrarTodas ? recentes : recentes.slice(0, AULAS_ABERTAS);
+  const estilo = usarPreferencias().prefs.estilo;
 
   return (
     <>
@@ -191,6 +224,8 @@ function Principal({ noticia, topicos }: { readonly noticia: Noticia | null; rea
         <BaixarTodos topicos={topicos} />
         {topicos.length === 0 ? (
           <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">Nenhuma aula publicada ainda.</Card>
+        ) : estilo === 'terminal' ? (
+          <GitLog topicos={visiveis} />
         ) : (
           <ol className="cascata space-y-2">
             {visiveis.map((t, i) => (

@@ -5,6 +5,8 @@ import type { EnvioTarefa, Tarefa } from '../domain/types';
 import { Button } from './components/Button';
 import { Card } from './components/Card';
 import { cn } from './cn';
+import { usarPreferencias } from './tema';
+import { EstadoVazio } from './IlustracaoLogin';
 
 type Estado = 'enviada' | 'aberta' | 'urgente' | 'futura' | 'encerrada';
 
@@ -87,16 +89,62 @@ function CartaoTarefa({ t, agora }: { readonly t: Tarefa; readonly agora: Date }
   );
 }
 
+const COLUNAS_QUADRO: readonly (readonly [string, readonly Estado[]])[] = [
+  ['A fazer', ['urgente', 'aberta']],
+  ['Em breve', ['futura']],
+  ['Entregue', ['enviada']],
+  ['Arquivo', ['encerrada']],
+];
+const POST_ITS = ['#fde68a', '#fbcfe8', '#bae6fd', '#bbf7d0'];
+
+function QuadroTarefas({ tarefas, agora }: { readonly tarefas: readonly Tarefa[]; readonly agora: Date }) {
+  const [aberta, setAberta] = useState<Tarefa | null>(null);
+  return (
+    <div className="space-y-4">
+      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
+        {COLUNAS_QUADRO.map(([titulo, estados]) => {
+          const itens = tarefas.filter((t) => estados.includes(estadoDa(t, agora)));
+          return (
+            <section key={titulo} className="w-[70%] shrink-0 snap-start space-y-3 rounded-2xl bg-secondary/60 p-3 md:w-auto">
+              <h3 className="flex items-center justify-between px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {titulo}
+                <span className="rounded-full bg-background px-2 py-0.5 font-mono">{itens.length}</span>
+              </h3>
+              {itens.map((t, n) => (
+                <button
+                  key={t.titulo + t.fim}
+                  type="button"
+                  onClick={() => setAberta(aberta === t ? null : t)}
+                  className={cn('block w-full space-y-1 p-3 text-left text-sm text-[#1c1917] shadow-[2px_4px_0_-1px_rgb(0_0_0/0.15)]', aberta === t && 'ring-2 ring-foreground')}
+                  style={{ background: POST_ITS[n % POST_ITS.length], transform: `rotate(${n % 2 ? 0.6 : -0.5}deg)` }}
+                >
+                  <span className="block font-semibold leading-snug">{t.titulo}</span>
+                  <span className="block font-mono text-xs opacity-75">até {t.fim}</span>
+                </button>
+              ))}
+            </section>
+          );
+        })}
+      </div>
+      {aberta && <CartaoTarefa t={aberta} agora={agora} />}
+    </div>
+  );
+}
+
 export function ListaTarefas({ tarefas }: { readonly tarefas: readonly Tarefa[] }) {
   const agora = new Date();
+  const estilo = usarPreferencias().prefs.estilo;
   if (tarefas.length === 0) {
     return (
-      <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">
-        Nenhuma tarefa publicada. <PiadaDoContexto contexto="sem-tarefas" className="mt-2 block font-mono" />
+      <Card className="border-dashed">
+        <EstadoVazio>
+          Nenhuma tarefa publicada. <PiadaDoContexto contexto="sem-tarefas" className="mt-2 block font-mono" />
+        </EstadoVazio>
       </Card>
     );
   }
   const ordenadas = [...tarefas].sort((a, b) => ORDEM[estadoDa(a, agora)] - ORDEM[estadoDa(b, agora)]);
+  if (estilo === 'producao') return <QuadroTarefas tarefas={ordenadas} agora={agora} />;
   return (
     <div className="cascata space-y-3">
       {ordenadas.map((t) => <CartaoTarefa key={t.titulo + t.fim} t={t} agora={agora} />)}

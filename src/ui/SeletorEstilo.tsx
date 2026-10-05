@@ -1,6 +1,7 @@
 import { cn } from './cn';
 import { ESTILOS, definicao } from './estilos';
 import { usarPreferencias } from './tema';
+import { IlustracaoLogin } from './IlustracaoLogin';
 
 export function SeletorEstilo() {
   const { prefs, alterar } = usarPreferencias();
@@ -25,11 +26,15 @@ export function SeletorEstilo() {
             )}
           >
             <span
-              className="flex h-16 items-center justify-center text-xl font-bold"
-              style={{ background: info.amostra.fundo, color: info.amostra.texto, fontFamily: info.amostra.fonte, borderRadius: 0 }}
+              className="tema relative flex h-24 items-center justify-center overflow-hidden"
+              data-estilo={e}
+              data-tema={prefs.tema === 'sistema' ? undefined : prefs.tema}
+              data-acento={info.acento}
+              style={{ borderRadius: 0 }}
               aria-hidden="true"
             >
-              {info.amostra.titulo}
+              <IlustracaoLogin estilo={e} className="h-full w-auto" />
+              <span className="absolute bottom-1 left-2 font-dot text-sm font-bold text-foreground">{info.amostra.titulo}</span>
             </span>
             <span className="block space-y-0.5 p-3">
               <span className="block text-sm font-medium">{info.nome}</span>

@@ -188,11 +188,22 @@ const CENAS: Record<Estilo, () => ReactNode> = {
   ),
 };
 
-export function IlustracaoLogin({ className }: { readonly className?: string }) {
-  const estilo = usarPreferencias().prefs.estilo;
+export function IlustracaoLogin({ className, estilo: fixo }: { readonly className?: string; readonly estilo?: Estilo }) {
+  const atual = usarPreferencias().prefs.estilo;
+  const estilo = fixo ?? atual;
   return (
     <svg viewBox="0 0 200 120" className={cn('ilustracao-login w-full', className)} aria-hidden="true">
       {CENAS[estilo]()}
     </svg>
+  );
+}
+
+/** Estado vazio com a cena do estilo em tamanho pequeno. */
+export function EstadoVazio({ children, className }: { readonly children: ReactNode; readonly className?: string }) {
+  return (
+    <div className={cn('flex flex-col items-center gap-3 p-6 text-center text-sm text-muted-foreground', className)}>
+      <IlustracaoLogin className="max-w-[10rem] opacity-90" />
+      <div>{children}</div>
+    </div>
   );
 }

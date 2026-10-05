@@ -3,6 +3,7 @@ import { tituloBr } from '../domain/texto';
 import { useEffect, useState } from 'react';
 import { diaSigaaHoje, horaConfirmada, horariosDoCodigo, intervaloDoBloco, ordemHorario, relativo, resumirHorario, siglaDisciplina } from '../domain/horario';
 import { cn } from './cn';
+import { EstadoVazio } from './IlustracaoLogin';
 import type { Turma } from '../domain/types';
 import { Card, CardDescription, CardHeader, CardTitle } from './components/Card';
 
@@ -48,9 +49,9 @@ export function AulasDeHoje({ turmas }: Props) {
 
   if (hoje.length === 0) {
     return (
-      <p className="px-1 text-sm text-muted-foreground">
+      <EstadoVazio className="items-start p-1 text-left sm:flex-row sm:items-center">
         <PiadaDoContexto contexto="sem-aulas" className="font-mono" /> {!temPiada && 'Sem aulas hoje.'}
-      </p>
+      </EstadoVazio>
     );
   }
 
