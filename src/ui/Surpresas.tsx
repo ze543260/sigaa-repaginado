@@ -153,6 +153,36 @@ function FogosPontos({ cor }: { readonly cor: string }) {
   );
 }
 
+function ChuvaSimbolos({ simbolos }: { readonly simbolos: string }) {
+  const lista = [...simbolos];
+  const gotas = useMemo(
+    () =>
+      Array.from({ length: 46 }, (_, i) => ({
+        simbolo: lista[i % lista.length] ?? '•',
+        esquerda: (i * 37) % 100,
+        duracao: 2.4 + ((i * 13) % 20) / 10,
+        atraso: -((i * 7) % 30) / 10,
+        tamanho: 18 + ((i * 11) % 26),
+        destaque: i % 5 === 0,
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [simbolos],
+  );
+  return (
+    <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      {gotas.map((g, i) => (
+        <span
+          key={i}
+          className={g.destaque ? 'absolute text-destaque-texto' : 'absolute opacity-70'}
+          style={{ left: `${g.esquerda}%`, top: '-10%', fontSize: g.tamanho, animation: `cair ${g.duracao}s linear ${g.atraso}s infinite` }}
+        >
+          {g.simbolo}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function OndaSenoidal() {
   const caminho = (amplitude: number, periodo: number) =>
     Array.from({ length: 121 }, (_, i) => `${i ? 'L' : 'M'}${i * 10} ${50 + amplitude * Math.sin((i * 10 * 2 * Math.PI) / periodo)}`).join(' ');
@@ -186,7 +216,15 @@ export function Surpresa({ onFechar }: { readonly onFechar: () => void }) {
       aria-label="Fechar surpresa"
       className="fixed inset-0 z-[60] overflow-hidden bg-background/90 text-foreground animate-entrar"
     >
-      {msg.efeito === 'matriz' ? <ChuvaMatriz cor="#3ddc84" /> : msg.efeito === 'onda' ? <OndaSenoidal /> : <FogosPontos cor={cor} />}
+      {msg.efeito === 'matriz' ? (
+        <ChuvaMatriz cor="#3ddc84" />
+      ) : msg.efeito === 'onda' ? (
+        <OndaSenoidal />
+      ) : msg.efeito === 'chuva' ? (
+        <ChuvaSimbolos simbolos={msg.simbolos ?? '•'} />
+      ) : (
+        <FogosPontos cor={cor} />
+      )}
       <span className="relative z-10 grid h-full place-items-center p-8 text-center">
         <span className="space-y-3 rounded-3xl border bg-card/90 p-6">
           <span className="block font-dot text-3xl font-extrabold">{msg.titulo}</span>

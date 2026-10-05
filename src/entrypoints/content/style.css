@@ -394,3 +394,84 @@ details[open] > :not(summary) {
 }
 .sem-animacao h1.font-dot::after { animation: none; }
 
+
+@keyframes cair {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(120vh) rotate(360deg); }
+}
+
+/* ── Estilo "Prancha técnica (Engenharia Mecânica)" ── */
+.tema[data-estilo='mecanica'] {
+  --fonte-titulo: 'Space Mono', ui-monospace, monospace;
+  --raio-sm: 3px;
+  --raio-md: 3px;
+  --raio-lg: 3px;
+  --raio-xl: 3px;
+  --raio-2xl: 3px;
+  --raio-3xl: 3px;
+  --raio-pilula: 3px;
+  --padrao: linear-gradient(hsl(var(--pontos)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--pontos)) 1px, transparent 1px), linear-gradient(hsl(var(--pontos) / 0.5) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--pontos) / 0.5) 1px, transparent 1px);
+  --padrao-tamanho: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+}
+
+.tema[data-estilo='mecanica']:not([data-tema='escuro']) {
+  --background: 40 30% 95%;
+  --foreground: 220 70% 22%;
+  --card: 40 40% 99%;
+  --card-foreground: 220 70% 22%;
+  --primary: 220 70% 22%;
+  --primary-foreground: 40 40% 99%;
+  --secondary: 215 30% 89%;
+  --secondary-foreground: 220 70% 22%;
+  --muted: 215 30% 89%;
+  --muted-foreground: 220 30% 36%;
+  --accent: 215 35% 92%;
+  --accent-foreground: 220 70% 22%;
+  --border: 215 35% 75%;
+  --input: 215 30% 60%;
+  --pontos: 215 40% 86%;
+}
+
+.tema[data-estilo='mecanica'][data-tema='escuro'] {
+  --background: 215 70% 16%;
+  --foreground: 210 40% 96%;
+  --card: 215 65% 20%;
+  --card-foreground: 210 40% 96%;
+  --primary: 210 40% 96%;
+  --primary-foreground: 215 65% 20%;
+  --secondary: 215 55% 26%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 215 55% 26%;
+  --muted-foreground: 210 35% 80%;
+  --accent: 215 60% 23%;
+  --accent-foreground: 210 40% 96%;
+  --border: 210 50% 40%;
+  --input: 210 45% 50%;
+  --pontos: 210 55% 24%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='mecanica']:not([data-tema]) {
+    --background: 215 70% 16%;
+    --foreground: 210 40% 96%;
+    --card: 215 65% 20%;
+    --card-foreground: 210 40% 96%;
+    --primary: 210 40% 96%;
+    --primary-foreground: 215 65% 20%;
+    --secondary: 215 55% 26%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 215 55% 26%;
+    --muted-foreground: 210 35% 80%;
+    --accent: 215 60% 23%;
+    --accent-foreground: 210 40% 96%;
+    --border: 210 50% 40%;
+    --input: 210 45% 50%;
+    --pontos: 210 55% 24%;
+  }
+}
+.tema[data-estilo='mecanica'] h1.font-dot { text-transform: uppercase; letter-spacing: 0.06em; }
+.tema[data-estilo='mecanica'] h1.font-dot::before { content: '⌀ '; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='mecanica'] section > h2 { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.75rem; }
+.tema[data-estilo='mecanica'] section > h2::before { content: '§'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='mecanica'] main [class*='rounded-3xl'].border { border-style: dashed; }
+

@@ -12,7 +12,13 @@ export interface DefinicaoEstilo {
   readonly forma: 'redondo' | 'quadrado';
   readonly amostra: { readonly fundo: string; readonly texto: string; readonly fonte: string; readonly titulo: string };
   readonly piadas: Partial<Record<Contexto, readonly string[]>>;
-  readonly segredo: { readonly titulo: string; readonly texto: string; readonly efeito: 'matriz' | 'fogos' | 'onda' };
+  readonly segredo: {
+    readonly titulo: string;
+    readonly texto: string;
+    readonly efeito: 'matriz' | 'fogos' | 'onda' | 'chuva';
+    /** Símbolos que caem no efeito "chuva". */
+    readonly simbolos?: string;
+  };
 }
 
 // Cada estilo aqui precisa de um bloco [data-estilo='…'] em style.css com as cores e formas.
@@ -87,6 +93,33 @@ export const DEFINICOES = {
       carregando: ['carregando capacitores...', 'ajustando base de tempo: 25 min/div...', 'sincronizando trigger com o servidor...', 'medindo a impedância do JSF...'],
     },
     segredo: { titulo: 'alta tensão', texto: 'Você achou o gerador de funções. Não encoste no ponto de destaque.', efeito: 'onda' },
+  },
+  mecanica: {
+    nome: "Prancha técnica",
+    curso: "Engenharia Mecânica",
+    acento: "laranja",
+    forma: "redondo",
+    descricao: "Papel azul de projeto, cotas, linhas tracejadas e tudo em caixa alta.",
+    amostra: {
+      fundo: "#0c2a5c",
+      texto: "#eef3fb",
+      fonte: "'Space Mono', monospace",
+      titulo: "⌀ SIGAA",
+    },
+    piadas: {
+      saudacao: ["F = m·a: força pra levantar = massa do cobertor × aceleração da preguiça.", "Seu rendimento está abaixo do ciclo de Carnot.", "Tolerância da sua paciência com o SIGAA: ±0,01 mm.", "Torque necessário pra abrir o portal: alto.", "Entropia do seu quarto: sempre aumentando.", "Coeficiente de atrito estático com a cama: altíssimo.", "Ciclo Otto da semana: admissão, compressão, explosão, entrega atrasada.", "Engrenagem do cérebro sem lubrificação. Aplicar café."],
+      'sem-aulas': ["Máquina parada para manutenção preventiva."],
+      'sem-atividades': ["Nenhuma carga aplicada. Estrutura em repouso."],
+      'sem-tarefas': ["Sem esforço solicitante."],
+      erro: ["Falha por fadiga no servidor do SIGAA."],
+      carregando: ["usinando portal...", "calculando tensões de Von Mises...", "aplicando tolerância ISO 2768...", "lubrificando engrenagens do JSF..."],
+    },
+    segredo: {
+      titulo: "engrenou",
+      texto: "Você achou a caixa de câmbio. Engata a primeira e vai.",
+      efeito: "chuva",
+      simbolos: "⚙⚙⚙⛭✦",
+    },
   },
 } as const satisfies Record<string, DefinicaoEstilo>;
 

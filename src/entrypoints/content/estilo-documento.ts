@@ -8,6 +8,9 @@ export const FONTES = [
   ['Space Grotesk', 600, 'space-grotesk-latin-600'],
   ['Space Mono', 400, 'space-mono-latin-400'],
   ['Space Mono', 700, 'space-mono-latin-700'],
+  ['Caveat', 700, 'caveat-latin-700'],
+  ['Archivo Black', 400, 'archivo-black-latin-400'],
+  ['Press Start 2P', 400, 'press-start-2p-latin-400'],
 ] as const;
 
 export type ArquivoFonte = `${(typeof FONTES)[number][2]}-normal.woff2`;
