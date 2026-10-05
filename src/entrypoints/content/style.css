@@ -1487,3 +1487,12 @@ details[open] > :not(summary) {
 .tema[data-estilo='admin'] th,
 .tema[data-estilo='admin'] td { border: 1px solid hsl(var(--border)); }
 .tema[data-estilo='admin'] thead th { background: hsl(var(--secondary)); font-weight: 600; }
+/* Sem animação, as cenas que se desenham precisam aparecer já prontas. */
+.sem-animacao .ilu-giz { stroke-dashoffset: 0; fill: hsl(var(--foreground)); }
+.sem-animacao .ilu-digitar { clip-path: none; }
+.sem-animacao .ilu-traco { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .ilu-giz { stroke-dashoffset: 0; fill: hsl(var(--foreground)); }
+  .ilu-digitar { clip-path: none; }
+  .ilu-traco { stroke-dashoffset: 0; }
+}
