@@ -108,9 +108,33 @@ SIGAA (HTML do servidor) ──► adaptadores ──► dados tipados ──►
 - **Sem piscar.** Um script em `document_start` esconde o SIGAA original e pinta a cor do tema antes do primeiro quadro.
 - **App Android.** É um WebView nativo em Java, sem Capacitor e sem framework, que injeta o mesmo pacote de JavaScript da extensão.
 
+## Por que não está na Play Store
+
+É uma escolha, não um descuido:
+
+- **Não é oficial.** As lojas exigem que um app que usa o nome de uma instituição seja publicado por ela ou com autorização dela. Este projeto existe justamente para mostrar à UNIFEI o que é possível; a publicação oficial, se acontecer, cabe a ela.
+- **Atualiza mais rápido fora da loja.** O app já recebe atualizações da interface sozinho (veja abaixo), sem esperar revisão de loja a cada correção.
+- **Custo e burocracia.** Conta de desenvolvedor paga, verificação de identidade e revisão a cada versão não fazem sentido para um projeto pessoal e gratuito.
+
+Por isso o Android pede para "permitir fontes desconhecidas" e o Play Protect pode mostrar um aviso na primeira instalação. Esse aviso aparece para qualquer app instalado fora da loja, não só para este.
+
+## É seguro?
+
+Nenhum software tem risco zero, mas dá para conferir tudo o que este faz:
+
+- **Código aberto.** Tudo o que roda no seu aparelho está neste repositório. O APK e as extensões das [releases](../../releases) são gerados a partir dele.
+- **Seus dados vão só para o SIGAA.** O app abre apenas `sigaa.unifei.edu.br` e `sigadmin.unifei.edu.br` (caixa postal). Seu login e suas páginas vão direto para o SIGAA, como no navegador; nada passa por servidor do projeto. Fora isso, ele só consulta as releases deste repositório no GitHub para saber se há versão nova.
+- **Permissões mínimas.** Internet, notificações (lembretes de aula e prazo), biometria (bloqueio opcional) e instalar atualizações. Não acessa contatos, arquivos, localização, câmera nem microfone.
+- **Senha só se você pedir.** Fica cifrada no Android Keystore, só é liberada pela sua biometria e só é usada para preencher o login do próprio SIGAA.
+- **Atualizações assinadas.** Cada APK é assinado com a mesma chave; o Android recusa instalar por cima uma versão assinada por outra pessoa. As atualizações da interface que chegam sem APK também são assinadas, e o app confere a assinatura e o hash antes de usar. Se o pacote não bater, ele é descartado.
+- **Sempre dá para voltar.** O botão **Ver original** mostra o SIGAA de sempre, e desinstalar o app não mexe em nada na sua conta.
+
+Se encontrar algo estranho, use **Relatar problema** dentro do app ou abra uma [issue](../../issues).
+
 ## Privacidade
 
-- O projeto não tem servidor nem coleta dados, e não usa analytics.
+- O projeto não coleta dados e não usa analytics.
+- A única exceção é o **Relatar problema**: só quando você toca em enviar, o texto que você escreveu vai, junto com versão, tela e tema, para um pequeno serviço (`relatos/`) que o transforma em issue pública aqui no GitHub. Nada é enviado sem você pedir, e não vai nome, matrícula nem nota.
 - Notas, favoritos e preferências ficam no `localStorage` do seu aparelho.
 - No app, a senha só é salva se você pedir. Ela fica cifrada no Android Keystore e só é liberada pela sua biometria.
 
