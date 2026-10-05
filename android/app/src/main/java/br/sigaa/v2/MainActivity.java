@@ -90,7 +90,35 @@ public class MainActivity extends Activity {
 
         if (estado == null || webView.restoreState(estado) == null) {
             webView.loadUrl(INICIO);
+            vigiarCarregamento();
         }
+    }
+
+    private static final long PRAZO_CARREGAMENTO_MS = 25_000;
+
+    // Se a rede segura a conexão sem responder, o WebView fica em about:blank sem erro nenhum.
+    private void vigiarCarregamento() {
+        webView.postDelayed(() -> {
+            String url = webView.getUrl();
+            if (url != null && !url.equals("about:blank") && webView.getProgress() > 10) return;
+            if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("SIGAA não respondeu em 25 s (progresso " + webView.getProgress() + "%)");
+            webView.stopLoading();
+            mostrarFalha(webView, INICIO, "O SIGAA não respondeu. Pode ser a rede: tente trocar entre Wi-Fi e dados móveis.");
+        }, PRAZO_CARREGAMENTO_MS);
+    }
+
+    private void mostrarFalha(WebView view, String url, String motivo) {
+        if (abertura != null) fimAbertura();
+        String destino = android.text.Html.escapeHtml(url != null && url.startsWith(ORIGEM_SIGAA) ? url : INICIO);
+        boolean escuro = getPreferences(MODE_PRIVATE).getBoolean("escuro", sistemaEscuro());
+        String html = "<!doctype html><html><head><meta name=viewport content=\"width=device-width\"></head>"
+                + "<body style=\"font-family:sans-serif;padding:32px 24px;line-height:1.5;"
+                + (escuro ? "background:#000;color:#eee" : "background:#fff;color:#111") + "\">"
+                + "<h2 style=\"margin:0 0 12px\">Não deu para abrir o SIGAA</h2>"
+                + "<p>" + android.text.Html.escapeHtml(motivo) + "</p>"
+                + "<p><a href=\"" + destino + "\" style=\"display:inline-block;margin-top:12px;padding:12px 20px;border-radius:999px;background:#d7191f;color:#fff;text-decoration:none\">Tentar de novo</a></p>"
+                + "</body></html>";
+        view.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -127,8 +155,26 @@ public class MainActivity extends Activity {
             }
 
             @Override
+            public void onReceivedSslError(WebView view, android.webkit.SslErrorHandler tratador, android.net.http.SslError erro) {
+                // Nunca prossegue com certificado inválido; mas mostra o motivo em vez de deixar a tela vazia.
+                tratador.cancel();
+                if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("erro de certificado: " + erro.getPrimaryError() + " em " + erro.getUrl());
+                String motivo = erro.getPrimaryError() == android.net.http.SslError.SSL_DATE_INVALID || erro.getPrimaryError() == android.net.http.SslError.SSL_EXPIRED
+                        || erro.getPrimaryError() == android.net.http.SslError.SSL_NOTYETVALID
+                        ? "A data e a hora do celular parecem erradas. Ajuste em Configurações › Data e hora (automática) e tente de novo."
+                        : "Não foi possível verificar a conexão segura com o SIGAA nesta rede. Tente pelos dados móveis ou outro Wi-Fi.";
+                mostrarFalha(view, erro.getUrl(), motivo);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("página carregada: " + Uri.parse(url).getPath());
+            }
+
+            @Override
             public void onReceivedError(WebView view, WebResourceRequest pedido, android.webkit.WebResourceError erro) {
                 if (!pedido.isForMainFrame()) return;
+                if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("erro de rede " + erro.getErrorCode() + ": " + erro.getDescription());
                 String falhou = pedido.getUrl().toString();
                 String destino = android.text.Html.escapeHtml(falhou.startsWith(ORIGEM_SIGAA) ? falhou : INICIO);
                 String html = "<!doctype html><html><head><meta name=viewport content=\"width=device-width\"></head>"
