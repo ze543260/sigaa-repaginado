@@ -9,6 +9,8 @@ import { cn } from './cn';
 import { abrirBusca, BuscaComandos } from './BuscaComandos';
 import { Button } from './components/Button';
 import { BarraLateral, GavetaMenu } from './MenuLateral';
+import { abrirRelato, aoPedirRelato, registrarErros } from './relato';
+import { RelatoUI } from './RelatoUI';
 import { Icone, ICONES, NavegacaoMovel, type AcaoNavegacao } from './NavegacaoMovel';
 import { DadosPessoais, Portal, type AbaPortal } from './Portal';
 import { RelatorioUI } from './RelatorioUI';
@@ -68,6 +70,29 @@ export function App({ pagina, onVerOriginal }: Props) {
   const { prefs, alternarTema } = controlePrefs;
   const tema = prefs.tema;
   const [configAberta, setConfigAberta] = useState(false);
+  const [relatoAberto, setRelatoAberto] = useState(false);
+  const pressao = useRef<number>();
+
+  useEffect(() => {
+    registrarErros(window);
+    try {
+      if (window.parent !== window) registrarErros(window.parent);
+    } catch {
+      // Página pai de outra origem: fica só com os erros da interface.
+    }
+    const atalho = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        setRelatoAberto(true);
+      }
+    };
+    window.addEventListener('keydown', atalho);
+    const parar = aoPedirRelato(() => setRelatoAberto(true));
+    return () => {
+      window.removeEventListener('keydown', atalho);
+      parar();
+    };
+  }, []);
   const segredo = useSegredo();
   const logCarregando = definicao(prefs.estilo).piadas.carregando;
 
@@ -239,7 +264,13 @@ export function App({ pagina, onVerOriginal }: Props) {
               <Icone d={ICONES.menu} />
             </Button>
           )}
-          <span className="casca-logo flex select-none items-center gap-2" aria-label="Sigaa" onClick={segredo.tocarLogo}>
+          <span className="casca-logo flex select-none items-center gap-2" aria-label="Sigaa"
+            onClick={segredo.tocarLogo}
+            onPointerDown={() => (pressao.current = window.setTimeout(abrirRelato, 650))}
+            onPointerUp={() => window.clearTimeout(pressao.current)}
+            onPointerLeave={() => window.clearTimeout(pressao.current)}
+            onContextMenu={(e) => e.preventDefault()}
+          >
             <span className="font-dot text-2xl font-extrabold leading-none" aria-hidden="true">
               sigaa
             </span>
@@ -327,6 +358,7 @@ export function App({ pagina, onVerOriginal }: Props) {
       {boasVindas && <BoasVindas onFim={() => setBoasVindas(false)} />}
       {segredo.ativo && <Surpresa onFechar={segredo.fechar} />}
       {!boasVindas && <AvisoAtualizacao />}
+      {relatoAberto && <RelatoUI tela={pagina.tipo} estilo={prefs.estilo} onFechar={() => setRelatoAberto(false)} />}
       <GavetaMenu
         titulo={pagina.tipo === 'turma' ? 'Menu da turma' : 'Menu do SIGAA'}
         itens={menuMovel}
@@ -348,6 +380,9 @@ export function App({ pagina, onVerOriginal }: Props) {
                 <svg viewBox="0 0 16 16" className="h-4 w-4 opacity-50" aria-hidden="true">
                   <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" />
                 </svg>
+              </button>
+              <button type="button" onClick={abrirRelato} className="min-h-12 w-full rounded-full border text-sm">
+                Relatar problema
               </button>
               {pagina.tipo === 'portal-discente' && <DadosPessoais portal={pagina.portal} />}
               <button type="button" onClick={onVerOriginal} className="min-h-12 w-full rounded-full border text-sm">

@@ -1,7 +1,7 @@
 import { version } from '../../package.json';
 import type { Pagina } from '../domain/types';
 import { plataforma } from '../plataforma';
-import { linkRelato, linkSugestao } from './relato';
+import { abrirRelato, linkSugestao } from './relato';
 
 const REPOSITORIO = 'https://github.com/ze543260/sigaa-repaginado';
 const AUTOR = 'ze543260';
@@ -46,7 +46,9 @@ export function Sobre({ pagina }: { readonly pagina: Pagina }) {
             Procurar atualização
           </button>
         )}
-        <Botao href={linkRelato(pagina)}>Relatar problema</Botao>
+        <button type="button" onClick={abrirRelato} className="grid min-h-11 place-items-center rounded-full border px-3 text-center text-sm transition-colors hover:bg-accent">
+          Relatar problema
+        </button>
         <Botao href={linkSugestao}>Sugerir tela</Botao>
         <div className="col-span-2">
           <Botao href={REPOSITORIO}>Código-fonte no GitHub</Botao>
@@ -61,7 +63,7 @@ export function Sobre({ pagina }: { readonly pagina: Pagina }) {
           <strong className="font-medium text-foreground">Não é oficial.</strong> Não tem vínculo com a UNIFEI, com a DTI nem com a
           UFRN, que desenvolve o SIGAA. Os nomes SIGAA e UNIFEI pertencem aos seus donos e aparecem aqui só para dizer com o que o app funciona.
         </p>
-        <p>Seus dados não saem do aparelho: o app só conversa com o próprio SIGAA, sem servidor intermediário.</p>
+        <p>Seus dados não saem do aparelho: o app só conversa com o próprio SIGAA. A única exceção é o relato de problema, que só sai quando você toca em enviar e leva apenas o texto e dados técnicos.</p>
       </div>
     </section>
   );

@@ -1,0 +1,11 @@
+name = "sigaa-relatos"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+REPO = "ze543260/sigaa-repaginado"
+
+[[ratelimits]]
+name = "LIMITE"
+namespace_id = "1001"
+simple = { limit = 3, period = 60 }
