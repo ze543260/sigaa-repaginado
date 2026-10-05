@@ -1231,3 +1231,214 @@ details[open] > :not(summary) {
 @keyframes descer {
   from { opacity: 0; transform: translateY(-120%); }
 }
+
+/* ══ Casca: cabeçalho, cards, botões e barra inferior próprios de cada estilo. ══ */
+.tema .casca-topo {
+  background: var(--casca-topo-fundo, hsl(var(--background) / 0.95));
+  color: var(--casca-topo-texto, inherit);
+}
+.tema .casca-card {
+  border-width: var(--casca-card-borda, 1px);
+  border-style: var(--casca-card-estilo, solid);
+  box-shadow: var(--casca-card-sombra, none);
+}
+.tema .casca-botao {
+  text-transform: var(--casca-caixa, none);
+  letter-spacing: var(--casca-letra, normal);
+}
+.tema .casca-nav {
+  background: var(--casca-nav-fundo, hsl(var(--background) / 0.95));
+}
+
+/* Barra inferior flutuante. */
+.tema[data-estilo='ambiental'] .casca-nav,
+.tema[data-estilo='materiais'] .casca-nav,
+.tema[data-estilo='energia'] .casca-nav {
+  left: 12px;
+  right: 12px;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  padding-bottom: 0.375rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 1.75rem;
+  background: hsl(var(--card));
+  box-shadow: 0 10px 30px -12px hsl(var(--foreground) / 0.35);
+}
+
+/* Terminal */
+.tema[data-estilo='terminal'] {
+  --casca-topo-fundo: hsl(var(--card));
+  --casca-card-sombra: inset 2px 0 0 hsl(var(--destaque));
+  --casca-caixa: lowercase;
+  --casca-nav-fundo: hsl(var(--card));
+}
+.tema[data-estilo='terminal'] .casca-topo { border-bottom-color: hsl(var(--destaque) / 0.6); }
+.tema[data-estilo='terminal'] .casca-logo::before { content: '~/'; color: hsl(var(--muted-foreground)); font-family: var(--fonte-mono); }
+.tema[data-estilo='terminal'] .casca-marca { width: 0.55rem; height: 1.15rem; border-radius: 0; animation: cursor-terminal 1s steps(1) infinite; }
+.tema[data-estilo='terminal'] .casca-nav { border-top-color: hsl(var(--destaque) / 0.6); }
+.tema[data-estilo='terminal'] .casca-nav-item[aria-current] { color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='terminal'] .casca-nav-item[aria-current] .casca-pilula { background: transparent; outline: 1px solid hsl(var(--destaque)); }
+
+/* Osciloscópio */
+.tema[data-estilo='eletrica'] {
+  --fonte-texto: 'IBM Plex Sans', ui-sans-serif, sans-serif;
+  --fonte-titulo: 'IBM Plex Mono', ui-monospace, monospace;
+  --fonte-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --casca-topo-fundo: hsl(var(--card));
+  --casca-card-sombra: 0 0 0 3px hsl(var(--background)), 0 0 0 4px hsl(var(--border));
+  --casca-nav-fundo: hsl(var(--card));
+}
+.tema[data-estilo='eletrica'] .casca-marca { box-shadow: 0 0 8px 2px hsl(var(--destaque) / 0.7); animation: pulso 1.6s ease-in-out infinite; }
+.tema[data-estilo='eletrica'] .casca-nav { box-shadow: 0 -1px 0 hsl(var(--destaque) / 0.45); }
+.tema[data-estilo='eletrica'] .casca-nav-item[aria-current] .casca-pilula { background: hsl(var(--destaque) / 0.16); box-shadow: 0 0 12px hsl(var(--destaque) / 0.35); }
+
+/* Prancha técnica */
+.tema[data-estilo='mecanica'] {
+  --fonte-mono: 'Barlow Condensed', Barlow, sans-serif;
+  --fonte-texto: Barlow, ui-sans-serif, sans-serif;
+  --fonte-titulo: 'Barlow Condensed', Barlow, sans-serif;
+  --casca-card-estilo: dashed;
+  --casca-caixa: uppercase;
+  --casca-letra: 0.08em;
+}
+.tema[data-estilo='mecanica'] .casca-topo { border-bottom: 4px double hsl(var(--foreground) / 0.55); }
+.tema[data-estilo='mecanica'] .casca-logo { border: 1.5px solid currentColor; padding: 3px 10px 1px; }
+.tema[data-estilo='mecanica'] .casca-marca { border-radius: 50%; background: transparent; border: 1.5px solid hsl(var(--destaque)); width: 0.7rem; height: 0.7rem; }
+.tema[data-estilo='mecanica'] .casca-nav { border-top: 4px double hsl(var(--foreground) / 0.4); }
+.tema[data-estilo='mecanica'] .casca-nav-item { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.65rem; }
+
+/* Canteiro */
+.tema[data-estilo='civil'] {
+  --fonte-mono: Archivo, sans-serif;
+  --fonte-texto: Archivo, ui-sans-serif, sans-serif;
+  --casca-card-borda: 2px;
+  --casca-card-sombra: 4px 4px 0 hsl(var(--foreground) / 0.18);
+  --casca-caixa: uppercase;
+  --casca-letra: 0.04em;
+}
+.tema[data-estilo='civil'] .casca-marca { border-radius: 0; width: 0.8rem; height: 0.7rem; background: #f2b705; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.tema[data-estilo='civil'] .casca-nav { border-top: 5px solid transparent; border-image: repeating-linear-gradient(-45deg, #f2b705 0 10px, #161616 10px 20px) 5; }
+.tema[data-estilo='civil'] .casca-botao { font-weight: 700; }
+
+/* Kanban */
+.tema[data-estilo='producao'] {
+  --fonte-mono: 'Work Sans', sans-serif;
+  --fonte-texto: 'Work Sans', ui-sans-serif, sans-serif;
+  --fonte-titulo: 'Permanent Marker', 'Work Sans', cursive;
+  --casca-card-sombra: 2px 5px 0 -1px hsl(var(--foreground) / 0.12);
+}
+.tema[data-estilo='producao'] .casca-card:nth-child(odd) { transform: rotate(-0.35deg); }
+.tema[data-estilo='producao'] .casca-card:nth-child(even) { transform: rotate(0.3deg); }
+.tema[data-estilo='producao'] .casca-marca { width: 0.75rem; height: 0.75rem; background: radial-gradient(circle at 35% 35%, #fff8, transparent 45%), hsl(var(--destaque)); box-shadow: 1px 2px 2px hsl(var(--foreground) / 0.35); }
+.tema[data-estilo='producao'] .casca-nav-item[aria-current] .casca-pilula { background: #fde68a; color: #161616; transform: rotate(-2deg); }
+
+/* Lousa */
+.tema[data-estilo='lousa'] {
+  --fonte-mono: 'Patrick Hand', cursive;
+  --fonte-texto: 'Patrick Hand', 'Space Grotesk', cursive;
+  font-size-adjust: 0.5;
+  --casca-card-borda: 2px;
+  --casca-card-estilo: dashed;
+}
+.tema[data-estilo='lousa'] .casca-topo,
+.tema[data-estilo='lousa'] .casca-nav { border-color: #7a4a24; }
+.tema[data-estilo='lousa'] .casca-topo { border-bottom-width: 6px; }
+.tema[data-estilo='lousa'] .casca-nav { border-top-width: 6px; }
+.tema[data-estilo='lousa'] .casca-marca { width: 1rem; height: 0.35rem; border-radius: 2px; transform: rotate(-12deg); opacity: 0.85; }
+
+/* Painel CLP */
+.tema[data-estilo='controle'] {
+  --fonte-mono: 'Chakra Petch', sans-serif;
+  --fonte-texto: 'Chakra Petch', ui-sans-serif, sans-serif;
+  --fonte-titulo: 'Chakra Petch', ui-sans-serif, sans-serif;
+  --casca-topo-fundo: linear-gradient(hsl(var(--card)), hsl(var(--muted)));
+  --casca-card-sombra: inset 0 4px 0 hsl(var(--muted-foreground) / 0.35);
+  --casca-caixa: uppercase;
+  --casca-letra: 0.06em;
+  --casca-nav-fundo: linear-gradient(hsl(var(--muted)), hsl(var(--card)));
+}
+.tema[data-estilo='controle'] .casca-topo { box-shadow: inset 0 -2px 0 hsl(var(--foreground) / 0.12); }
+.tema[data-estilo='controle'] .casca-botao { box-shadow: inset 0 -3px 0 hsl(0 0% 0% / 0.22); }
+.tema[data-estilo='controle'] .casca-marca { background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: led-clp 1.2s steps(1) infinite; }
+.tema[data-estilo='controle'] .casca-nav-item { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.65rem; }
+
+/* Curvas de nível */
+.tema[data-estilo='ambiental'] {
+  --fonte-mono: Nunito, sans-serif;
+  --fonte-texto: Nunito, ui-sans-serif, sans-serif;
+  --fonte-titulo: Fraunces, Georgia, serif;
+  --raio-3xl: 1.75rem;
+  --casca-card-sombra: 0 6px 24px -14px hsl(var(--foreground) / 0.35);
+}
+.tema[data-estilo='ambiental'] .casca-card { border-color: transparent; }
+.tema[data-estilo='ambiental'] .casca-topo { border-bottom-color: transparent; }
+.tema[data-estilo='ambiental'] .casca-marca { width: 0.8rem; height: 0.8rem; border-radius: 0 100% 0 100%; }
+
+/* Cristal */
+.tema[data-estilo='materiais'] {
+  --fonte-mono: Sora, sans-serif;
+  --fonte-texto: Sora, ui-sans-serif, sans-serif;
+  --fonte-titulo: Sora, ui-sans-serif, sans-serif;
+  --raio-3xl: 0px;
+  --casca-topo-fundo: linear-gradient(100deg, hsl(var(--destaque) / 0.1), hsl(var(--background) / 0.95) 60%);
+}
+.tema[data-estilo='materiais'] .casca-card { clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px); }
+.tema[data-estilo='materiais'] .casca-marca { width: 0.75rem; height: 0.85rem; border-radius: 0; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+
+/* 8-bit */
+.tema[data-estilo='retro'] {
+  --fonte-mono: VT323, monospace;
+  --fonte-texto: VT323, 'Space Mono', monospace;
+  font-size-adjust: 0.52;
+  --casca-card-borda: 0px;
+  --casca-card-sombra: 0 -4px 0 hsl(var(--foreground)), 0 4px 0 hsl(var(--foreground)), -4px 0 0 hsl(var(--foreground)), 4px 0 0 hsl(var(--foreground)), 8px 8px 0 hsl(var(--foreground) / 0.25);
+  --casca-caixa: uppercase;
+  --casca-nav-fundo: hsl(var(--card));
+}
+.tema[data-estilo='retro'] .casca-card { margin-inline: 4px; }
+.tema[data-estilo='retro'] .casca-topo { border-bottom: 4px solid hsl(var(--foreground)); }
+.tema[data-estilo='retro'] .casca-nav { border-top: 4px solid hsl(var(--foreground)); }
+.tema[data-estilo='retro'] .casca-marca { border-radius: 0; width: 0.6rem; height: 0.6rem; animation: piscar-retro 1s steps(1) infinite; }
+
+/* Solar */
+.tema[data-estilo='energia'] {
+  --fonte-mono: 'Exo 2', sans-serif;
+  --fonte-texto: 'Exo 2', ui-sans-serif, sans-serif;
+  --fonte-titulo: 'Exo 2', ui-sans-serif, sans-serif;
+  --casca-topo-fundo: linear-gradient(90deg, hsl(var(--destaque) / 0.16), hsl(var(--background) / 0.95) 70%);
+  --casca-card-sombra: inset 0 3px 0 hsl(var(--destaque)), 0 8px 24px -16px hsl(var(--destaque) / 0.6);
+}
+.tema[data-estilo='energia'] .casca-marca { width: 0.75rem; height: 0.75rem; box-shadow: 0 0 0 3px hsl(var(--destaque) / 0.25), 0 0 14px hsl(var(--destaque)); }
+
+/* Tabela periódica */
+.tema[data-estilo='quimica'] {
+  --fonte-mono: Lexend, sans-serif;
+  --fonte-texto: Lexend, ui-sans-serif, sans-serif;
+  --fonte-titulo: Lexend, ui-sans-serif, sans-serif;
+  --casca-card-borda: 2px;
+}
+.tema[data-estilo='quimica'] .casca-card { border-left: 6px solid hsl(var(--destaque)); }
+.tema[data-estilo='quimica'] .casca-logo { border: 2px solid currentColor; border-radius: 4px; padding: 2px 8px 2px 18px; position: relative; }
+.tema[data-estilo='quimica'] .casca-logo::before { content: '14'; position: absolute; left: 4px; top: 1px; font-size: 0.55rem; font-family: var(--fonte-mono); }
+.tema[data-estilo='quimica'] .casca-marca { animation: bolha 2.4s ease-in infinite; }
+@keyframes bolha { 0% { transform: translateY(4px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-10px); opacity: 0; } }
+
+/* Planilha */
+.tema[data-estilo='admin'] {
+  --fonte-texto: Inter, ui-sans-serif, sans-serif;
+  --fonte-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --raio-3xl: 0px;
+  --casca-topo-fundo: hsl(var(--destaque));
+  --casca-topo-texto: #fff;
+  --casca-nav-fundo: hsl(var(--muted));
+}
+.tema[data-estilo='admin'] .casca-topo { border-bottom: 0; }
+.tema[data-estilo='admin'] .casca-topo .font-dot { color: #fff; }
+.tema[data-estilo='admin'] .casca-topo .casca-botao:hover { background: hsl(0 0% 100% / 0.15); color: #fff; }
+.tema[data-estilo='admin'] .casca-topo .casca-botao[class*='border'] { border-color: hsl(0 0% 100% / 0.6); }
+.tema[data-estilo='admin'] .casca-marca { background: #fff; border-radius: 0; }
+.tema[data-estilo='admin'] .casca-nav { padding-top: 0; }
+.tema[data-estilo='admin'] .casca-nav > div { gap: 0; }
+.tema[data-estilo='admin'] .casca-nav-item { border-radius: 0; border-right: 1px solid hsl(var(--border)); }
+.tema[data-estilo='admin'] .casca-nav-item[aria-current] { background: hsl(var(--card)); box-shadow: inset 0 3px 0 hsl(var(--destaque)); }
+.tema[data-estilo='admin'] .casca-pilula { background: transparent !important; }
+.tema[data-estilo='retro'] .casca-botao { font-size: 0.95rem; }

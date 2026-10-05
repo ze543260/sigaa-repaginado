@@ -4,7 +4,7 @@ import { cn } from '../cn';
 type DivProps = HTMLAttributes<HTMLDivElement>;
 
 export const Card = ({ className, ...p }: DivProps) => (
-  <div className={cn('rounded-3xl border bg-card text-card-foreground', className)} {...p} />
+  <div className={cn('casca-card rounded-3xl border bg-card text-card-foreground', className)} {...p} />
 );
 export const CardHeader = ({ className, ...p }: DivProps) => (
   <div className={cn('flex flex-col space-y-1.5 p-6', className)} {...p} />

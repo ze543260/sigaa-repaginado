@@ -224,7 +224,7 @@ export function App({ pagina, onVerOriginal }: Props) {
           navegando ? 'opacity-100' : 'opacity-0',
         )}
       />
-      <header className="sticky top-0 z-10 border-b bg-background/95">
+      <header className="casca-topo sticky top-0 z-10 border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-1">
           {menuMovel.length > 0 && (
@@ -239,11 +239,11 @@ export function App({ pagina, onVerOriginal }: Props) {
               <Icone d={ICONES.menu} />
             </Button>
           )}
-          <span className="flex select-none items-center gap-2" aria-label="Sigaa" onClick={segredo.tocarLogo}>
+          <span className="casca-logo flex select-none items-center gap-2" aria-label="Sigaa" onClick={segredo.tocarLogo}>
             <span className="font-dot text-2xl font-extrabold leading-none" aria-hidden="true">
               sigaa
             </span>
-            <span className="h-2 w-2 rounded-full bg-destaque" aria-hidden="true" />
+            <span className="casca-marca h-2 w-2 rounded-full bg-destaque" aria-hidden="true" />
           </span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">

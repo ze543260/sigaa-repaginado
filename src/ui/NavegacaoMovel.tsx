@@ -46,16 +46,16 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
   if (acoes.length === 0 && !conteudoMais) return null;
 
   const botao =
-    'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-1.5 text-xs text-muted-foreground transition-[background-color,color,transform] active:scale-95';
+    'casca-nav-item flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-1.5 text-xs text-muted-foreground transition-[background-color,color,transform] active:scale-95';
   const ativo = 'text-foreground font-medium';
   const pilula = (ligada: boolean | undefined) =>
-    cn('grid h-7 w-12 place-items-center rounded-full transition-colors', ligada && 'bg-accent');
+    cn('casca-pilula grid h-7 w-12 place-items-center rounded-full transition-colors', ligada && 'bg-accent');
 
   return (
     <>
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1.5 md:hidden"
+        className="casca-nav fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1.5 md:hidden"
       >
         <div className="mx-auto flex max-w-md gap-1">
           {acoes.map((acao) => (

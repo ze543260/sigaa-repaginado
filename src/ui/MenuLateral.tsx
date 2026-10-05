@@ -94,7 +94,7 @@ export function GavetaMenu({ titulo, itens, aberta, onFechar, onVerOriginal }: G
       <nav
         aria-label={titulo}
         onClick={(e) => e.stopPropagation()}
-        className="absolute inset-y-0 left-0 flex w-[85%] max-w-80 animate-[deslizar_220ms_cubic-bezier(0.2,0.8,0.2,1)_both] flex-col border-r bg-card pt-[env(safe-area-inset-top)] text-card-foreground"
+        className="casca-gaveta absolute inset-y-0 left-0 flex w-[85%] max-w-80 animate-[deslizar_220ms_cubic-bezier(0.2,0.8,0.2,1)_both] flex-col border-r bg-card pt-[env(safe-area-inset-top)] text-card-foreground"
       >
         <div className="flex h-16 items-center justify-between px-5">
           <span className="text-sm font-medium">{titulo}</span>

@@ -24,7 +24,7 @@ export function Button({ variant = 'default', size = 'default', className, ...pr
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
+        'casca-botao inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] disabled:pointer-events-none disabled:opacity-50',
         VARIANTES[variant],
         TAMANHOS[size],
         className,

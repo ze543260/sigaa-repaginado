@@ -72,7 +72,7 @@ export const DEFINICOES = {
     descricao: 'Tela de osciloscópio: grade de divisões, traço ciano e títulos com onda.',
     acento: 'azul',
     forma: 'redondo',
-    amostra: { fundo: '#07101c', texto: '#bff3f7', fonte: "'Space Mono', monospace", titulo: 'sigaa ∿' },
+    amostra: { fundo: '#07101c', texto: '#bff3f7', fonte: "'IBM Plex Mono', monospace", titulo: 'sigaa ∿' },
     piadas: {
       saudacao: [
         'V = R·I → Vontade = Resistência × Insistência.',
@@ -103,7 +103,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#0c2a5c",
       texto: "#eef3fb",
-      fonte: "'Space Mono', monospace",
+      fonte: "'Barlow Condensed', sans-serif",
       titulo: "⌀ SIGAA",
     },
     piadas: {
@@ -157,7 +157,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#fff3b0",
       texto: "#1e2235",
-      fonte: "Caveat, cursive",
+      fonte: "'Permanent Marker', cursive",
       titulo: "sigaa ✓",
     },
     piadas: {
@@ -211,7 +211,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#141a20",
       texto: "#e3edd9",
-      fonte: "'Space Mono', monospace",
+      fonte: "'Chakra Petch', sans-serif",
       titulo: "SIGAA ●",
     },
     piadas: {
@@ -238,7 +238,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#0e1c18",
       texto: "#e6efd8",
-      fonte: "'Space Grotesk', sans-serif",
+      fonte: "Fraunces, serif",
       titulo: "sigaa △",
     },
     piadas: {
@@ -265,7 +265,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#0f0b1d",
       texto: "#ebe8fb",
-      fonte: "'Space Mono', monospace",
+      fonte: "Sora, sans-serif",
       titulo: "sigaa ◇",
     },
     piadas: {
@@ -319,7 +319,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#160e09",
       texto: "#fbe7c2",
-      fonte: "'Space Grotesk', sans-serif",
+      fonte: "'Exo 2', sans-serif",
       titulo: "sigaa ☀",
     },
     piadas: {
@@ -346,7 +346,7 @@ export const DEFINICOES = {
     amostra: {
       fundo: "#0b171b",
       texto: "#e2f5f2",
-      fonte: "'Space Grotesk', sans-serif",
+      fonte: "Lexend, sans-serif",
       titulo: "[Sg] sigaa",
     },
     piadas: {
