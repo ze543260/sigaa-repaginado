@@ -4,8 +4,8 @@ export default defineConfig({
   srcDir: 'src',
   modules: ['@wxt-dev/module-react'],
   manifest: ({ browser }) => ({
-    name: 'Sigaa v2',
-    description: 'Interface moderna e eficiente para o Sigaa.',
+    name: 'SIGAA Repaginado',
+    description: 'Projeto pessoal e não oficial: uma interface nova para o SIGAA da UNIFEI.',
     web_accessible_resources: [
       { resources: ['fonts/*.woff2'], matches: ['*://sigaa.unifei.edu.br/*', '*://sigadmin.unifei.edu.br/*'] },
     ],

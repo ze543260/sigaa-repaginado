@@ -9,7 +9,7 @@
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_sigaa"
-        android:label="Sigaa"
+        android:label="SIGAA Repaginado"
         android:supportsRtl="false"
         android:theme="@style/Tema">
         <activity
