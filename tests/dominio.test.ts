@@ -49,3 +49,9 @@ describe('calendário .ics', () => {
     expect(ics).toContain('SUMMARY:Tarefa: Lista');
   });
 });
+
+describe('títulos com unidade', () => {
+  it('mantém a sigla depois da barra', () => {
+    expect(tituloBr('ENGENHARIA DE COMPUTAÇÃO/IESTI')).toBe('Engenharia de Computação/IESTI');
+  });
+});

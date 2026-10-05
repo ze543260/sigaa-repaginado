@@ -212,11 +212,11 @@ function ListaPessoas({ pessoas }: { readonly pessoas: readonly Pessoa[] }) {
           className="h-11 w-full rounded-full border bg-transparent px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       )}
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visiveis.map((p, i) => {
           const email = p.detalhes.find((d) => d.includes('@'));
           return (
-            <li key={i} className="flex items-center gap-3">
+            <li key={i} className="flex min-w-0 items-center gap-3">
               {p.foto ? (
                 <img src={p.foto} alt="" loading="lazy" className="h-11 w-11 shrink-0 rounded-full border object-cover" />
               ) : (

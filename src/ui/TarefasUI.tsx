@@ -47,7 +47,7 @@ function relativoLongo(alvo: Date, agora: Date): string {
 
 function CartaoTarefa({ t, agora }: { readonly t: Tarefa; readonly agora: Date }) {
   const estado = estadoDa(t, agora);
-  const [aberta, setAberta] = useState(estado === 'urgente' || estado === 'aberta');
+  const [aberta, setAberta] = useState(false);
   return (
     <Card className={cn('space-y-3 p-5', estado === 'encerrada' && 'opacity-60')}>
       <div className="flex items-start justify-between gap-3">
