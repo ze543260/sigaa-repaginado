@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { diaSigaaHoje, faixaHoraria, horariosDoCodigo, NOME_DIA_CURTO, ordemHorario, siglaDisciplina, type Horario } from '../domain/horario';
 import type { Turma } from '../domain/types';
 import { cn } from './cn';
@@ -129,7 +130,7 @@ export function GradeSemanal({ turmas }: Props) {
               )}
             >
               <span className="block font-mono text-[11px] font-bold leading-tight sm:hidden">{siglaDisciplina(b.turma.nome)}</span>
-              <span className="hidden text-xs font-medium capitalize leading-tight sm:line-clamp-2">{b.turma.nome.toLowerCase()}</span>
+              <span className="hidden text-xs font-medium leading-tight sm:line-clamp-2">{tituloBr(b.turma.nome)}</span>
               <span className={cn('hidden truncate text-[10px] md:block', ehHoje ? 'text-white/80' : 'text-muted-foreground')}>
                 {b.turma.local}
               </span>
@@ -141,7 +142,7 @@ export function GradeSemanal({ turmas }: Props) {
       <ul className="flex flex-wrap gap-x-4 gap-y-1 px-1 text-xs text-muted-foreground sm:hidden">
         {siglas.map(([sigla, t]) => (
           <li key={sigla}>
-            <span className="font-mono font-bold text-foreground">{sigla}</span> <span className="capitalize">{t.nome.toLowerCase()}</span>
+            <span className="font-mono font-bold text-foreground">{sigla}</span> <span>{tituloBr(t.nome)}</span>
           </li>
         ))}
       </ul>

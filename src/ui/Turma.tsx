@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { useEffect, useRef, useState } from 'react';
 import { resumirHorario } from '../domain/horario';
 import { ehSecaoAtual } from '../domain/secao';
@@ -83,7 +84,7 @@ function CartaoNoticia({ noticia }: { readonly noticia: Noticia }) {
         </div>
       )}
       <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-        {noticia.autor && <span className="capitalize">{noticia.autor.toLowerCase()}</span>}
+        {noticia.autor && <span>{tituloBr(noticia.autor)}</span>}
         {longa && (
           <button
             type="button"
@@ -250,7 +251,7 @@ export function Turma({ turma }: Props) {
           <span className="inline-flex rounded-full border px-2 py-0.5 font-mono text-xs text-muted-foreground">
             {turma.codigo}
           </span>
-          <h1 className="font-dot text-3xl font-extrabold capitalize leading-none sm:text-6xl">{turma.nome.toLowerCase()}</h1>
+          <h1 className="font-dot text-3xl font-extrabold leading-none sm:text-6xl">{tituloBr(turma.nome)}</h1>
           <p className="text-sm text-muted-foreground sm:text-base">{descreverTurma(turma.info)}</p>
         </div>
 

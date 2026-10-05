@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { useMemo, useState } from 'react';
 import { analisarFaltas, analisarNotas, MEDIA_APROVACAO, semestresDeNotas } from '../domain/desempenho';
 import { horariosDoCodigo, NOME_DIA_CURTO } from '../domain/horario';
@@ -228,7 +229,7 @@ function ConteudoBloco({ bloco }: { readonly bloco: Bloco }) {
                 </div>
               )}
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium capitalize">{p.nome.toLowerCase()}</p>
+                <p className="truncate text-sm font-medium">{tituloBr(p.nome)}</p>
                 <p className="truncate text-xs text-muted-foreground">{p.detalhes.join(' · ')}</p>
               </div>
             </li>

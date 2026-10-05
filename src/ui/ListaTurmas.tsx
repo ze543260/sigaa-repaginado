@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { useEffect, useState } from 'react';
 import { diaSigaaHoje, horaConfirmada, horariosDoCodigo, intervaloDoBloco, ordemHorario, relativo, resumirHorario, siglaDisciplina } from '../domain/horario';
 import { cn } from './cn';
@@ -70,7 +71,7 @@ export function AulasDeHoje({ turmas }: Props) {
               )}
             >
               <span className="min-w-0 flex-1">
-                <span className="block font-medium capitalize leading-snug">{turma.nome.toLowerCase()}</span>
+                <span className="block font-medium leading-snug">{tituloBr(turma.nome)}</span>
                 <span className="block truncate text-xs text-muted-foreground">
                   {turma.local} · {aulas} {aulas === 1 ? 'aula' : 'aulas'}
                 </span>
@@ -110,7 +111,7 @@ export function ListaTurmas({ turmas }: Props) {
             >
               <span className="w-11 shrink-0 font-mono text-xs font-bold">{siglaDisciplina(t.nome)}</span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate font-medium capitalize">{t.nome.toLowerCase()}</span>
+                <span className="block truncate font-medium">{tituloBr(t.nome)}</span>
                 <span className="block truncate text-xs text-muted-foreground">{resumirHorario(t.horario)}</span>
               </span>
               <Seta />
@@ -129,7 +130,7 @@ export function ListaTurmas({ turmas }: Props) {
             >
               <Card className="h-full transition-colors hover:bg-accent">
                 <CardHeader className="p-5">
-                  <CardTitle className="capitalize leading-snug">{t.nome.toLowerCase()}</CardTitle>
+                  <CardTitle className="leading-snug">{tituloBr(t.nome)}</CardTitle>
                   <CardDescription className="text-xs">{t.local}</CardDescription>
                   <div className="flex items-center gap-2 pt-1 text-xs">
                     <span className="rounded-full border px-2 py-0.5 font-mono text-muted-foreground">{t.horario}</span>

@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { useEffect, useState } from 'react';
 import { horariosDoCodigo, intervaloDoBloco, lerData, ordemHorario } from '../domain/horario';
 import { salvarPortal } from '../domain/cache';
@@ -130,8 +131,8 @@ function ConteudoAtividade({ atividade: a, feita }: { readonly atividade: Ativid
       </span>
       <span className="min-w-0">
         <span className={cn('block font-medium', feita && 'line-through')}>{a.descricao}</span>
-        <span className="block text-xs capitalize text-muted-foreground">
-          {a.turma.toLowerCase()} · {a.tipo}
+        <span className="block text-xs text-muted-foreground">
+          {tituloBr(a.turma)} · {a.tipo}
         </span>
       </span>
       <span
@@ -203,7 +204,7 @@ export function DadosPessoais({ portal }: Props) {
           ) : (
             <div className="grid h-14 w-14 place-items-center rounded-full bg-secondary font-mono">{iniciais}</div>
           )}
-          <CardTitle className="min-w-0 capitalize">{portal.nome.toLowerCase()}</CardTitle>
+          <CardTitle className="min-w-0">{tituloBr(portal.nome)}</CardTitle>
         </CardHeader>
         {portal.dados.length > 0 && (
           <CardContent>
@@ -373,7 +374,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
                       </span>
                       <span className="min-w-0">
                         <span className={cn('block break-words', novasAtualizacoes.has(chaveAtualizacao(a)) && 'font-medium')}>{a.descricao}</span>
-                        <span className="block text-xs capitalize text-muted-foreground">{a.turma.toLowerCase()}</span>
+                        <span className="block text-xs text-muted-foreground">{tituloBr(a.turma)}</span>
                       </span>
                     </button>
                   </li>

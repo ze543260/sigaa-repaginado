@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { useState } from 'react';
 import { MEDIA_APROVACAO, prever, type LinhaNotas, type Semestre } from '../domain/desempenho';
 import { Card } from './components/Card';
@@ -6,7 +7,7 @@ import { cn } from './cn';
 
 export const fmtNota = (n: number): string => n.toFixed(1).replace('.', ',');
 
-const capitalizar = (s: string): string => s.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+const capitalizar = tituloBr;
 
 export function TextoPrevisao({ linha, compacto = false }: { readonly linha: LinhaNotas; readonly compacto?: boolean }) {
   const p = prever(linha);

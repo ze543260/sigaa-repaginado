@@ -1,3 +1,4 @@
+import { tituloBr } from '../domain/texto';
 import { lerPortalSalvo } from '../domain/cache';
 import type { ErroPagina, Turma } from '../domain/types';
 import { Button } from './components/Button';
@@ -85,7 +86,7 @@ export function TelaErro({ erro }: { readonly erro: ErroPagina }) {
                   <div key={i} className="px-5 py-3 text-sm">
                     <p className="font-mono text-xs text-muted-foreground">{a.data}</p>
                     <p className="font-medium">{a.descricao}</p>
-                    <p className="text-xs capitalize text-muted-foreground">{a.turma.toLowerCase()} · {a.tipo}</p>
+                    <p className="text-xs text-muted-foreground">{tituloBr(a.turma)} · {a.tipo}</p>
                   </div>
                 ))}
               </Card>

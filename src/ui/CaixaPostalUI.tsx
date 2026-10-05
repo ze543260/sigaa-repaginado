@@ -1,9 +1,10 @@
+import { tituloBr } from '../domain/texto';
 import type { CaixaPostal, LeituraMensagem } from '../domain/types';
 import { Button } from './components/Button';
 import { Card } from './components/Card';
 import { cn } from './cn';
 
-const capitalizar = (s: string): string => s.toLowerCase().replace(/(^|[\s/(])\S/g, (c) => c.toUpperCase());
+const capitalizar = tituloBr;
 
 /** "[OPORTUNIDADE] Bolsa..." → etiqueta "oportunidade" + assunto limpo. */
 function separarEtiqueta(assunto: string): { readonly etiqueta: string | null; readonly titulo: string } {
