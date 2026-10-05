@@ -74,6 +74,8 @@ function iniciar(): void {
   ReactDOM.createRoot(container).render(<App pagina={pagina} onVerOriginal={ponte.mostrarOriginal} />);
 
   if (ponte.android) sincronizarTema(ponte.android);
+  // Dois quadros: o primeiro pinta a interface, o segundo garante que ela já está na tela antes da abertura sair.
+  requestAnimationFrame(() => requestAnimationFrame(() => ponte.android?.pronto?.()));
 }
 
 iniciar();

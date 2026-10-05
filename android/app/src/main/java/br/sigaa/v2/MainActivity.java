@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private static final int ESCOLHER_ARQUIVO = 7;
     private android.webkit.ValueCallback<Uri[]> arquivosPendentes;
     private Bloqueio bloqueio;
+    private Abertura abertura;
     private Atualizador atualizador;
 
     Bloqueio bloqueio() {
@@ -67,6 +68,10 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         raiz.addView(webView);
         setContentView(raiz);
+        if (estado == null) {
+            abertura = new Abertura(this, getPreferences(MODE_PRIVATE).getBoolean("escuro", sistemaEscuro()));
+            raiz.addView(abertura);
+        }
         bloqueio = new Bloqueio(this, webView);
         atualizador = new Atualizador(this);
         if (estado == null) atualizador.verificar(false);
@@ -259,6 +264,11 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             throw new IllegalStateException("Asset ausente: " + nome + ". Rode npm run build:android.", e);
         }
+    }
+
+    void fimAbertura() {
+        if (abertura != null) abertura.sair();
+        abertura = null;
     }
 
     void pedirPermissaoNotificacao() {

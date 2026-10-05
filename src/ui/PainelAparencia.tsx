@@ -166,15 +166,6 @@ export function PainelAparencia() {
         />
       </div>
 
-      {plataforma.verificarAtualizacao && (
-        <button
-          type="button"
-          onClick={plataforma.verificarAtualizacao}
-          className="min-h-11 w-full rounded-full border text-sm transition-colors hover:bg-accent"
-        >
-          Procurar atualização do app
-        </button>
-      )}
     </div>
   );
 }

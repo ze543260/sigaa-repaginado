@@ -81,7 +81,13 @@ final class Ponte {
     }
 
     @JavascriptInterface
+    public void pronto() {
+        atividade.runOnUiThread(atividade::fimAbertura);
+    }
+
+    @JavascriptInterface
     public void tema(boolean escuro) {
+        atividade.getPreferences(android.content.Context.MODE_PRIVATE).edit().putBoolean("escuro", escuro).apply();
         atividade.runOnUiThread(() -> atividade.aplicarTema(escuro));
     }
 

@@ -14,7 +14,7 @@ import { TelaErro } from './TelaErro';
 import { CaixaPostalUI, CompositorUI, MensagemUI } from './CaixaPostalUI';
 import { Esqueleto } from './components/Graficos';
 import { plataforma } from '../plataforma';
-import { linkRelato, linkSugestao } from './relato';
+import { Sobre } from './Sobre';
 import { useManterSessao } from './sessao';
 import { PainelAparencia } from './PainelAparencia';
 import { ContextoPreferencias, usePreferencias, ZOOM, type Tema } from './tema';
@@ -235,13 +235,12 @@ export function App({ pagina, onVerOriginal }: Props) {
                   <div className="fixed inset-0 z-20" onClick={() => setAparenciaAberta(false)} aria-hidden="true" />
                   <div
                     role="dialog"
-                    aria-label="Aparência"
-                    className="absolute right-0 top-full z-30 mt-2 w-80 origin-top-right animate-surgir rounded-3xl border bg-card p-5 text-card-foreground"
+                    aria-label="Configurações"
+                    className="absolute right-0 top-full z-30 mt-2 max-h-[calc(100vh-6rem)] w-80 overflow-y-auto origin-top-right animate-surgir rounded-3xl border bg-card p-5 text-card-foreground"
                   >
                     <PainelAparencia />
-                    <div className="mt-4 flex gap-2 border-t pt-4 text-xs">
-                      <a href={linkRelato(pagina)} target="_blank" rel="noreferrer" className="flex-1 rounded-full border py-2 text-center hover:bg-accent">Relatar problema</a>
-                      <a href={linkSugestao} target="_blank" rel="noreferrer" className="flex-1 rounded-full border py-2 text-center hover:bg-accent">Sugerir</a>
+                    <div className="mt-5 border-t pt-5">
+                      <Sobre pagina={pagina} />
                     </div>
                   </div>
                 </>
@@ -296,7 +295,7 @@ export function App({ pagina, onVerOriginal }: Props) {
             <>
               <details className="rounded-3xl border">
                 <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 text-sm font-medium [&::-webkit-details-marker]:hidden">
-                  Aparência
+                  Configurações
                   <svg viewBox="0 0 16 16" className="h-4 w-4 opacity-50 transition-transform [details[open]>summary>&]:rotate-90" aria-hidden="true">
                     <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" />
                   </svg>
@@ -306,14 +305,17 @@ export function App({ pagina, onVerOriginal }: Props) {
                 </div>
               </details>
               {pagina.tipo === 'portal-discente' && <DadosPessoais portal={pagina.portal} />}
-              <div className="grid grid-cols-2 gap-2">
-                <a href={linkRelato(pagina)} target="_blank" rel="noreferrer" className="grid min-h-12 place-items-center rounded-full border text-sm">
-                  Relatar problema
-                </a>
-                <a href={linkSugestao} target="_blank" rel="noreferrer" className="grid min-h-12 place-items-center rounded-full border text-sm">
-                  Sugerir tela
-                </a>
-              </div>
+              <details className="rounded-3xl border">
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 text-sm font-medium [&::-webkit-details-marker]:hidden">
+                  Sobre o app
+                  <svg viewBox="0 0 16 16" className="h-4 w-4 opacity-50 transition-transform [details[open]>summary>&]:rotate-90" aria-hidden="true">
+                    <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                </summary>
+                <div className="px-5 pb-5">
+                  <Sobre pagina={pagina} />
+                </div>
+              </details>
               <button type="button" onClick={onVerOriginal} className="min-h-12 w-full rounded-full border text-sm">
                 Ver SIGAA original
               </button>

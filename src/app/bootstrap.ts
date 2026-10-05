@@ -106,6 +106,7 @@ async function iniciar(): Promise<void> {
       liberarViewport = ajustarViewport();
     },
     mostrarOriginal: () => {
+      ponteAndroid?.pronto?.();
       quadro.remove();
       liberarViewport();
       mostrarOriginal();
