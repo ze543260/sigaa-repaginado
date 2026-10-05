@@ -35,17 +35,48 @@ final class Abertura extends View {
     private final long inicio = SystemClock.uptimeMillis();
     private final int frente;
     private final int fundo;
+    private final int destaque;
+    private final boolean terminal;
     private float saida = 0f;
     private boolean saindo;
 
-    Abertura(Context ctx, boolean escuro) {
+    /** {@code cores}: JSON gravado pela interface com fundo, texto e destaque ("rgb(r, g, b)") e o estilo atual. */
+    Abertura(Context ctx, boolean escuro, String cores) {
         super(ctx);
-        frente = escuro ? Color.WHITE : Color.BLACK;
-        fundo = escuro ? Color.BLACK : Color.rgb(0xED, 0xED, 0xED);
+        int f = escuro ? Color.WHITE : Color.BLACK;
+        int b = escuro ? Color.BLACK : Color.rgb(0xED, 0xED, 0xED);
+        int d = VERMELHO;
+        boolean t = false;
+        if (cores != null) {
+            try {
+                org.json.JSONObject j = new org.json.JSONObject(cores);
+                f = cor(j.optString("texto"), f);
+                b = cor(j.optString("fundo"), b);
+                d = cor(j.optString("destaque"), d);
+                t = "terminal".equals(j.optString("estilo"));
+            } catch (org.json.JSONException e) {
+                // Cores inválidas: fica com o padrão.
+            }
+        }
+        frente = f;
+        fundo = b;
+        destaque = d;
+        terminal = t;
         setBackgroundColor(fundo);
         setClickable(true);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         postDelayed(this::sair, LIMITE_MS);
+    }
+
+    private static int cor(String rgb, int padrao) {
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)\\D+(\\d+)\\D+(\\d+)").matcher(rgb);
+        return m.find() ? Color.rgb(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))) : padrao;
+    }
+
+    /** Ponto redondo no minimalista, pixel quadrado no terminal. */
+    private void ponto(Canvas canvas, float cx, float cy, float r) {
+        if (terminal) canvas.drawRect(cx - r, cy - r, cx + r, cy + r, tinta);
+        else canvas.drawCircle(cx, cy, r, tinta);
     }
 
     private boolean aceso(int coluna, int linha) {
@@ -114,20 +145,28 @@ final class Abertura extends View {
                     }
                     tinta.setColor(frente);
                     tinta.setAlpha((int) (255 * entrada * (0.82f + 0.18f * brilho)));
-                    canvas.drawCircle(cx, cy, raio * (0.4f + 0.6f * entrada) * (1f + 0.25f * brilho), tinta);
+                    ponto(canvas, cx, cy, raio * (0.4f + 0.6f * entrada) * (1f + 0.25f * brilho));
                 } else {
                     tinta.setColor(frente);
                     tinta.setAlpha((int) (22 * entrada));
-                    canvas.drawCircle(cx, cy, raio * 0.7f, tinta);
+                    ponto(canvas, cx, cy, raio * 0.7f);
                 }
             }
         }
 
         float pulso = t < ENTRADA_MS ? suave.getInterpolation(clamp((t - 600f) / 300f))
                 : 1f + 0.18f * (float) Math.sin((t - ENTRADA_MS) / 260f);
-        tinta.setColor(VERMELHO);
-        tinta.setAlpha((int) (255 * clamp(pulso) * (1f - saida)));
-        canvas.drawCircle(x0 + (COLUNAS + 1.2f) * passo, y0 + passo * 0.6f, raio * 1.25f * Math.max(0f, pulso), tinta);
+        tinta.setColor(destaque);
+        if (terminal) {
+            // Cursor de bloco piscando no lugar do ponto.
+            boolean visivel = t < ENTRADA_MS ? t > 600 : ((int) ((t - ENTRADA_MS) / 530)) % 2 == 0;
+            tinta.setAlpha(visivel ? (int) (255 * (1f - saida)) : 0);
+            float x = x0 + (COLUNAS + 0.6f) * passo;
+            canvas.drawRect(x, y0 - raio, x + passo * 2.6f, y0 + (LINHAS - 1) * passo + raio, tinta);
+        } else {
+            tinta.setAlpha((int) (255 * clamp(pulso) * (1f - saida)));
+            canvas.drawCircle(x0 + (COLUNAS + 1.2f) * passo, y0 + passo * 0.6f, raio * 1.25f * Math.max(0f, pulso), tinta);
+        }
 
         if (getParent() != null) postInvalidateOnAnimation();
     }
@@ -144,8 +183,13 @@ final class Abertura extends View {
             for (float y = espaco / 2; y < getHeight(); y += espaco) {
                 float d = (float) Math.hypot(x - cx, y - cy);
                 if (d > alcance) continue;
-                tinta.setAlpha((int) (28 * (1f - saida)));
-                canvas.drawCircle(x, y, raio, tinta);
+                tinta.setAlpha((int) ((terminal ? 40 : 28) * (1f - saida)));
+                if (terminal) {
+                    canvas.drawRect(x - espaco / 2, y - espaco / 2, x + espaco / 2, y - espaco / 2 + raio, tinta);
+                    canvas.drawRect(x - espaco / 2, y - espaco / 2, x - espaco / 2 + raio, y + espaco / 2, tinta);
+                } else {
+                    canvas.drawCircle(x, y, raio, tinta);
+                }
             }
         }
     }

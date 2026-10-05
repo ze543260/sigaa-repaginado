@@ -11,6 +11,7 @@ export interface PonteAndroid {
   definirBloqueio(ligado: boolean): void;
   verificarAtualizacao(): void;
   pronto(): void;
+  coresAbertura(json: string): void;
 }
 
 /** Exposta pelo bootstrap em window.__sigaaV2 para a interface que roda no iframe. */

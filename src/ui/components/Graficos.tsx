@@ -148,12 +148,13 @@ export function CarregadorPontos({ className }: { readonly className?: string })
   return (
     <svg viewBox="0 0 60 60" className={cn('h-16 w-16', className)} aria-hidden="true">
       {PONTOS.map((p) => (
-        <circle
-          key={`${p.x}-${p.y}`} cx={p.x} cy={p.y} r="3.6" opacity="0.15"
+        <rect
+          key={`${p.x}-${p.y}`} x={p.x - 3.6} y={p.y - 3.6} width="7.2" height="7.2" opacity="0.15"
+          style={{ rx: 'var(--raio-ponto, 3.6px)' } as React.CSSProperties}
           fill={p.x === 30 && p.y === 30 ? 'hsl(var(--destaque))' : 'currentColor'}
         >
           <animate attributeName="opacity" values="0.15;1;0.15" dur="1.1s" begin={`${p.atraso}s`} repeatCount="indefinite" />
-        </circle>
+        </rect>
       ))}
     </svg>
   );

@@ -33,6 +33,8 @@ export interface Plataforma {
   bloqueio: { readonly ativo: () => boolean; readonly definir: (ligado: boolean) => void } | null;
   /** Procura versão nova do app; null fora do Android. */
   verificarAtualizacao: (() => void) | null;
+  /** Cores e estilo da abertura nativa do app, em JSON. */
+  coresAbertura: ((json: string) => void) | null;
 }
 
 export const plataforma: Plataforma = {
@@ -52,4 +54,5 @@ export const plataforma: Plataforma = {
   notificar: null,
   bloqueio: null,
   verificarAtualizacao: null,
+  coresAbertura: null,
 };

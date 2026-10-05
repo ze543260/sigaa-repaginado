@@ -69,7 +69,8 @@ public class MainActivity extends Activity {
         raiz.addView(webView);
         setContentView(raiz);
         if (estado == null) {
-            abertura = new Abertura(this, getPreferences(MODE_PRIVATE).getBoolean("escuro", sistemaEscuro()));
+            abertura = new Abertura(this, getPreferences(MODE_PRIVATE).getBoolean("escuro", sistemaEscuro()),
+                    getPreferences(MODE_PRIVATE).getString("abertura", null));
             raiz.addView(abertura);
         }
         bloqueio = new Bloqueio(this, webView);

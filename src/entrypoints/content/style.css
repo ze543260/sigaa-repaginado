@@ -14,6 +14,7 @@
   --raio-2xl: 1rem;
   --raio-3xl: 1.5rem;
   --raio-pilula: 9999px;
+  --raio-ponto: 3.6px;
   --padrao: radial-gradient(hsl(var(--pontos)) 1px, transparent 1.2px);
   --padrao-tamanho: 14px 14px;
   --background: 0 0% 93%;
@@ -203,6 +204,7 @@ details[open] > :not(summary) {
   --raio-2xl: 4px;
   --raio-3xl: 6px;
   --raio-pilula: 3px;
+  --raio-ponto: 0px;
   --padrao:
     linear-gradient(hsl(var(--pontos)) 1px, transparent 1px),
     linear-gradient(90deg, hsl(var(--pontos)) 1px, transparent 1px);

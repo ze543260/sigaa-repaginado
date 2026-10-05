@@ -81,6 +81,11 @@ final class Ponte {
     }
 
     @JavascriptInterface
+    public void coresAbertura(String json) {
+        atividade.getPreferences(android.content.Context.MODE_PRIVATE).edit().putString("abertura", json).apply();
+    }
+
+    @JavascriptInterface
     public void pronto() {
         atividade.runOnUiThread(atividade::fimAbertura);
     }

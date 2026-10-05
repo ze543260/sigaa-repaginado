@@ -67,6 +67,35 @@ export function App({ pagina, onVerOriginal }: Props) {
   const tema = prefs.tema;
   const [configAberta, setConfigAberta] = useState(false);
   const segredo = useSegredo();
+
+  // Guarda as cores reais do estilo para o anti-flash da próxima página pintar o esqueleto certo.
+  useEffect(() => {
+    const quadro = requestAnimationFrame(() => {
+      const el = raiz.current;
+      if (!el) return;
+      const css = getComputedStyle(el);
+      const cor = (v: string) => `hsl(${css.getPropertyValue(v).trim().replace(/\s+/g, ' ')})`;
+      try {
+        const salvas = JSON.parse(localStorage.getItem('sigaa-v2:cores') ?? '{}') as Record<string, unknown>;
+        const cores = { fundo: cor('--background'), card: cor('--card'), borda: cor('--border'), texto: cor('--foreground'), destaque: cor('--destaque') };
+        salvas[css.colorScheme === 'dark' ? 'escuro' : 'claro'] = cores;
+        localStorage.setItem('sigaa-v2:cores', JSON.stringify(salvas));
+        // O Android desenha a abertura antes de qualquer página: precisa das cores já resolvidas em RGB.
+        const rgb = (c: string) => {
+          const sonda = document.createElement('i');
+          sonda.style.color = c;
+          el.append(sonda);
+          const valor = getComputedStyle(sonda).color;
+          sonda.remove();
+          return valor;
+        };
+        plataforma.coresAbertura?.(JSON.stringify({ fundo: rgb(cores.fundo), texto: rgb(cores.texto), destaque: rgb(cores.destaque), estilo: prefs.estilo }));
+      } catch {
+        /* sem armazenamento: o anti-flash usa as cores padrão */
+      }
+    });
+    return () => cancelAnimationFrame(quadro);
+  }, [prefs]);
   const [boasVindas, setBoasVindas] = useState(() => !jaViuBoasVindas());
   const [navegando, setNavegando] = useState(false);
   const [aba, setAba] = useState<AbaPortal>('inicio');
