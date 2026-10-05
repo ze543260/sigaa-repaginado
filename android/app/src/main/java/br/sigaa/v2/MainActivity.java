@@ -75,7 +75,8 @@ public class MainActivity extends Activity {
         }
         bloqueio = new Bloqueio(this, webView);
         atualizador = new Atualizador(this);
-        if (estado == null) atualizador.verificar(false);
+        if (getIntent().getBooleanExtra(Atualizador.EXTRA_INSTALAR, false)) atualizador.verificar(true);
+        else if (estado == null) atualizador.verificarEmSegundoPlano();
 
         aplicarMargensDoSistema();
         aplicarTema(sistemaEscuro());
@@ -304,6 +305,12 @@ public class MainActivity extends Activity {
         if (codigo != ESCOLHER_ARQUIVO || arquivosPendentes == null) return;
         arquivosPendentes.onReceiveValue(android.webkit.WebChromeClient.FileChooserParams.parseResult(resultado, dados));
         arquivosPendentes = null;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getBooleanExtra(Atualizador.EXTRA_INSTALAR, false)) atualizador.verificar(true);
     }
 
     @Override

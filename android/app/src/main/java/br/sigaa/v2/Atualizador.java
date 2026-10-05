@@ -27,7 +27,21 @@ final class Atualizador {
         this.atividade = atividade;
     }
 
-    void verificar(boolean avisarSemNovidade) {
+    static final String EXTRA_INSTALAR = "instalarAtualizacao";
+    private static final long INTERVALO_MS = 24L * 60 * 60 * 1000;
+
+    /** Busca automática: no máximo uma vez por dia, e só avisa por notificação. */
+    void verificarEmSegundoPlano() {
+        android.content.SharedPreferences prefs = atividade.getSharedPreferences("atualizacao", Context.MODE_PRIVATE);
+        long agora = System.currentTimeMillis();
+        if (agora - prefs.getLong("ultima", 0) < INTERVALO_MS) return;
+        prefs.edit().putLong("ultima", agora).apply();
+        verificar(false);
+    }
+
+    /** {@code manual}: veio do botão; instala na hora e avisa quando não há novidade. */
+    void verificar(boolean manual) {
+        boolean avisarSemNovidade = manual;
         String repo = BuildConfig.REPO_ATUALIZACAO;
         if (repo.isEmpty()) {
             if (avisarSemNovidade) avisar("Atualização automática ainda não configurada");
@@ -45,7 +59,9 @@ final class Atualizador {
                 for (int i = 0; anexos != null && i < anexos.length(); i++) {
                     JSONObject anexo = anexos.getJSONObject(i);
                     if (anexo.optString("name").endsWith(".apk")) {
-                        atividade.runOnUiThread(() -> baixar(anexo.optString("browser_download_url"), versao));
+                        String url = anexo.optString("browser_download_url");
+                        if (manual) atividade.runOnUiThread(() -> baixar(url, versao));
+                        else notificar(versao);
                         return;
                     }
                 }
@@ -53,6 +69,23 @@ final class Atualizador {
                 if (avisarSemNovidade) avisar("Não foi possível verificar atualizações");
             }
         }).start();
+    }
+
+    // Cada APK novo passa pelo Play Protect e pela verificação do fabricante; por isso a instalação espera o toque.
+    private void notificar(String versao) {
+        Intent abrir = new Intent(atividade, MainActivity.class).putExtra(EXTRA_INSTALAR, true)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        android.app.PendingIntent toque = android.app.PendingIntent.getActivity(atividade, 1, abrir,
+                android.app.PendingIntent.FLAG_IMMUTABLE | android.app.PendingIntent.FLAG_UPDATE_CURRENT);
+        android.app.NotificationManager gerente = atividade.getSystemService(android.app.NotificationManager.class);
+        gerente.createNotificationChannel(new android.app.NotificationChannel("atualizacoes", "Atualizações", android.app.NotificationManager.IMPORTANCE_LOW));
+        gerente.notify(42, new android.app.Notification.Builder(atividade, "atualizacoes")
+                .setSmallIcon(R.drawable.ic_sigaa)
+                .setContentTitle("Versão " + versao + " disponível")
+                .setContentText("Toque para atualizar quando quiser.")
+                .setContentIntent(toque)
+                .setAutoCancel(true)
+                .build());
     }
 
     private void baixar(String url, String versao) {
