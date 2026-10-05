@@ -1598,3 +1598,4 @@ details[open] > :not(summary) {
 
 /* Cenas congeladas fora da tela. Sem will-change nem content-visibility: em alguns WebViews deixavam a tela toda preta. */
 .ilu-pausada, .ilu-pausada * { animation-play-state: paused !important; }
+.tema[data-estilo='minimalista'] .foto-perfil { filter: grayscale(1); }

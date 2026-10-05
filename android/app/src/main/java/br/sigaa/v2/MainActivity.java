@@ -121,6 +121,49 @@ public class MainActivity extends Activity {
         view.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
     }
 
+    // Android 13 ou anterior não tem a raiz do SIGAA (GlobalSign R46). Confere por uma conexão própria, que usa a raiz
+    // embutida (res/xml/seguranca_rede.xml), e só segue se o WebView recebeu o mesmo certificado que ela validou.
+    private void conferirCertificado(WebView view, android.webkit.SslErrorHandler tratador, android.net.http.SslError erro) {
+        Uri uri = Uri.parse(erro.getUrl());
+        java.security.cert.X509Certificate recebido = erro.getCertificate().getX509Certificate();
+        String host = uri.getHost();
+        if (host == null || !(host.equals("unifei.edu.br") || host.endsWith(".unifei.edu.br")) || recebido == null) {
+            recusarCertificado(view, tratador, erro);
+            return;
+        }
+        new Thread(() -> {
+            boolean igual = false;
+            try {
+                javax.net.ssl.HttpsURLConnection c = (javax.net.ssl.HttpsURLConnection) new java.net.URL("https://" + host + "/").openConnection();
+                c.setConnectTimeout(10_000);
+                c.setReadTimeout(10_000);
+                c.connect();
+                java.security.cert.Certificate[] cadeia = c.getServerCertificates();
+                igual = cadeia.length > 0 && java.util.Arrays.equals(cadeia[0].getEncoded(), recebido.getEncoded());
+                c.disconnect();
+            } catch (Exception e) {
+                if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("conferência do certificado falhou: " + e);
+            }
+            boolean confirmado = igual;
+            runOnUiThread(() -> {
+                if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("certificado conferido pela raiz embutida: " + confirmado);
+                if (confirmado) tratador.proceed();
+                else recusarCertificado(view, tratador, erro);
+            });
+        }).start();
+    }
+
+    // Nunca prossegue com certificado inválido; mas mostra o motivo em vez de deixar a tela vazia.
+    private void recusarCertificado(WebView view, android.webkit.SslErrorHandler tratador, android.net.http.SslError erro) {
+        tratador.cancel();
+        int tipo = erro.getPrimaryError();
+        String motivo = tipo == android.net.http.SslError.SSL_DATE_INVALID || tipo == android.net.http.SslError.SSL_EXPIRED
+                || tipo == android.net.http.SslError.SSL_NOTYETVALID
+                ? "A data e a hora do celular parecem erradas. Ajuste em Configurações › Data e hora (automática) e tente de novo."
+                : "Não foi possível verificar a conexão segura com o SIGAA nesta rede. Tente pelos dados móveis ou outro Wi-Fi.";
+        mostrarFalha(view, erro.getUrl(), motivo);
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private void configurarWebView() {
         WebSettings ajustes = webView.getSettings();
@@ -156,14 +199,12 @@ public class MainActivity extends Activity {
 
             @Override
             public void onReceivedSslError(WebView view, android.webkit.SslErrorHandler tratador, android.net.http.SslError erro) {
-                // Nunca prossegue com certificado inválido; mas mostra o motivo em vez de deixar a tela vazia.
-                tratador.cancel();
                 if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("erro de certificado: " + erro.getPrimaryError() + " em " + erro.getUrl());
-                String motivo = erro.getPrimaryError() == android.net.http.SslError.SSL_DATE_INVALID || erro.getPrimaryError() == android.net.http.SslError.SSL_EXPIRED
-                        || erro.getPrimaryError() == android.net.http.SslError.SSL_NOTYETVALID
-                        ? "A data e a hora do celular parecem erradas. Ajuste em Configurações › Data e hora (automática) e tente de novo."
-                        : "Não foi possível verificar a conexão segura com o SIGAA nesta rede. Tente pelos dados móveis ou outro Wi-Fi.";
-                mostrarFalha(view, erro.getUrl(), motivo);
+                if (erro.getPrimaryError() == android.net.http.SslError.SSL_UNTRUSTED && Build.VERSION.SDK_INT >= 29) {
+                    conferirCertificado(view, tratador, erro);
+                } else {
+                    recusarCertificado(view, tratador, erro);
+                }
             }
 
             @Override

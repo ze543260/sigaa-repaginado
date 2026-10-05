@@ -10,6 +10,7 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_sigaa"
         android:label="SIGAA Repaginado"
+        android:networkSecurityConfig="@xml/seguranca_rede"
         android:supportsRtl="false"
         android:theme="@style/Tema">
         <activity

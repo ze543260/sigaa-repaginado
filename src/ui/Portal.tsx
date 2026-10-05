@@ -209,7 +209,7 @@ export function DadosPessoais({ portal }: Props) {
       <Card>
         <CardHeader className="flex-row items-center gap-4 space-y-0">
           {portal.foto ? (
-            <img src={portal.foto} alt="" className="h-14 w-14 rounded-full object-cover grayscale" />
+            <img src={portal.foto} alt="" className="foto-perfil h-14 w-14 rounded-full object-cover" />
           ) : (
             <div className="grid h-14 w-14 place-items-center rounded-full bg-secondary font-mono">{iniciais}</div>
           )}
