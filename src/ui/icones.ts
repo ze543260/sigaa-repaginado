@@ -78,6 +78,11 @@ const POR_ESTILO: Partial<Record<Estilo, Partial<Record<NomeIcone, string>>>> = 
     turmas: 'M7 3v14a2 2 0 0 0 4 0V3M13 3v14a2 2 0 0 0 4 0V3M6 3h6M12 3h6',
     atividades: 'M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9zM12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z',
   },
+  classico: {
+    inicio: 'M3 6h7l2 2h9v11H3z',
+    turmas: 'M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5',
+    atividades: 'M3 5h18v14H3zM3 7l9 6 9-6',
+  },
   admin: {
     inicio: 'M3 4h18v16H3zM3 9h18M3 14h18M9 4v16',
     turmas: 'M3 7h18v13H3zM8 7V4h8v3M3 12h18',

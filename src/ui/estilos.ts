@@ -391,6 +391,47 @@ export const DEFINICOES = {
       simbolos: "$📈💼$📊",
     },
   },
+  classico: {
+    nome: 'Clássico',
+    curso: '',
+    acento: 'azul',
+    forma: 'quadrado',
+    descricao: 'As cores do SIGAA de sempre, agora com espaçamento, contraste e fonte de gente.',
+    amostra: {
+      fundo: '#2a4274',
+      texto: '#ffffff',
+      fonte: 'Inter, sans-serif',
+      titulo: 'SIGAA',
+    },
+    piadas: {
+      saudacao: [
+        'Sua sessão não expirou. Ainda.',
+        'Mesmas cores, agora com espaçamento.',
+        'Clique uma vez só. Aqui funciona.',
+        'Nenhum menu em cascata foi ferido nesta tela.',
+        'Fonte maior que 9 px. Revolucionário.',
+        'Agora com contraste. Seus olhos agradecem.',
+        'Tempo de sessão: o suficiente.',
+        'Botão Voltar liberado. Pode usar sem medo.',
+      ],
+      'sem-aulas': ['Sem aulas hoje. Nem um formulário pra preencher.'],
+      'sem-atividades': ['Nada pendente. Nem um "comportamento inesperado".'],
+      'sem-tarefas': ['Nenhuma tarefa. Caso persista, contate o administrador do sistema.'],
+      erro: ['Comportamento inesperado. Mas dessa vez com estilo.'],
+      carregando: [
+        'Por favor, aguarde enquanto carregamos a página...',
+        'evitando duplo clique...',
+        'renovando sessão...',
+        'procurando o menu certo...',
+      ],
+    },
+    segredo: {
+      titulo: 'modo 2006',
+      texto: 'Você achou a nostalgia. Volte sempre (ou não).',
+      efeito: 'chuva',
+      simbolos: '⏳📁✉📄⏳',
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;

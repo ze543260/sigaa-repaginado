@@ -73,6 +73,7 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
   - **Solar**, de Engenharia de Energia: raios de sol.
   - **Tabela periódica**, de Química: elementos.
   - **Planilha**, de Administração: células e fórmulas.
+  - **Clássico**: as cores do SIGAA de sempre, só que com espaçamento, contraste e fonte legível. Uma cutucada carinhosa.
 - **Piadas e segredos de cada área**: cada tema tem o seu comando do dia, textos para telas vazias, log de carregamento e um segredo escondido. Dica: insista no logo.
 - **Outras linhas**: brutalista, retrô (anos 90 e pixel art), editorial (como revista), alto contraste e AMOLED (preto puro, que poupa bateria em telas OLED).
 - **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal.

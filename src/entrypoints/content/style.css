@@ -1496,3 +1496,97 @@ details[open] > :not(summary) {
   .ilu-digitar { clip-path: none; }
   .ilu-traco { stroke-dashoffset: 0; }
 }
+
+/* ── Estilo "Clássico (o SIGAA, só que bem feito)" ── */
+.tema[data-estilo='classico'] {
+  --fonte-texto: Inter, ui-sans-serif, system-ui, sans-serif;
+  --fonte-titulo: Inter, ui-sans-serif, system-ui, sans-serif;
+  --fonte-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --raio-sm: 3px;
+  --raio-md: 4px;
+  --raio-lg: 6px;
+  --raio-xl: 6px;
+  --raio-2xl: 8px;
+  --raio-3xl: 10px;
+  --raio-pilula: 6px;
+  --padrao: linear-gradient(180deg, hsl(var(--pontos)) 0 1px, transparent 1px);
+  --padrao-tamanho: 100% 32px;
+}
+
+.tema[data-estilo='classico']:not([data-tema='escuro']) {
+  --background: 216 33% 96%;
+  --foreground: 220 30% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 30% 14%;
+  --primary: 220 30% 14%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217 50% 92%;
+  --secondary-foreground: 220 30% 14%;
+  --muted: 217 50% 92%;
+  --muted-foreground: 219 20% 36%;
+  --accent: 217 50% 95%;
+  --accent-foreground: 220 30% 14%;
+  --border: 218 35% 82%;
+  --input: 219 25% 60%;
+  --pontos: 218 35% 92%;
+}
+
+.tema[data-estilo='classico'][data-tema='escuro'] {
+  --background: 222 35% 9%;
+  --foreground: 216 40% 93%;
+  --card: 222 32% 13%;
+  --card-foreground: 216 40% 93%;
+  --primary: 216 40% 93%;
+  --primary-foreground: 222 32% 13%;
+  --secondary: 222 28% 19%;
+  --secondary-foreground: 216 40% 93%;
+  --muted: 222 28% 19%;
+  --muted-foreground: 218 22% 70%;
+  --accent: 222 30% 16%;
+  --accent-foreground: 216 40% 93%;
+  --border: 222 25% 26%;
+  --input: 220 20% 38%;
+  --pontos: 222 30% 12%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='classico']:not([data-tema]) {
+    --background: 222 35% 9%;
+    --foreground: 216 40% 93%;
+    --card: 222 32% 13%;
+    --card-foreground: 216 40% 93%;
+    --primary: 216 40% 93%;
+    --primary-foreground: 222 32% 13%;
+    --secondary: 222 28% 19%;
+    --secondary-foreground: 216 40% 93%;
+    --muted: 222 28% 19%;
+    --muted-foreground: 218 22% 70%;
+    --accent: 222 30% 16%;
+    --accent-foreground: 216 40% 93%;
+    --border: 222 25% 26%;
+    --input: 220 20% 38%;
+    --pontos: 222 30% 12%;
+  }
+}
+.tema[data-estilo='classico'] h1.font-dot { font-weight: 600; letter-spacing: -0.02em; }
+.tema[data-estilo='classico'] section > h2 { font-variant: small-caps; letter-spacing: 0.04em; font-size: 0.95rem; background: hsl(var(--secondary)); color: hsl(var(--foreground)); border-left: 3px solid #f29b12; border-radius: 3px; padding: 0.35rem 0.75rem; }
+
+
+/* Clássico: as cores do SIGAA, com espaçamento e contraste. */
+.tema[data-estilo='classico'] {
+  --casca-topo-fundo: linear-gradient(#34508a, #2a4274);
+  --casca-topo-texto: #fff;
+  --casca-nav-fundo: hsl(var(--card));
+  --casca-card-sombra: 0 1px 2px hsl(220 40% 20% / 0.08);
+}
+.tema[data-estilo='classico'] .casca-topo { border-bottom: 3px solid #f29b12; }
+.tema[data-estilo='classico'] .casca-topo .font-dot { color: #fff; font-variant: small-caps; letter-spacing: 0.04em; }
+.tema[data-estilo='classico'] .casca-topo .casca-botao:hover { background: hsl(0 0% 100% / 0.15); color: #fff; }
+.tema[data-estilo='classico'] .casca-topo .casca-botao[class*='border'] { border-color: hsl(0 0% 100% / 0.6); }
+.tema[data-estilo='classico'] .casca-marca { background: #f29b12; border-radius: 2px; }
+.tema[data-estilo='classico'] .casca-nav { border-top: 3px solid #34508a; }
+.tema[data-estilo='classico'] .casca-nav-item[aria-current] .casca-pilula { background: #34508a; color: #fff; }
+.tema[data-estilo='classico'] thead th { background: hsl(var(--secondary)); font-variant: small-caps; letter-spacing: 0.03em; }
+.tema[data-estilo='classico'] tbody tr:nth-child(even) { background: hsl(var(--accent)); }
+.ilu-sessao { transform-origin: left; animation: ilu-sessao 6s linear infinite; }
+@keyframes ilu-sessao { from { transform: scaleX(1); } to { transform: scaleX(0.05); } }

@@ -177,6 +177,20 @@ const CENAS: Record<Estilo, () => ReactNode> = {
       ))}
     </g>
   ),
+  classico: () => (
+    <g fontFamily="Inter, sans-serif">
+      <rect x="20" y="16" width="160" height="92" rx="4" fill="hsl(var(--card))" stroke={B} />
+      <rect x="20" y="16" width="160" height="16" rx="4" fill="#2a4274" />
+      <rect x="20" y="30" width="160" height="2" fill="#f29b12" />
+      <text x="28" y="27" fontSize="7" fill="#fff" fontWeight="600" letterSpacing="0.5">SIGAA</text>
+      <text x="172" y="27" fontSize="6" fill="#fff" textAnchor="end" opacity="0.85">sessão</text>
+      {[0, 1, 2, 3].map((i) => (
+        <rect key={i} x="30" y={42 + i * 12} width="140" height="8" rx="1.5" fill={i % 2 ? 'hsl(var(--accent))' : 'hsl(var(--secondary))'} className="ilu-ponto" style={atraso(i * 0.25)} />
+      ))}
+      <rect x="30" y="94" width="140" height="4" rx="2" fill={B} />
+      <rect x="30" y="94" width="140" height="4" rx="2" fill="#f29b12" className="ilu-sessao" />
+    </g>
+  ),
   admin: () => (
     <g>
       <line x1="20" x2="180" y1="104" y2="104" stroke={F} />
