@@ -5,7 +5,6 @@ import { plataforma } from '../plataforma';
 const REPO = 'ze543260/sigaa-repaginado';
 const CHAVE_CHECADA = 'sigaa-v2:versao-checada';
 const CHAVE_DISPENSADA = 'sigaa-v2:versao-dispensada';
-const INTERVALO_MS = 6 * 60 * 60 * 1000;
 
 export function maisNova(a: string, b: string): boolean {
   const x = a.split('.').map(Number);
@@ -24,9 +23,9 @@ export function AvisoVersaoNova() {
   useEffect(() => {
     let ativo = true;
     try {
-      // Sem token, a API do GitHub aceita 60 consultas por hora por IP: uma a cada 6 h basta.
-      if (Date.now() - Number(localStorage.getItem(CHAVE_CHECADA) ?? 0) < INTERVALO_MS) return;
-      localStorage.setItem(CHAVE_CHECADA, String(Date.now()));
+      // Uma vez por abertura do app: a sessão some quando o app fecha, e a interface remonta a cada página do SIGAA.
+      if (sessionStorage.getItem(CHAVE_CHECADA)) return;
+      sessionStorage.setItem(CHAVE_CHECADA, '1');
     } catch {
       return;
     }

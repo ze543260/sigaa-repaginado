@@ -28,14 +28,8 @@ final class Atualizador {
     }
 
     static final String EXTRA_INSTALAR = "instalarAtualizacao";
-    private static final long INTERVALO_MS = 24L * 60 * 60 * 1000;
-
-    /** Busca automática: no máximo uma vez por dia, e só avisa por notificação. */
+    /** Busca automática a cada abertura; só notifica uma vez por versão (o toast da interface insiste). */
     void verificarEmSegundoPlano() {
-        android.content.SharedPreferences prefs = atividade.getSharedPreferences("atualizacao", Context.MODE_PRIVATE);
-        long agora = System.currentTimeMillis();
-        if (agora - prefs.getLong("ultima", 0) < INTERVALO_MS) return;
-        prefs.edit().putLong("ultima", agora).apply();
         verificar(false);
     }
 
@@ -79,6 +73,9 @@ final class Atualizador {
 
     // Cada APK novo passa pelo Play Protect e pela verificação do fabricante; por isso a instalação espera o toque.
     private void notificar(String versao) {
+        android.content.SharedPreferences prefs = atividade.getSharedPreferences("atualizacao", Context.MODE_PRIVATE);
+        if (versao.equals(prefs.getString("notificada", null))) return;
+        prefs.edit().putString("notificada", versao).apply();
         Intent abrir = new Intent(atividade, MainActivity.class).putExtra(EXTRA_INSTALAR, true)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         android.app.PendingIntent toque = android.app.PendingIntent.getActivity(atividade, 1, abrir,

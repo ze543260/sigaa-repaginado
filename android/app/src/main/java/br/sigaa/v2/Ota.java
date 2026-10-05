@@ -29,7 +29,8 @@ final class Ota {
     // Chave pública do par cuja privada só existe no segredo OTA_CHAVE_PRIVADA do GitHub.
     private static final String CHAVE_PUBLICA =
             "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHoY1AtoVRhEyTvuI86Z8vCQKVBlD4u4ZyWNk5G0087nTBdO14pnJnC0OJvVFBJ4XXKUpfvkJrCQ4wLFT3ejWwg==";
-    private static final long INTERVALO_MS = 4L * 60 * 60 * 1000;
+    // Só evita buscar duas vezes quando a tela é recriada (girar, tema); fora isso, busca a cada abertura.
+    private static final long INTERVALO_MS = 60_000;
     private static final int FALHAS_MAX = 2;
 
     static boolean usandoBaixada;
@@ -82,7 +83,7 @@ final class Ota {
         prefs(ctx).edit().remove("versao").remove("minNativo").putInt("falhas", 0).apply();
     }
 
-    /** Procura em segundo plano, no máximo a cada 4 h, e guarda para a próxima abertura. */
+    /** Procura em segundo plano a cada abertura e guarda para a próxima. */
     static void buscar(Context ctx) {
         SharedPreferences p = prefs(ctx);
         long agora = System.currentTimeMillis();
