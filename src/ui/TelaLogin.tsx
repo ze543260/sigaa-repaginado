@@ -5,7 +5,7 @@ import { Button } from './components/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/Card';
 import { Input } from './components/Input';
 import { Label } from './components/Label';
-import { CarregadorPontos } from './components/Graficos';
+import { IlustracaoLogin } from './IlustracaoLogin';
 
 export const CHAVE_ENTRANDO = 'sigaa-v2:entrando';
 
@@ -111,7 +111,7 @@ export function TelaLogin({ login }: Props) {
     return (
       <div className="fixed inset-0 z-40 grid animate-entrar place-items-center bg-background" role="status" aria-live="polite">
         <div className="flex flex-col items-center gap-6 text-center">
-          <CarregadorPontos className="h-20 w-20" />
+          <IlustracaoLogin className="max-w-[16rem]" />
           <div className="space-y-1">
             <p className="font-dot text-4xl font-extrabold">entrando</p>
             <p className="text-sm text-muted-foreground">Conectando ao SIGAA…</p>
@@ -124,6 +124,7 @@ export function TelaLogin({ login }: Props) {
   return (
     <div className="grid min-h-[calc(100%-4rem)] place-items-center p-4">
       <Card className="w-full max-w-sm p-2">
+        <IlustracaoLogin className="px-6 pt-4" />
         <CardHeader>
           <CardTitle className="font-dot text-5xl font-extrabold">entrar</CardTitle>
           <CardDescription>Use seu usuário institucional.</CardDescription>

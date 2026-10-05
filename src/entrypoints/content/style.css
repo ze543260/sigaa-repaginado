@@ -1442,3 +1442,42 @@ details[open] > :not(summary) {
 .tema[data-estilo='admin'] .casca-nav-item[aria-current] { background: hsl(var(--card)); box-shadow: inset 0 3px 0 hsl(var(--destaque)); }
 .tema[data-estilo='admin'] .casca-pilula { background: transparent !important; }
 .tema[data-estilo='retro'] .casca-botao { font-size: 0.95rem; }
+
+/* ══ Ilustração animada do login, uma cena por estilo. ══ */
+.ilustracao-login [class*='ilu-'] { transform-box: fill-box; }
+.ilu-ponto { animation: ilu-ponto 2.4s ease-in-out infinite; }
+@keyframes ilu-ponto { 0%, 100% { opacity: 0.15; } 30% { opacity: 1; } }
+.ilu-digitar { clip-path: inset(0 100% 0 0); animation: ilu-digitar 1s steps(16) forwards; }
+@keyframes ilu-digitar { to { clip-path: inset(0 0 0 0); } }
+.ilu-piscar { animation: cursor-terminal 1s steps(1) infinite; }
+.ilu-rolar { animation: ilu-rolar 1.6s linear infinite; }
+@keyframes ilu-rolar { to { transform: translateX(40px); } }
+.ilu-girar { transform-origin: center; animation: ilu-girar 8s linear infinite; }
+.ilu-girar-inverso { transform-origin: center; animation: ilu-girar 5.33s linear infinite reverse; }
+@keyframes ilu-girar { to { transform: rotate(360deg); } }
+.ilu-icar { animation: ilu-icar 3.2s ease-in-out infinite; }
+@keyframes ilu-icar { 0%, 100% { transform: translateY(30px); } 50% { transform: translateY(0); } }
+.ilu-mover-cartao { animation: ilu-mover-cartao 4s cubic-bezier(0.6, 0, 0.3, 1) infinite; }
+@keyframes ilu-mover-cartao { 0%, 15% { transform: translate(0, 0) rotate(0); } 45%, 55% { transform: translate(56px, -6px) rotate(4deg); } 85%, 100% { transform: translate(112px, 32px) rotate(0); } }
+.ilu-giz { stroke-dasharray: 400; stroke-dashoffset: 400; animation: ilu-giz 3s ease forwards, ilu-preencher 0.6s 2.6s forwards; }
+@keyframes ilu-giz { to { stroke-dashoffset: 0; } }
+@keyframes ilu-preencher { to { fill: hsl(var(--foreground)); } }
+.ilu-fluxo { animation: ilu-fluxo 0.8s linear infinite; }
+@keyframes ilu-fluxo { to { stroke-dashoffset: -10; } }
+.ilu-led { animation: led-clp 1.2s steps(1) infinite; }
+.ilu-respirar { transform-origin: center; animation: ilu-respirar 4s ease-in-out infinite; }
+@keyframes ilu-respirar { 50% { transform: scale(1.06); } }
+.ilu-gota { animation: ilu-gota 2.4s ease-in infinite; }
+@keyframes ilu-gota { 0% { transform: translateY(-10px); opacity: 0; } 20% { opacity: 1; } 80% { transform: translateY(34px); opacity: 1; } 100% { transform: translateY(40px); opacity: 0; } }
+.ilu-vibrar { animation: ilu-vibrar 1.2s ease-in-out infinite alternate; }
+@keyframes ilu-vibrar { to { transform: translate(1.5px, -1.5px); } }
+.ilu-pular { animation: ilu-pular 1.4s steps(6) infinite; }
+@keyframes ilu-pular { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(60px, -44px); } 99% { transform: translate(110px, 0); } }
+.ilu-moeda { animation: ilu-moeda 1.4s steps(2) infinite; }
+@keyframes ilu-moeda { 50% { transform: scaleX(0.3); } }
+.ilu-bolha { animation: ilu-bolha 1.8s ease-in infinite; }
+@keyframes ilu-bolha { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-70px); opacity: 0; } }
+.ilu-barra { transform-origin: bottom; animation: crescer-vertical 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes crescer-vertical { from { transform: scaleY(0); } }
+.ilu-traco { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ilu-traco 1.4s 0.8s ease forwards; }
+@keyframes ilu-traco { to { stroke-dashoffset: 0; } }
