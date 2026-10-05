@@ -475,3 +475,78 @@ details[open] > :not(summary) {
 .tema[data-estilo='mecanica'] section > h2::before { content: '§'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
 .tema[data-estilo='mecanica'] main [class*='rounded-3xl'].border { border-style: dashed; }
 
+
+/* ── Estilo "Canteiro (Engenharia Civil)" ── */
+.tema[data-estilo='civil'] {
+  --fonte-titulo: 'Archivo Black', 'Space Grotesk', sans-serif;
+  --raio-sm: 0px;
+  --raio-md: 0px;
+  --raio-lg: 0px;
+  --raio-xl: 0px;
+  --raio-2xl: 0px;
+  --raio-3xl: 0px;
+  --raio-pilula: 0px;
+  --padrao: radial-gradient(hsl(var(--pontos)) 1px, transparent 1.5px), radial-gradient(hsl(var(--pontos)) 0.8px, transparent 1.3px);
+  --padrao-tamanho: 9px 9px, 13px 13px;
+}
+
+.tema[data-estilo='civil']:not([data-tema='escuro']) {
+  --background: 30 6% 90%;
+  --foreground: 20 10% 10%;
+  --card: 30 8% 97%;
+  --card-foreground: 20 10% 10%;
+  --primary: 20 10% 10%;
+  --primary-foreground: 30 8% 97%;
+  --secondary: 30 6% 84%;
+  --secondary-foreground: 20 10% 10%;
+  --muted: 30 6% 84%;
+  --muted-foreground: 20 8% 32%;
+  --accent: 30 6% 87%;
+  --accent-foreground: 20 10% 10%;
+  --border: 30 6% 72%;
+  --input: 30 5% 55%;
+  --pontos: 30 6% 78%;
+}
+
+.tema[data-estilo='civil'][data-tema='escuro'] {
+  --background: 30 4% 11%;
+  --foreground: 40 20% 92%;
+  --card: 30 4% 15%;
+  --card-foreground: 40 20% 92%;
+  --primary: 40 20% 92%;
+  --primary-foreground: 30 4% 15%;
+  --secondary: 30 4% 20%;
+  --secondary-foreground: 40 20% 92%;
+  --muted: 30 4% 20%;
+  --muted-foreground: 35 10% 68%;
+  --accent: 30 4% 18%;
+  --accent-foreground: 40 20% 92%;
+  --border: 30 4% 26%;
+  --input: 30 4% 38%;
+  --pontos: 30 4% 19%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='civil']:not([data-tema]) {
+    --background: 30 4% 11%;
+    --foreground: 40 20% 92%;
+    --card: 30 4% 15%;
+    --card-foreground: 40 20% 92%;
+    --primary: 40 20% 92%;
+    --primary-foreground: 30 4% 15%;
+    --secondary: 30 4% 20%;
+    --secondary-foreground: 40 20% 92%;
+    --muted: 30 4% 20%;
+    --muted-foreground: 35 10% 68%;
+    --accent: 30 4% 18%;
+    --accent-foreground: 40 20% 92%;
+    --border: 30 4% 26%;
+    --input: 30 4% 38%;
+    --pontos: 30 4% 19%;
+  }
+}
+.tema[data-estilo='civil'] header { border-bottom: 5px solid transparent; border-image: repeating-linear-gradient(-45deg, #f2b705 0 10px, #161616 10px 20px) 5; }
+.tema[data-estilo='civil'] h1.font-dot { text-transform: uppercase; letter-spacing: -0.01em; font-weight: 400; }
+.tema[data-estilo='civil'] section > h2 { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; }
+.tema[data-estilo='civil'] section > h2::before { content: '▲'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+

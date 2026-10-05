@@ -121,6 +121,33 @@ export const DEFINICOES = {
       simbolos: "⚙⚙⚙⛭✦",
     },
   },
+  civil: {
+    nome: "Canteiro",
+    curso: "Engenharia Civil",
+    acento: "laranja",
+    forma: "quadrado",
+    descricao: "Concreto aparente, faixa de obra no topo e títulos pesados.",
+    amostra: {
+      fundo: "#1d1c1b",
+      texto: "#f1ece2",
+      fonte: "'Archivo Black', sans-serif",
+      titulo: "SIGAA",
+    },
+    piadas: {
+      saudacao: ["Tá tudo no prumo. Menos a média.", "Obra parada? Não, é só o JSF carregando.", "Seu cronograma tem mais atraso que obra pública.", "Cálculo estrutural da semana: muita carga, pouco apoio.", "Fator de segurança da prova: 1,0. Sem margem.", "Concreto leva 28 dias pra curar. Você, as férias.", "Sapata, viga, pilar e muito café.", "Recalque diferencial na autoestima detectado."],
+      'sem-aulas': ["Canteiro fechado hoje. Capacete no cabide."],
+      'sem-atividades': ["Nenhuma obra em andamento. Raridade."],
+      'sem-tarefas': ["Sem medição pendente."],
+      erro: ["O SIGAA desabou. Chamem o perito."],
+      carregando: ["concretando portal...", "esperando a cura (28 dias, brincadeira)...", "conferindo o prumo...", "descarregando o caminhão de dados..."],
+    },
+    segredo: {
+      titulo: "obra entregue",
+      texto: "No prazo e no orçamento. Isso sim é um easter egg.",
+      efeito: "chuva",
+      simbolos: "🧱🧱⛏🏗🦺",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
