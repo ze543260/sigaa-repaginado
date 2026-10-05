@@ -175,26 +175,42 @@ export function App({ pagina, onVerOriginal }: Props) {
   }, [configAberta]);
 
   const trocarTema = (e: MouseEvent<HTMLButtonElement>) => {
-    const semMovimento = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const el = raiz.current;
-    if (!document.startViewTransition || semMovimento || !el) return alternarTema();
-
-    // Dentro da transição só troca o atributo: re-renderizar o app inteiro ali atrasava o início da animação.
+    const semMovimento = !prefs.animacoes || matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (semMovimento || !el) return alternarTema();
     const proximo: Tema = tema === 'escuro' ? 'claro' : 'escuro';
-    const aplicar = () => {
-      el.classList.add('trocando-tema');
-      el.setAttribute('data-tema', proximo);
-      void el.offsetHeight;
-      el.classList.remove('trocando-tema');
-    };
 
+    // Cor de fundo do próximo modo, lida de um elemento solto com os mesmos atributos.
+    const sonda = document.createElement('div');
+    sonda.className = 'tema';
+    sonda.setAttribute('data-tema', proximo);
+    sonda.setAttribute('data-estilo', prefs.estilo);
+    sonda.setAttribute('data-acento', prefs.acento);
+    sonda.style.cssText = 'position:fixed;width:0;height:0;visibility:hidden';
+    document.body.append(sonda);
+    const cor = getComputedStyle(sonda).backgroundColor;
+    sonda.remove();
+
+    // Só transform e opacity: o WebView anima isso fora da thread principal. O tema troca uma vez, coberto pelo círculo.
     const { clientX: x, clientY: y } = e;
     const raio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-    const html = document.documentElement.style;
-    html.setProperty('--sigaa-x', `${x}px`);
-    html.setProperty('--sigaa-y', `${y}px`);
-    html.setProperty('--sigaa-r', `${raio}px`);
-    document.startViewTransition(aplicar).finished.finally(() => flushSync(alternarTema));
+    const circulo = document.createElement('div');
+    circulo.style.cssText = `position:fixed;left:${x - raio}px;top:${y - raio}px;width:${raio * 2}px;height:${raio * 2}px;border-radius:50%;background:${cor};z-index:2147483647;pointer-events:none;transform:scale(0);will-change:transform,opacity;transition:transform 420ms cubic-bezier(0.65,0,0.35,1),opacity 260ms ease-out`;
+    document.body.append(circulo);
+    requestAnimationFrame(() => {
+      circulo.style.transform = 'scale(1)';
+    });
+    window.setTimeout(() => {
+      el.classList.add('trocando-tema');
+      flushSync(alternarTema);
+      el.classList.remove('trocando-tema');
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          circulo.style.opacity = '0';
+          window.setTimeout(() => circulo.remove(), 300);
+        }),
+      );
+    }, 440);
   };
 
   const menu = pagina.tipo === 'portal-discente' ? pagina.portal.menu : [];
