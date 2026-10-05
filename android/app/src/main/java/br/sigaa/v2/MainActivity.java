@@ -62,11 +62,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle estado) {
         super.onCreate(estado);
-        script = Ota.script(this, lerAsset("sigaa.js"));
+        boolean compat = modoCompatibilidade(getIntent());
+        // Em compatibilidade usa a interface do APK: se a baixada for a culpada, ela fica de fora.
+        script = compat ? lerAsset("sigaa.js") : Ota.script(this, lerAsset("sigaa.js"));
         Ota.buscar(getApplicationContext());
 
         raiz = new FrameLayout(this);
         webView = new WebView(this);
+        // Desenho por software não depende da GPU: escapatória para aparelhos onde a tela fica preta.
+        if (compat) webView.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
         raiz.addView(webView);
         setContentView(raiz);
         if (estado == null) {
@@ -269,6 +273,20 @@ public class MainActivity extends Activity {
         }
     }
 
+    private boolean modoCompatibilidade(Intent intent) {
+        android.content.SharedPreferences p = getPreferences(MODE_PRIVATE);
+        if ("alternar".equals(intent.getStringExtra("compatibilidade"))) {
+            boolean ligado = !p.getBoolean("compatibilidade", false);
+            p.edit().putBoolean("compatibilidade", ligado).apply();
+            Toast.makeText(this, ligado
+                    ? "Modo de compatibilidade ligado. Use o mesmo atalho para desligar."
+                    : "Modo de compatibilidade desligado.", Toast.LENGTH_LONG).show();
+            // Sem isso, recriar a tela (girar, tema) alternaria de novo.
+            intent.removeExtra("compatibilidade");
+        }
+        return p.getBoolean("compatibilidade", false);
+    }
+
     void fimAbertura() {
         Ota.confirmar(this);
         if (abertura != null) abertura.sair();
@@ -313,6 +331,11 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.getBooleanExtra(Atualizador.EXTRA_INSTALAR, false)) atualizador.verificar(true);
+        if (intent.hasExtra("compatibilidade")) {
+            modoCompatibilidade(intent);
+            setIntent(intent);
+            recreate();
+        }
     }
 
     @Override

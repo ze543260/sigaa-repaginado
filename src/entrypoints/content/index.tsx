@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { detectarPagina } from '../../adapters/detectar-pagina';
+import { ProtecaoErro } from '../../ui/ProtecaoErro';
 import { App } from '../../ui/App';
 import { domPronto, ocultarOriginal } from './anti-flash';
 import { injetarEstiloDocumento } from './estilo-documento';
@@ -30,7 +31,11 @@ export default defineContentScript({
       zIndex: 2147483647,
       onMount: (container) => {
         const root = ReactDOM.createRoot(container);
-        root.render(<App pagina={pagina} onVerOriginal={() => ui.remove()} />);
+        root.render(
+          <ProtecaoErro aoFalhar={() => ui.remove()}>
+            <App pagina={pagina} onVerOriginal={() => ui.remove()} />
+          </ProtecaoErro>,
+        );
         return root;
       },
       onRemove: (root) => {

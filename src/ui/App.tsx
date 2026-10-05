@@ -31,6 +31,8 @@ import { Turma } from './Turma';
 interface Props {
   readonly pagina: Exclude<Pagina, { tipo: 'desconhecida' }>;
   readonly onVerOriginal: () => void;
+  /** Chamado depois do primeiro render completo: só aí a abertura do app pode sair. */
+  readonly aoMontar?: () => void;
 }
 
 // Downloads disparam beforeunload sem trocar de página; libera a tela depois disso.
@@ -67,7 +69,8 @@ function acoesDaTurma(turma: PaginaTurma): AcaoNavegacao[] {
   return turma.voltarPortal ? [{ id: 'portal', rotulo: 'Portal', icone: 'voltar', onClick: turma.voltarPortal }, ...abas] : abas;
 }
 
-export function App({ pagina, onVerOriginal }: Props) {
+export function App({ pagina, onVerOriginal, aoMontar }: Props) {
+  useEffect(() => aoMontar?.(), [aoMontar]);
   const controlePrefs = usePreferencias();
   const { prefs, alternarTema } = controlePrefs;
   const tema = prefs.tema;

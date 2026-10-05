@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_descricao">Próxima aula e sala</string>
+    <string name="atalho_compat_curto">Compatibilidade</string>
+    <string name="atalho_compat_longo">Modo de compatibilidade</string>
 </resources>

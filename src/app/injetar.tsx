@@ -4,6 +4,7 @@ import { detectarPagina } from '../adapters/detectar-pagina';
 import { injetarEstiloDocumento, type ArquivoFonte } from '../entrypoints/content/estilo-documento';
 import { plataforma, type LoginSalvo } from '../plataforma';
 import { App } from '../ui/App';
+import { ProtecaoErro } from '../ui/ProtecaoErro';
 import type { PonteAndroid, PonteInterface } from './ponte';
 
 declare const __CSS__: string;
@@ -40,13 +41,39 @@ function loginSalvo(android: PonteAndroid, pai: Window): LoginSalvo {
   };
 }
 
+// Em blocos: espalhar milhares de bytes em String.fromCharCode estoura a pilha.
+function base64(texto: string): string {
+  const bytes = new TextEncoder().encode(texto);
+  let binario = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) binario += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(binario);
+}
+
+const PRAZO_MONTAGEM_MS = 8000;
+
 function iniciar(): void {
   const pai = window.parent as Window & { __sigaaV2?: PonteInterface };
   const ponte = pai.__sigaaV2;
   if (!ponte) return;
 
-  const pagina = detectarPagina(new URL(pai.location.href), pai.document);
+  let montou = false;
+  const desistir = (erro?: unknown) => {
+    if (erro) console.error('[sigaa] interface falhou', erro);
+    if (!montou) ponte.mostrarOriginal();
+  };
+  // Rede de segurança: se a interface não montar a tempo, o SIGAA original volta a aparecer.
+  const vigia = window.setTimeout(() => desistir(new Error('montagem demorou demais')), PRAZO_MONTAGEM_MS);
+
+  let pagina;
+  try {
+    pagina = detectarPagina(new URL(pai.location.href), pai.document);
+  } catch (erro) {
+    window.clearTimeout(vigia);
+    desistir(erro);
+    return;
+  }
   if (pagina.tipo === 'desconhecida') {
+    window.clearTimeout(vigia);
     ponte.mostrarOriginal();
     return;
   }
@@ -56,8 +83,7 @@ function iniciar(): void {
   const android = ponte.android;
   if (android) {
     plataforma.login = loginSalvo(android, pai);
-    plataforma.salvarArquivo = (nome, mime, texto) =>
-      android.salvar(nome, mime, btoa(String.fromCharCode(...new TextEncoder().encode(texto))));
+    plataforma.salvarArquivo = (nome, mime, texto) => android.salvar(nome, mime, base64(texto));
     plataforma.agendarLembretes = (lembretes) => android.agendarLembretes(JSON.stringify(lembretes));
     plataforma.notificar = (titulo, texto) => android.notificar(titulo, texto);
     plataforma.bloqueio = { ativo: () => android.bloqueioAtivo(), definir: (ligado) => android.definirBloqueio(ligado) };
@@ -79,11 +105,25 @@ function iniciar(): void {
 
   const container = document.createElement('div');
   document.body.append(container);
-  ReactDOM.createRoot(container).render(<App pagina={pagina} onVerOriginal={ponte.mostrarOriginal} />);
+  const montada = () => {
+    if (montou) return;
+    montou = true;
+    window.clearTimeout(vigia);
+    // Dois quadros: o primeiro pinta a interface, o segundo garante que ela já está na tela antes da abertura sair.
+    requestAnimationFrame(() => requestAnimationFrame(() => ponte.android?.pronto?.()));
+  };
+  const falhou = (erro: unknown) => {
+    window.clearTimeout(vigia);
+    montou = false;
+    desistir(erro);
+  };
+  ReactDOM.createRoot(container).render(
+    <ProtecaoErro aoFalhar={falhou}>
+      <App pagina={pagina} onVerOriginal={ponte.mostrarOriginal} aoMontar={montada} />
+    </ProtecaoErro>,
+  );
 
   if (ponte.android) sincronizarTema(ponte.android);
-  // Dois quadros: o primeiro pinta a interface, o segundo garante que ela já está na tela antes da abertura sair.
-  requestAnimationFrame(() => requestAnimationFrame(() => ponte.android?.pronto?.()));
 }
 
 iniciar();
