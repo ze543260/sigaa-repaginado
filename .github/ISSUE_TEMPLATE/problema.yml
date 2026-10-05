@@ -1,0 +1,35 @@
+name: Algo não funcionou
+description: Uma tela quebrada, um dado errado ou um botão que não faz nada.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por avisar! **Não cole senha, matrícula, CPF nem notas** — print com dados pessoais só se você tampar antes.
+  - type: textarea
+    id: o-que
+    attributes:
+      label: O que aconteceu?
+      placeholder: Ex.: na aba Tarefas, o botão "Enviar resposta" não abre nada.
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que você esperava?
+  - type: input
+    id: tela
+    attributes:
+      label: Tela
+      description: Preenchido sozinho quando você usa o botão "Relatar problema" no app.
+      placeholder: portal, turma, tarefas, notas, caixa postal…
+  - type: input
+    id: versao
+    attributes:
+      label: Versão e plataforma
+      placeholder: 0.3.1 · Android 14 / Chrome 130
+  - type: input
+    id: aparelho
+    attributes:
+      label: Celular ou navegador
+      placeholder: Ex.: Redmi Note 12, Android 14

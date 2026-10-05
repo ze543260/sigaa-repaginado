@@ -14,6 +14,7 @@ import { TelaErro } from './TelaErro';
 import { CaixaPostalUI, CompositorUI, MensagemUI } from './CaixaPostalUI';
 import { Esqueleto } from './components/Graficos';
 import { plataforma } from '../plataforma';
+import { linkRelato, linkSugestao } from './relato';
 import { useManterSessao } from './sessao';
 import { PainelAparencia } from './PainelAparencia';
 import { ContextoPreferencias, usePreferencias, ZOOM, type Tema } from './tema';
@@ -238,6 +239,10 @@ export function App({ pagina, onVerOriginal }: Props) {
                     className="absolute right-0 top-full z-30 mt-2 w-80 origin-top-right animate-surgir rounded-3xl border bg-card p-5 text-card-foreground"
                   >
                     <PainelAparencia />
+                    <div className="mt-4 flex gap-2 border-t pt-4 text-xs">
+                      <a href={linkRelato(pagina)} target="_blank" rel="noreferrer" className="flex-1 rounded-full border py-2 text-center hover:bg-accent">Relatar problema</a>
+                      <a href={linkSugestao} target="_blank" rel="noreferrer" className="flex-1 rounded-full border py-2 text-center hover:bg-accent">Sugerir</a>
+                    </div>
                   </div>
                 </>
               )}
@@ -301,6 +306,14 @@ export function App({ pagina, onVerOriginal }: Props) {
                 </div>
               </details>
               {pagina.tipo === 'portal-discente' && <DadosPessoais portal={pagina.portal} />}
+              <div className="grid grid-cols-2 gap-2">
+                <a href={linkRelato(pagina)} target="_blank" rel="noreferrer" className="grid min-h-12 place-items-center rounded-full border text-sm">
+                  Relatar problema
+                </a>
+                <a href={linkSugestao} target="_blank" rel="noreferrer" className="grid min-h-12 place-items-center rounded-full border text-sm">
+                  Sugerir tela
+                </a>
+              </div>
               <button type="button" onClick={onVerOriginal} className="min-h-12 w-full rounded-full border text-sm">
                 Ver SIGAA original
               </button>

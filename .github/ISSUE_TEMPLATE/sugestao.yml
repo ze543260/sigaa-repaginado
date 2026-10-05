@@ -1,0 +1,16 @@
+name: Sugestão ou tela que falta
+description: Algo do SIGAA que ainda aparece no visual antigo ou uma ideia nova.
+labels: [sugestão]
+body:
+  - type: textarea
+    id: ideia
+    attributes:
+      label: O que você gostaria?
+      placeholder: Ex.: a tela de fóruns ainda está no visual original.
+    validations:
+      required: true
+  - type: input
+    id: tela
+    attributes:
+      label: Onde no SIGAA?
+      placeholder: Ex.: Turma › Fóruns
