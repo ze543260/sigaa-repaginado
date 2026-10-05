@@ -13,8 +13,9 @@ export interface Preferencias {
   readonly estilo: Estilo;
 }
 
-export type Estilo = 'minimalista' | 'terminal';
-export const ESTILOS: readonly Estilo[] = ['minimalista', 'terminal'];
+import { ESTILOS, type Estilo } from './estilos';
+
+export type { Estilo };
 
 export type Escala = 'compacta' | 'normal' | 'grande';
 export const ESCALAS: readonly Escala[] = ['compacta', 'normal', 'grande'];

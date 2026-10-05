@@ -1,4 +1,5 @@
 import { LogCompilacao, Surpresa, useSegredo } from './Surpresas';
+import { definicao } from './estilos';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { ehSecaoAtual } from '../domain/secao';
@@ -67,6 +68,7 @@ export function App({ pagina, onVerOriginal }: Props) {
   const tema = prefs.tema;
   const [configAberta, setConfigAberta] = useState(false);
   const segredo = useSegredo();
+  const logCarregando = definicao(prefs.estilo).piadas.carregando;
 
   // Guarda as cores reais do estilo para o anti-flash da próxima página pintar o esqueleto certo.
   useEffect(() => {
@@ -89,7 +91,7 @@ export function App({ pagina, onVerOriginal }: Props) {
           sonda.remove();
           return valor;
         };
-        plataforma.coresAbertura?.(JSON.stringify({ fundo: rgb(cores.fundo), texto: rgb(cores.texto), destaque: rgb(cores.destaque), estilo: prefs.estilo }));
+        plataforma.coresAbertura?.(JSON.stringify({ fundo: rgb(cores.fundo), texto: rgb(cores.texto), destaque: rgb(cores.destaque), estilo: prefs.estilo, forma: definicao(prefs.estilo).forma }));
       } catch {
         /* sem armazenamento: o anti-flash usa as cores padrão */
       }
@@ -291,7 +293,7 @@ export function App({ pagina, onVerOriginal }: Props) {
       >
         {navegando && pagina.tipo !== 'login' && (
           <div className="mx-auto max-w-3xl animate-entrar px-4 py-6 sm:px-6 sm:py-10" role="status" aria-label="Carregando">
-            {prefs.estilo === 'terminal' ? <LogCompilacao /> : <Esqueleto />}
+            {logCarregando ? <LogCompilacao linhas={logCarregando} /> : <Esqueleto />}
           </div>
         )}
         <div className={cn(navegando && pagina.tipo !== 'login' && 'hidden')}>

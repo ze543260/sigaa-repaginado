@@ -1,35 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { usarPreferencias, type Estilo } from './tema';
+import { definicao, type Contexto } from './estilos';
+import { usarPreferencias } from './tema';
 
-export type Contexto = 'saudacao' | 'sem-aulas' | 'sem-atividades' | 'sem-tarefas' | 'erro' | 'carregando';
-
-const PIADAS: Readonly<Record<Estilo, Partial<Record<Contexto, readonly string[]>>>> = {
-  terminal: {
-    saudacao: [
-      '$ sudo passar-em-calculo → Permission denied',
-      '$ git commit -m "agora vai" && git commit -m "agora vai mesmo"',
-      '$ ./estudar --amanha → Segmentation fault (core dumped)',
-      '$ cat motivacao.txt → No such file or directory',
-      '$ npm install cafe → added 1 package, 0 vulnerabilities',
-      '$ make prova → make: *** No rule to make target "prova"',
-      '$ ping professor → Request timed out',
-      '$ git blame codigo.c → você, 3 da manhã',
-      '$ while true; do estudar; done → ^C',
-      '$ echo $SONO → undefined',
-      '$ rm -rf /procrastinacao → Device or resource busy',
-      '$ python3 -c "import antigravity" → funciona, já o TFG...',
-    ],
-    'sem-aulas': ['while (!aula) { dormir(); }', 'aulas.filter(hoje) → []  // aproveita o garbage collection'],
-    'sem-atividades': ['$ ls tarefas/ → (vazio). git push --force no descanso.', 'Nenhuma tarefa. Isso é um bug ou uma feature?'],
-    'sem-tarefas': ['$ ls tarefas/ → (vazio)', 'return null; // por enquanto'],
-    erro: ['Kernel panic: o SIGAA não respondeu ao ping.', 'Exception in thread "main": SigaaForaDoArException'],
-    carregando: ['compilando portal.c...', 'linkando turmas.o...', 'resolvendo dependências do JSF...', 'aguardando o servidor (timeout 25 min)...', 'otimizando com -O3...'],
-  },
-  minimalista: {
-    'sem-aulas': ['Sem aulas hoje. Respira.'],
-    'sem-atividades': ['Nada pendente. Silêncio bom.'],
-  },
-};
+export type { Contexto };
 
 function sortear<T>(lista: readonly T[], semente: number): T | undefined {
   return lista[Math.abs(semente) % lista.length];
@@ -39,7 +12,7 @@ function sortear<T>(lista: readonly T[], semente: number): T | undefined {
 export function usePiada(contexto: Contexto): string | null {
   const { prefs } = usarPreferencias();
   return useMemo(() => {
-    const lista = PIADAS[prefs.estilo][contexto];
+    const lista = definicao(prefs.estilo).piadas[contexto];
     if (!lista || lista.length === 0) return null;
     const dia = Math.floor(Date.now() / 86_400_000);
     return sortear(lista, dia + contexto.length) ?? null;
@@ -69,8 +42,7 @@ export function PiadaDoContexto({ contexto, className }: { readonly contexto: Co
 }
 
 /** Log de "compilação" no lugar do esqueleto, só no estilo Terminal. */
-export function LogCompilacao() {
-  const linhas = PIADAS.terminal.carregando ?? [];
+export function LogCompilacao({ linhas }: { readonly linhas: readonly string[] }) {
   const [n, setN] = useState(1);
   useEffect(() => {
     const id = window.setInterval(() => setN((v) => Math.min(v + 1, linhas.length)), 380);
@@ -181,10 +153,23 @@ function FogosPontos({ cor }: { readonly cor: string }) {
   );
 }
 
-const MENSAGEM: Readonly<Record<Estilo, { readonly titulo: string; readonly texto: string }>> = {
-  terminal: { titulo: 'acesso root concedido', texto: 'Você achou o modo desenvolvedor. Nada mudou, mas agora você sabe que dá.' },
-  minimalista: { titulo: 'você achou', texto: 'Menos é mais. Mas um pouco de festa não faz mal.' },
-};
+function OndaSenoidal() {
+  const caminho = (amplitude: number, periodo: number) =>
+    Array.from({ length: 121 }, (_, i) => `${i ? 'L' : 'M'}${i * 10} ${50 + amplitude * Math.sin((i * 10 * 2 * Math.PI) / periodo)}`).join(' ');
+  return (
+    <svg viewBox="0 0 600 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+      {[
+        { a: 30, p: 200, cor: 'hsl(var(--destaque))', dur: '1.6s' },
+        { a: 18, p: 120, cor: 'currentColor', dur: '1.1s' },
+        { a: 42, p: 300, cor: 'hsl(var(--destaque-texto))', dur: '2.4s' },
+      ].map((o) => (
+        <path key={o.p} d={caminho(o.a, o.p)} fill="none" stroke={o.cor} strokeWidth="1.5" vectorEffect="non-scaling-stroke" opacity="0.8">
+          <animateTransform attributeName="transform" type="translate" from="0 0" to={`${-o.p} 0`} dur={o.dur} repeatCount="indefinite" />
+        </path>
+      ))}
+    </svg>
+  );
+}
 
 export function Surpresa({ onFechar }: { readonly onFechar: () => void }) {
   const { prefs } = usarPreferencias();
@@ -193,7 +178,7 @@ export function Surpresa({ onFechar }: { readonly onFechar: () => void }) {
     const id = window.setTimeout(onFechar, 6000);
     return () => window.clearTimeout(id);
   }, [onFechar]);
-  const msg = MENSAGEM[prefs.estilo];
+  const msg = definicao(prefs.estilo).segredo;
   return (
     <button
       type="button"
@@ -201,7 +186,7 @@ export function Surpresa({ onFechar }: { readonly onFechar: () => void }) {
       aria-label="Fechar surpresa"
       className="fixed inset-0 z-[60] overflow-hidden bg-background/90 text-foreground animate-entrar"
     >
-      {prefs.estilo === 'terminal' ? <ChuvaMatriz cor="#3ddc84" /> : <FogosPontos cor={cor} />}
+      {msg.efeito === 'matriz' ? <ChuvaMatriz cor="#3ddc84" /> : msg.efeito === 'onda' ? <OndaSenoidal /> : <FogosPontos cor={cor} />}
       <span className="relative z-10 grid h-full place-items-center p-8 text-center">
         <span className="space-y-3 rounded-3xl border bg-card/90 p-6">
           <span className="block font-dot text-3xl font-extrabold">{msg.titulo}</span>

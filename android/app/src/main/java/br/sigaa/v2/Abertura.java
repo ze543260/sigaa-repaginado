@@ -37,6 +37,7 @@ final class Abertura extends View {
     private final int fundo;
     private final int destaque;
     private final boolean terminal;
+    private final boolean quadrado;
     private float saida = 0f;
     private boolean saindo;
 
@@ -47,6 +48,7 @@ final class Abertura extends View {
         int b = escuro ? Color.BLACK : Color.rgb(0xED, 0xED, 0xED);
         int d = VERMELHO;
         boolean t = false;
+        boolean q = false;
         if (cores != null) {
             try {
                 org.json.JSONObject j = new org.json.JSONObject(cores);
@@ -54,6 +56,7 @@ final class Abertura extends View {
                 b = cor(j.optString("fundo"), b);
                 d = cor(j.optString("destaque"), d);
                 t = "terminal".equals(j.optString("estilo"));
+                q = "quadrado".equals(j.optString("forma"));
             } catch (org.json.JSONException e) {
                 // Cores inválidas: fica com o padrão.
             }
@@ -62,6 +65,7 @@ final class Abertura extends View {
         fundo = b;
         destaque = d;
         terminal = t;
+        quadrado = q;
         setBackgroundColor(fundo);
         setClickable(true);
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
@@ -75,7 +79,7 @@ final class Abertura extends View {
 
     /** Ponto redondo no minimalista, pixel quadrado no terminal. */
     private void ponto(Canvas canvas, float cx, float cy, float r) {
-        if (terminal) canvas.drawRect(cx - r, cy - r, cx + r, cy + r, tinta);
+        if (quadrado) canvas.drawRect(cx - r, cy - r, cx + r, cy + r, tinta);
         else canvas.drawCircle(cx, cy, r, tinta);
     }
 
@@ -183,8 +187,8 @@ final class Abertura extends View {
             for (float y = espaco / 2; y < getHeight(); y += espaco) {
                 float d = (float) Math.hypot(x - cx, y - cy);
                 if (d > alcance) continue;
-                tinta.setAlpha((int) ((terminal ? 40 : 28) * (1f - saida)));
-                if (terminal) {
+                tinta.setAlpha((int) ((quadrado ? 40 : 28) * (1f - saida)));
+                if (quadrado) {
                     canvas.drawRect(x - espaco / 2, y - espaco / 2, x + espaco / 2, y - espaco / 2 + raio, tinta);
                     canvas.drawRect(x - espaco / 2, y - espaco / 2, x - espaco / 2 + raio, y + espaco / 2, tinta);
                 } else {

@@ -303,3 +303,94 @@ details[open] > :not(summary) {
   0% { transform: translate(0, 0) scale(0.3); opacity: 1; }
   100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
 }
+
+/* ── Estilo "Osciloscópio (Engenharia Elétrica)" ── */
+.tema[data-estilo='eletrica'] {
+  --fonte-titulo: 'Space Mono', ui-monospace, monospace;
+  --raio-sm: 4px;
+  --raio-md: 6px;
+  --raio-lg: 8px;
+  --raio-xl: 8px;
+  --raio-2xl: 10px;
+  --raio-3xl: 14px;
+  --padrao: linear-gradient(hsl(var(--pontos)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--pontos)) 1px, transparent 1px), radial-gradient(hsl(var(--pontos)) 1px, transparent 1.3px);
+  --padrao-tamanho: 60px 60px, 60px 60px, 12px 12px;
+}
+
+.tema[data-estilo='eletrica']:not([data-tema='escuro']) {
+  --background: 200 30% 95%;
+  --foreground: 215 55% 12%;
+  --card: 200 40% 99%;
+  --card-foreground: 215 55% 12%;
+  --primary: 215 55% 12%;
+  --primary-foreground: 200 40% 99%;
+  --secondary: 205 25% 88%;
+  --secondary-foreground: 215 55% 12%;
+  --muted: 205 25% 88%;
+  --muted-foreground: 210 25% 32%;
+  --accent: 205 30% 91%;
+  --accent-foreground: 215 55% 12%;
+  --border: 205 25% 78%;
+  --input: 205 20% 62%;
+  --pontos: 200 30% 85%;
+}
+
+.tema[data-estilo='eletrica'][data-tema='escuro'] {
+  --background: 215 45% 6%;
+  --foreground: 185 70% 88%;
+  --card: 215 40% 9%;
+  --card-foreground: 185 70% 88%;
+  --primary: 185 70% 88%;
+  --primary-foreground: 215 40% 9%;
+  --secondary: 215 30% 14%;
+  --secondary-foreground: 185 70% 88%;
+  --muted: 215 30% 14%;
+  --muted-foreground: 195 25% 65%;
+  --accent: 215 32% 12%;
+  --accent-foreground: 185 70% 88%;
+  --border: 205 40% 20%;
+  --input: 205 30% 32%;
+  --pontos: 200 45% 13%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='eletrica']:not([data-tema]) {
+    --background: 215 45% 6%;
+    --foreground: 185 70% 88%;
+    --card: 215 40% 9%;
+    --card-foreground: 185 70% 88%;
+    --primary: 185 70% 88%;
+    --primary-foreground: 215 40% 9%;
+    --secondary: 215 30% 14%;
+    --secondary-foreground: 185 70% 88%;
+    --muted: 215 30% 14%;
+    --muted-foreground: 195 25% 65%;
+    --accent: 215 32% 12%;
+    --accent-foreground: 185 70% 88%;
+    --border: 205 40% 20%;
+    --input: 205 30% 32%;
+    --pontos: 200 45% 13%;
+  }
+}
+.tema[data-estilo='eletrica'] h1.font-dot::after {
+  content: ' ∿';
+  color: hsl(var(--destaque-texto));
+  display: inline-block;
+  animation: onda-titulo 1.6s ease-in-out infinite;
+}
+.tema[data-estilo='eletrica'] section > h2::before {
+  content: '⏚';
+  margin-right: 1ch;
+  color: hsl(var(--destaque-texto));
+}
+.tema[data-estilo='eletrica'][data-tema='escuro'] .font-dot {
+  text-shadow: 0 0 10px hsl(185 90% 60% / 0.45);
+}
+.tema[data-estilo='eletrica'] header {
+  box-shadow: 0 1px 0 hsl(var(--destaque) / 0.45);
+}
+@keyframes onda-titulo {
+  50% { transform: translateY(-0.12em) scaleX(1.15); }
+}
+.sem-animacao h1.font-dot::after { animation: none; }
+
