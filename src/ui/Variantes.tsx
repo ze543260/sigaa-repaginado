@@ -1,4 +1,4 @@
-import { horaConfirmada, siglaDisciplina } from '../domain/horario';
+import { horaConfirmada, horariosDoCodigo, siglaDisciplina } from '../domain/horario';
 import { tituloBr } from '../domain/texto';
 import type { Atividade, Turma } from '../domain/types';
 import { cn } from './cn';
@@ -15,7 +15,7 @@ function useHoje(turmas: readonly Turma[]) {
     const estado: Estado = !tempo ? null : agora >= tempo.fim ? 'passou' : agora >= tempo.inicio ? 'agora' : 'depois';
     const aprox = horaConfirmada(primeira) ? '' : '~';
     const quando = tempo ? `${aprox}${hhmm(tempo.inicio)}-${hhmm(tempo.fim)}` : `${primeira.turno}${primeira.aula}-${ultima.turno}${ultima.aula}`;
-    return { turma, estado, quando };
+    return { turma, estado, quando, tempo };
   });
 }
 
@@ -267,6 +267,115 @@ export function BateriaSolar({ valor }: { readonly valor: number }) {
         </svg>
       </div>
       <span className="h-3 w-1 rounded-r-sm bg-foreground/70" />
+    </div>
+  );
+}
+
+const INICIO_DIA = 7;
+const FIM_DIA = 23;
+const posicao = (d: Date) => ((d.getHours() + d.getMinutes() / 60 - INICIO_DIA) / (FIM_DIA - INICIO_DIA)) * 100;
+
+/** Aulas do dia sobre uma régua de horas: como onda quadrada (osciloscópio) ou barras de cronograma (canteiro). */
+export function LinhaDoTempo({ turmas, modo }: { readonly turmas: readonly Turma[]; readonly modo: 'onda' | 'gantt' }) {
+  const agora = useAgora();
+  const hoje = useHoje(turmas).filter((a) => a.tempo);
+  if (hoje.length === 0) return <p className="px-1 font-mono text-xs text-muted-foreground">{modo === 'onda' ? 'sinal em nível baixo · sem aulas hoje' : 'canteiro parado · sem aulas hoje'}</p>;
+  const cursor = posicao(agora);
+  const horas = [7, 10, 13, 16, 19, 22];
+
+  if (modo === 'onda') {
+    let d = 'M0 40';
+    for (const { tempo } of hoje) {
+      const a = posicao(tempo!.inicio);
+      const b = posicao(tempo!.fim);
+      d += ` L${a} 40 L${a} 8 L${b} 8 L${b} 40`;
+    }
+    d += ' L100 40';
+    return (
+      <Card className="space-y-3 p-4">
+        <div className="relative">
+          <svg viewBox="0 0 100 48" preserveAspectRatio="none" className="h-20 w-full" aria-hidden="true">
+            {[0, 25, 50, 75, 100].map((x) => <line key={x} x1={x} x2={x} y1="0" y2="48" stroke="hsl(var(--border))" strokeWidth="0.3" vectorEffect="non-scaling-stroke" />)}
+            <line x1="0" x2="100" y1="24" y2="24" stroke="hsl(var(--border))" strokeDasharray="1 1" vectorEffect="non-scaling-stroke" />
+            <path d={d} fill="none" stroke="hsl(var(--destaque))" strokeWidth="2" vectorEffect="non-scaling-stroke" className="drop-shadow-[0_0_4px_hsl(var(--destaque))]" />
+            {cursor >= 0 && cursor <= 100 && <line x1={cursor} x2={cursor} y1="0" y2="48" stroke="hsl(var(--foreground))" strokeWidth="1" strokeDasharray="2 2" vectorEffect="non-scaling-stroke" />}
+          </svg>
+          <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
+            {horas.map((h) => <span key={h}>{h}h</span>)}
+          </div>
+        </div>
+        <ul className="space-y-1 font-mono text-xs">
+          {hoje.map(({ turma, quando, estado }, n) => (
+            <li key={turma.codigo || turma.nome}>
+              <button type="button" onClick={turma.acessar} className={cn('flex w-full gap-2 text-left hover:underline', estado === 'passou' && 'opacity-50')}>
+                <span className={cn(estado === 'agora' && 'text-destaque-texto')}>CH{n + 1}</span>
+                <span className="text-muted-foreground">{quando}</span>
+                <span className="min-w-0 truncate">{tituloBr(turma.nome)}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="space-y-2 p-4">
+      <div className="flex justify-between pl-[30%] font-mono text-[10px] text-muted-foreground">
+        {horas.map((h) => <span key={h}>{h}h</span>)}
+      </div>
+      {hoje.map(({ turma, tempo, estado }) => {
+        const a = posicao(tempo!.inicio);
+        const b = posicao(tempo!.fim);
+        return (
+          <button key={turma.codigo || turma.nome} type="button" onClick={turma.acessar} className={cn('flex w-full items-center gap-2 text-left', estado === 'passou' && 'opacity-50')}>
+            <span className="w-[30%] shrink-0 truncate text-xs font-semibold uppercase">{siglaDisciplina(turma.nome)}</span>
+            <span className="relative h-6 flex-1 bg-secondary">
+              <span
+                className="absolute inset-y-0"
+                style={{
+                  left: `${a}%`,
+                  width: `${b - a}%`,
+                  background: estado === 'agora' ? 'repeating-linear-gradient(-45deg, #f2b705 0 6px, #161616 6px 12px)' : 'hsl(var(--destaque))',
+                }}
+              />
+              {cursor >= 0 && cursor <= 100 && <span className="absolute inset-y-[-4px] w-0.5 bg-foreground" style={{ left: `${cursor}%` }} />}
+            </span>
+          </button>
+        );
+      })}
+    </Card>
+  );
+}
+
+/** Turmas como lista de peças de um desenho técnico. */
+export function ListaPecas({ turmas }: { readonly turmas: readonly Turma[] }) {
+  const celula = 'border border-foreground/40 px-2 py-1.5';
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse border-2 border-foreground/60 text-left text-xs uppercase tracking-wide">
+        <thead>
+          <tr className="font-semibold">
+            <th className={cn(celula, 'w-10 text-center')}>Item</th>
+            <th className={celula}>Denominação</th>
+            <th className={cn(celula, 'w-12 text-center')}>Qtd</th>
+            <th className={celula}>Ref.</th>
+          </tr>
+        </thead>
+        <tbody>
+          {turmas.map((t, n) => (
+            <tr key={t.codigo || t.nome} onClick={t.acessar} className="cursor-pointer hover:bg-accent">
+              <td className={cn(celula, 'text-center font-mono')}>{String(n + 1).padStart(2, '0')}</td>
+              <td className={celula}>
+                <button type="button" className="text-left normal-case tracking-normal">{tituloBr(t.nome)}</button>
+              </td>
+              <td className={cn(celula, 'text-center font-mono')}>{horariosDoCodigo(t.horario).length || '—'}</td>
+              <td className={cn(celula, 'whitespace-nowrap font-mono normal-case')}>{t.horario}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="mt-1 text-right font-mono text-[10px] uppercase text-muted-foreground">Qtd = aulas por semana</p>
     </div>
   );
 }

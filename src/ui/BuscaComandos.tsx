@@ -7,11 +7,12 @@ interface Props {
   readonly itens: readonly ItemMenu[];
 }
 
-interface Comando {
+export interface Comando {
   readonly caminho: string;
   readonly rotulo: string;
   readonly abrir: () => void;
   readonly chave: string;
+  readonly fixavel?: boolean;
 }
 
 const normalizar = (s: string): string =>
@@ -23,7 +24,7 @@ export function achatar(itens: readonly ItemMenu[], caminho: readonly string[] =
     if (item.filhos.length > 0) return achatar(item.filhos, [...caminho, item.rotulo]);
     if (!item.abrir) return [];
     const trilha = caminho.join(' › ');
-    return [{ caminho: trilha, rotulo: item.rotulo, abrir: item.abrir, chave: normalizar(`${trilha} ${item.rotulo}`) }];
+    return [{ caminho: trilha, rotulo: item.rotulo, abrir: item.abrir, chave: normalizar(`${trilha} ${item.rotulo}`), fixavel: true }];
   });
 }
 
@@ -71,13 +72,15 @@ export function Favoritos({ itens, className }: Props & { readonly className?: s
   );
 }
 
-export function BuscaComandos({ itens }: Props) {
+export const comando = (caminho: string, rotulo: string, abrir: () => void): Comando => ({ caminho, rotulo, abrir, chave: normalizar(`${caminho} ${rotulo}`) });
+
+export function BuscaComandos({ itens, extras = [] }: Props & { readonly extras?: readonly Comando[] }) {
   const [favoritos, alternarFavorito] = useConjunto(CHAVE_FAVORITOS);
   const [aberto, setAberto] = useState(false);
   const [busca, setBusca] = useState('');
   const [ativo, setAtivo] = useState(0);
   const campo = useRef<HTMLInputElement>(null);
-  const comandos = useMemo(() => achatar(itens), [itens]);
+  const comandos = useMemo(() => [...extras, ...achatar(itens)], [itens, extras]);
 
   const resultados = useMemo(() => {
     const termos = normalizar(busca).split(/\s+/).filter(Boolean);
@@ -152,7 +155,7 @@ export function BuscaComandos({ itens }: Props) {
                 setAtivo(0);
               }}
               onKeyDown={navegar}
-              placeholder="Digite um comando ou pesquise…"
+              placeholder="Turmas, atividades, novidades ou menu…"
               className="h-14 w-full border-b bg-transparent px-5 text-base outline-none placeholder:text-muted-foreground"
             />
             <ul className="max-h-80 overflow-y-auto p-1">
@@ -170,7 +173,7 @@ export function BuscaComandos({ itens }: Props) {
                     <span className="text-sm">{c.rotulo}</span>
                     <span className="text-xs text-muted-foreground">{c.caminho}</span>
                   </button>
-                  <button
+                  {c.fixavel && <button
                     type="button"
                     aria-pressed={favoritos.has(c.chave)}
                     aria-label={favoritos.has(c.chave) ? `Remover ${c.rotulo} dos favoritos` : `Fixar ${c.rotulo} nos favoritos`}
@@ -178,7 +181,7 @@ export function BuscaComandos({ itens }: Props) {
                     className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-full active:scale-90', favoritos.has(c.chave) ? 'text-destaque-texto' : 'text-muted-foreground')}
                   >
                     <Estrela cheia={favoritos.has(c.chave)} />
-                  </button>
+                  </button>}
                 </li>
               ))}
             </ul>

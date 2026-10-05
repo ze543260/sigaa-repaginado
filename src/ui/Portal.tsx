@@ -14,7 +14,7 @@ import { usarPreferencias } from './tema';
 import { Button } from './components/Button';
 import { Card, CardContent, CardHeader, CardTitle } from './components/Card';
 import { BarraPontos, ContagemPontos, Sinal } from './components/Glifos';
-import { BateriaSolar, HudRetro, KanbanAtividades, LadderHoje, PlanilhaTurmas, TabelaPeriodicaTurmas, TerminalHoje, TerminalTurmas } from './Variantes';
+import { BateriaSolar, HudRetro, KanbanAtividades, LadderHoje, LinhaDoTempo, ListaPecas, PlanilhaTurmas, TabelaPeriodicaTurmas, TerminalHoje, TerminalTurmas } from './Variantes';
 import { AnelProgresso, GraficoBarras } from './components/Graficos';
 import { cn } from './cn';
 import { GradeSemanal } from './GradeSemanal';
@@ -324,6 +324,8 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
             <TerminalHoje turmas={portal.turmas} />
           ) : estilo === 'controle' ? (
             <LadderHoje turmas={portal.turmas} />
+          ) : estilo === 'eletrica' || estilo === 'civil' ? (
+            <LinhaDoTempo turmas={portal.turmas} modo={estilo === 'eletrica' ? 'onda' : 'gantt'} />
           ) : (
             <AulasDeHoje turmas={portal.turmas} />
           )}
@@ -382,6 +384,8 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
             <PlanilhaTurmas turmas={portal.turmas} />
           ) : estilo === 'quimica' ? (
             <TabelaPeriodicaTurmas turmas={portal.turmas} />
+          ) : estilo === 'mecanica' ? (
+            <ListaPecas turmas={portal.turmas} />
           ) : estilo === 'terminal' ? (
             <TerminalTurmas turmas={portal.turmas} />
           ) : (
@@ -495,6 +499,25 @@ function useLembretes(portal: PortalDiscente, feita: (a: Atividade) => boolean):
           aula: { nome: t.nome, local: t.local, inicio, fim: intervalo.fim.getTime() },
         });
       }
+    }
+
+    for (let d = 0; d < 7; d++) {
+      const manha = new Date(agora + d * DIA_MS);
+      manha.setHours(7, 0, 0, 0);
+      const aulas = lembretes
+        .filter((l) => l.aula && new Date(l.aula.inicio).toDateString() === manha.toDateString())
+        .sort((x, y) => x.aula!.inicio - y.aula!.inicio)
+        .map((l) => `${new Date(l.aula!.inicio).toTimeString().slice(0, 5)} ${tituloBr(l.aula!.nome)}`);
+      const prazos = portal.atividades
+        .filter((a) => a.status !== 'passada' && !feita(a) && lerData(a.data)?.toDateString() === manha.toDateString())
+        .map((a) => `Vence hoje: ${a.descricao}`);
+      if (aulas.length + prazos.length === 0) continue;
+      lembretes.push({
+        id: `resumo-${manha.toDateString()}`,
+        titulo: aulas.length ? `Hoje: ${aulas.length} ${aulas.length === 1 ? 'aula' : 'aulas'}${prazos.length ? ` e ${prazos.length} prazo${prazos.length > 1 ? 's' : ''}` : ''}` : 'Prazo hoje',
+        texto: [...aulas, ...prazos].join('\n'),
+        quando: manha.getTime(),
+      });
     }
 
     for (const a of portal.atividades) {

@@ -1,12 +1,13 @@
 import { AvisoAtualizacao } from './AvisoAtualizacao';
 import { LogCompilacao, Surpresa, useSegredo } from './Surpresas';
 import { definicao } from './estilos';
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { ehSecaoAtual } from '../domain/secao';
 import type { ItemMenu, Pagina, PaginaTurma } from '../domain/types';
 import { cn } from './cn';
-import { abrirBusca, BuscaComandos } from './BuscaComandos';
+import { abrirBusca, BuscaComandos, comando } from './BuscaComandos';
+import { tituloBr } from '../domain/texto';
 import { Button } from './components/Button';
 import { BarraLateral, GavetaMenu } from './MenuLateral';
 import { abrirRelato, aoPedirRelato, registrarErros } from './relato';
@@ -202,6 +203,17 @@ export function App({ pagina, onVerOriginal }: Props) {
             filhos: secao.itens.map((i) => ({ rotulo: i.rotulo, separador: false, abrir: i.abrir, filhos: [] })),
           }))
         : [];
+  const extrasBusca = useMemo(
+    () =>
+      pagina.tipo !== 'portal-discente'
+        ? []
+        : [
+            ...pagina.portal.turmas.map((t) => comando('Turma', tituloBr(t.nome), t.acessar)),
+            ...pagina.portal.atividades.flatMap((a) => (a.abrir ? [comando(`Atividade · ${tituloBr(a.turma)} · ${a.data}`, a.descricao, a.abrir)] : [])),
+            ...pagina.portal.atualizacoes.flatMap((a) => (a.abrir ? [comando(`Novidade · ${tituloBr(a.turma)}`, a.descricao, a.abrir)] : [])),
+          ],
+    [pagina],
+  );
   const irParaAba = (nova: AbaPortal) => {
     if (nova === aba) {
       raiz.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -279,7 +291,7 @@ export function App({ pagina, onVerOriginal }: Props) {
           </span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
-            {menu.length > 0 && <BuscaComandos itens={menu} />}
+            {menu.length > 0 && <BuscaComandos itens={menu} extras={extrasBusca} />}
             {menu.length > 0 && (
               <Button variant="ghost" size="sm" onClick={abrirBusca} aria-label="Buscar no SIGAA" className="w-10 px-0 md:hidden">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
