@@ -1079,3 +1079,77 @@ details[open] > :not(summary) {
 @keyframes girar-sol { to { transform: rotate(360deg); } }
 .sem-animacao h1.font-dot::after { animation: none; }
 
+
+/* ── Estilo "Tabela periódica (Química)" ── */
+.tema[data-estilo='quimica'] {
+  --fonte-titulo: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --raio-sm: 4px;
+  --raio-md: 4px;
+  --raio-lg: 4px;
+  --raio-xl: 4px;
+  --raio-2xl: 4px;
+  --raio-3xl: 4px;
+  --raio-pilula: 6px;
+  --padrao: linear-gradient(hsl(var(--pontos)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--pontos)) 1px, transparent 1px);
+  --padrao-tamanho: 44px 52px;
+}
+
+.tema[data-estilo='quimica']:not([data-tema='escuro']) {
+  --background: 180 15% 95%;
+  --foreground: 190 50% 12%;
+  --card: 180 20% 99%;
+  --card-foreground: 190 50% 12%;
+  --primary: 190 50% 12%;
+  --primary-foreground: 180 20% 99%;
+  --secondary: 180 15% 89%;
+  --secondary-foreground: 190 50% 12%;
+  --muted: 180 15% 89%;
+  --muted-foreground: 190 20% 32%;
+  --accent: 180 18% 92%;
+  --accent-foreground: 190 50% 12%;
+  --border: 180 15% 78%;
+  --input: 180 12% 60%;
+  --pontos: 180 15% 87%;
+}
+
+.tema[data-estilo='quimica'][data-tema='escuro'] {
+  --background: 195 35% 8%;
+  --foreground: 175 40% 92%;
+  --card: 195 30% 12%;
+  --card-foreground: 175 40% 92%;
+  --primary: 175 40% 92%;
+  --primary-foreground: 195 30% 12%;
+  --secondary: 195 25% 17%;
+  --secondary-foreground: 175 40% 92%;
+  --muted: 195 25% 17%;
+  --muted-foreground: 180 18% 70%;
+  --accent: 195 25% 15%;
+  --accent-foreground: 175 40% 92%;
+  --border: 195 22% 24%;
+  --input: 195 18% 36%;
+  --pontos: 195 30% 14%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='quimica']:not([data-tema]) {
+    --background: 195 35% 8%;
+    --foreground: 175 40% 92%;
+    --card: 195 30% 12%;
+    --card-foreground: 175 40% 92%;
+    --primary: 175 40% 92%;
+    --primary-foreground: 195 30% 12%;
+    --secondary: 195 25% 17%;
+    --secondary-foreground: 175 40% 92%;
+    --muted: 195 25% 17%;
+    --muted-foreground: 180 18% 70%;
+    --accent: 195 25% 15%;
+    --accent-foreground: 175 40% 92%;
+    --border: 195 22% 24%;
+    --input: 195 18% 36%;
+    --pontos: 195 30% 14%;
+  }
+}
+.tema[data-estilo='quimica'] h1.font-dot { font-weight: 600; }
+.tema[data-estilo='quimica'] h1.font-dot::before { content: 'Sg'; display: inline-grid; place-items: center; font-size: 0.42em; width: 2.1em; height: 2.1em; margin-right: 0.35em; vertical-align: 0.35em; border: 2px solid hsl(var(--destaque)); border-radius: 4px; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='quimica'] section > h2::before { content: '⚗'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+

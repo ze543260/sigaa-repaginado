@@ -337,6 +337,33 @@ export const DEFINICOES = {
       simbolos: "☀⚡☀✦⚡",
     },
   },
+  quimica: {
+    nome: "Tabela periódica",
+    curso: "Química",
+    acento: "verde",
+    forma: "quadrado",
+    descricao: "Grade de elementos no fundo, título como elemento químico e tons de laboratório.",
+    amostra: {
+      fundo: "#0b171b",
+      texto: "#e2f5f2",
+      fonte: "'Space Grotesk', sans-serif",
+      titulo: "[Sg] sigaa",
+    },
+    piadas: {
+      saudacao: ["Reação da semana: estudante + prova → lágrimas (exotérmica).", "Seu nível de energia está abaixo da energia de ativação.", "Equilíbrio químico: dormir ⇌ estudar.", "pH do seu humor hoje: 3,2.", "Catalisador recomendado: café.", "Você é um gás nobre: não reage a nada antes das 10h.", "Titulação da paciência: ponto de viragem atingido.", "Ligação covalente com o sofá detectada."],
+      'sem-aulas': ["Reagente limitante: aulas. Nenhuma hoje."],
+      'sem-atividades': ["Nada pendente. Solução em equilíbrio."],
+      'sem-tarefas': ["Nenhum reagente no béquer."],
+      erro: ["O SIGAA precipitou. Filtrar e tentar de novo."],
+      carregando: ["balanceando a equação...", "aquecendo o bico de Bunsen...", "titulando o servidor...", "esperando o equilíbrio..."],
+    },
+    segredo: {
+      titulo: "reação concluída",
+      texto: "Rendimento de 100%. Nenhum químico acredita, mas tá aí.",
+      efeito: "chuva",
+      simbolos: "⚗🧪⚛⚗🧪",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
