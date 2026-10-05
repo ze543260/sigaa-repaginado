@@ -1,0 +1,13 @@
+node_modules
+.output
+.wxt
+web-ext.config.ts
+.vivaldi-profile
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/sigaa.js
+*.apk

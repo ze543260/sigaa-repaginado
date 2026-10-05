@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícone: grade de pontos com um ponto vermelho, no estilo da interface. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#000000" android:pathData="M0,0h108v108h-108z" />
+    <path android:fillColor="#F5F5F5" android:pathData="M38,42m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#F5F5F5" android:pathData="M54,42m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#F5F5F5" android:pathData="M70,42m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#F5F5F5" android:pathData="M38,58m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#F5F5F5" android:pathData="M54,58m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#D71921" android:pathData="M70,58m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#F5F5F5" android:pathData="M38,74m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#3A3A3A" android:pathData="M54,74m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <path android:fillColor="#3A3A3A" android:pathData="M70,74m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+</vector>

@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tema {
+  --background: 0 0% 93%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 90%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 34%;
+  --accent: 0 0% 94%;
+  --accent-foreground: 0 0% 0%;
+  --border: 0 0% 82%;
+  --input: 0 0% 70%;
+  --ring: 357 80% 47%;
+  --destaque: 357 80% 47%;
+  --destaque-texto: 357 82% 39%;
+  --pontos: 0 0% 78%;
+  color-scheme: light;
+}
+
+.tema[data-tema='escuro'] {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 96%;
+  --primary: 0 0% 96%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 14%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 64%;
+  --accent: 0 0% 12%;
+  --accent-foreground: 0 0% 96%;
+  --border: 0 0% 18%;
+  --input: 0 0% 30%;
+  --destaque-texto: 4 100% 66%;
+  --pontos: 0 0% 16%;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema:not([data-tema]) {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 96%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 96%;
+    --border: 0 0% 18%;
+    --input: 0 0% 30%;
+    --destaque-texto: 4 100% 66%;
+    --pontos: 0 0% 16%;
+    color-scheme: dark;
+  }
+}
+
+/* Acentos: "fill" recebe texto branco (≥4.5:1); "texto" é usado sobre o fundo de cada tema (≥4.5:1). */
+.tema[data-acento='laranja'] { --destaque: 17 88% 40%; --ring: 17 88% 40%; --destaque-texto: 15 79% 34%; }
+.tema[data-acento='verde'] { --destaque: 142 72% 29%; --ring: 142 72% 29%; --destaque-texto: 142 64% 24%; }
+.tema[data-acento='azul'] { --destaque: 221 83% 53%; --ring: 221 83% 53%; --destaque-texto: 224 76% 48%; }
+.tema[data-acento='violeta'] { --destaque: 262 83% 58%; --ring: 262 83% 58%; --destaque-texto: 263 70% 50%; }
+.tema[data-acento='rosa'] { --destaque: 336 78% 42%; --ring: 336 78% 42%; --destaque-texto: 336 78% 42%; }
+
+.tema[data-tema='escuro'][data-acento='laranja'] { --destaque-texto: 27 96% 61%; }
+.tema[data-tema='escuro'][data-acento='verde'] { --destaque-texto: 142 69% 58%; }
+.tema[data-tema='escuro'][data-acento='azul'] { --destaque-texto: 213 94% 68%; }
+.tema[data-tema='escuro'][data-acento='violeta'] { --destaque-texto: 255 92% 76%; }
+.tema[data-tema='escuro'][data-acento='rosa'] { --destaque-texto: 330 86% 70%; }
+
+@media (prefers-color-scheme: dark) {
+  .tema:not([data-tema])[data-acento='laranja'] { --destaque-texto: 27 96% 61%; }
+  .tema:not([data-tema])[data-acento='verde'] { --destaque-texto: 142 69% 58%; }
+  .tema:not([data-tema])[data-acento='azul'] { --destaque-texto: 213 94% 68%; }
+  .tema:not([data-tema])[data-acento='violeta'] { --destaque-texto: 255 92% 76%; }
+  .tema:not([data-tema])[data-acento='rosa'] { --destaque-texto: 330 86% 70%; }
+}
+
+.tema {
+  background-color: hsl(var(--background));
+  background-image: radial-gradient(hsl(var(--pontos)) 1px, transparent 1.2px);
+  background-size: 14px 14px;
+}
+
+.tema.sem-pontos {
+  background-image: none;
+}
+
+/* Preferência do app: equivale a prefers-reduced-motion, mas escolhida pela pessoa. */
+.tema.sem-animacao *,
+.tema.sem-animacao *::before,
+.tema.sem-animacao *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+details[open] > :not(summary) {
+  animation: entrar 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+.cascata > * {
+  animation: entrar 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.cascata > :nth-child(2) { animation-delay: 40ms; }
+.cascata > :nth-child(3) { animation-delay: 80ms; }
+.cascata > :nth-child(4) { animation-delay: 120ms; }
+.cascata > :nth-child(5) { animation-delay: 160ms; }
+.cascata > :nth-child(n + 6) { animation-delay: 200ms; }
+
+@keyframes pulinho {
+  40% { transform: translateY(-3px) scale(1.08); }
+}
+.pulinho {
+  animation: pulinho 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+* {
+  @apply border-border;
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@keyframes pulso {
+  50% { opacity: 0.45; }
+}
+
+.pulso {
+  animation: pulso 2.4s ease-in-out infinite;
+}
+
+.trocando-tema,
+.trocando-tema * {
+  transition: none !important;
+}
+
+.carregando {
+  background-image: radial-gradient(circle, hsl(var(--destaque)) 1.5px, transparent 2px);
+  background-size: 12px 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@keyframes desenhar {
+  from { stroke-dasharray: 0 var(--comprimento); }
+}
+.desenhar {
+  animation: desenhar 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes crescer {
+  from { transform: scaleX(0); }
+}
+.crescer {
+  transform-box: fill-box;
+  transform-origin: left;
+  animation: crescer 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.sem-animacao .desenhar,
+.sem-animacao .crescer {
+  animation: none;
+}
