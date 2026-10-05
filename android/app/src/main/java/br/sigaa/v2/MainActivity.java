@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
     private WebView webView;
     private FrameLayout raiz;
     private String script;
+    private static final int ESCOLHER_ARQUIVO = 7;
+    private android.webkit.ValueCallback<Uri[]> arquivosPendentes;
     private Bloqueio bloqueio;
     private Atualizador atualizador;
 
@@ -128,6 +130,42 @@ public class MainActivity extends Activity {
             @Override
             public void onPageStarted(WebView view, String url, android.graphics.Bitmap icone) {
                 if (!injetaNoInicio && url.startsWith(ORIGEM_SIGAA)) view.evaluateJavascript(script, null);
+            }
+        });
+
+        webView.setWebChromeClient(new android.webkit.WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, android.webkit.ValueCallback<Uri[]> retorno, FileChooserParams params) {
+                if (arquivosPendentes != null) arquivosPendentes.onReceiveValue(null);
+                arquivosPendentes = retorno;
+                try {
+                    startActivityForResult(params.createIntent(), ESCOLHER_ARQUIVO);
+                } catch (android.content.ActivityNotFoundException e) {
+                    arquivosPendentes = null;
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String mensagem, android.webkit.JsResult resultado) {
+                new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setMessage(mensagem)
+                        .setPositiveButton("Sim", (d, w) -> resultado.confirm())
+                        .setNegativeButton("Não", (d, w) -> resultado.cancel())
+                        .setOnCancelListener(d -> resultado.cancel())
+                        .show();
+                return true;
+            }
+
+            @Override
+            public boolean onJsAlert(WebView view, String url, String mensagem, android.webkit.JsResult resultado) {
+                new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setMessage(mensagem)
+                        .setPositiveButton("OK", (d, w) -> resultado.confirm())
+                        .setOnCancelListener(d -> resultado.confirm())
+                        .show();
+                return true;
             }
         });
 
@@ -243,6 +281,14 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle estado) {
         super.onSaveInstanceState(estado);
         webView.saveState(estado);
+    }
+
+    @Override
+    protected void onActivityResult(int codigo, int resultado, Intent dados) {
+        super.onActivityResult(codigo, resultado, dados);
+        if (codigo != ESCOLHER_ARQUIVO || arquivosPendentes == null) return;
+        arquivosPendentes.onReceiveValue(android.webkit.WebChromeClient.FileChooserParams.parseResult(resultado, dados));
+        arquivosPendentes = null;
     }
 
     @Override

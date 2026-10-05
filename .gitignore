@@ -11,3 +11,5 @@ android/app/build/
 android/local.properties
 android/app/src/main/assets/sigaa.js
 *.apk
+android/keystore.properties
+*.jks

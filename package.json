@@ -1,6 +1,6 @@
 {
   "name": "sigaa-repaginado",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,8 @@
     "dev:firefox": "wxt -b firefox",
     "build:firefox": "wxt build -b firefox",
     "zip:firefox": "wxt zip -b firefox",
-    "build:android": "node scripts/build-android.mjs"
+    "build:android": "node scripts/build-android.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -24,9 +25,11 @@
     "@types/react-dom": "^18.3.0",
     "@wxt-dev/module-react": "^1.1.0",
     "autoprefixer": "^10.4.19",
+    "jsdom": "^25.0.1",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.0",
+    "vitest": "^2.1.9",
     "wxt": "^0.19.0"
   }
 }

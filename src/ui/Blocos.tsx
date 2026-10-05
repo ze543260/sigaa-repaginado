@@ -1,10 +1,10 @@
 import { tituloBr } from '../domain/texto';
 import { useMemo, useState } from 'react';
-import { analisarFaltas, analisarNotas, MEDIA_APROVACAO, semestresDeNotas } from '../domain/desempenho';
+import { analisarFaltas, analisarNotas, MEDIA_APROVACAO, registrosDeFrequencia, semestresDeNotas, type RegistroAula } from '../domain/desempenho';
 import { horariosDoCodigo, NOME_DIA_CURTO } from '../domain/horario';
 import { GradeSemanal } from './GradeSemanal';
 import { fmtNota as fmt, PainelSemestres, TextoPrevisao } from './PainelNotas';
-import type { Bloco, Tabela } from '../domain/types';
+import type { Bloco, Pessoa, Tabela } from '../domain/types';
 import { GraficoBarras, Medidor } from './components/Graficos';
 import { Card, CardContent, CardHeader, CardTitle } from './components/Card';
 import { Sinal } from './components/Glifos';
@@ -195,6 +195,56 @@ const PRIORIDADE: Readonly<Record<Bloco['tipo'], number>> = {
   texto: 3,
 };
 
+const normalizar = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+function ListaPessoas({ pessoas }: { readonly pessoas: readonly Pessoa[] }) {
+  const [busca, setBusca] = useState('');
+  const termo = normalizar(busca.trim());
+  const visiveis = termo ? pessoas.filter((p) => normalizar(`${p.nome} ${p.detalhes.join(' ')}`).includes(termo)) : pessoas;
+  return (
+    <div className="space-y-4 p-5 sm:p-6">
+      {pessoas.length > 8 && (
+        <input
+          type="search"
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          placeholder={`Buscar entre ${pessoas.length} pessoas`}
+          className="h-11 w-full rounded-full border bg-transparent px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        />
+      )}
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {visiveis.map((p, i) => {
+          const email = p.detalhes.find((d) => d.includes('@'));
+          return (
+            <li key={i} className="flex items-center gap-3">
+              {p.foto ? (
+                <img src={p.foto} alt="" loading="lazy" className="h-11 w-11 shrink-0 rounded-full border object-cover" />
+              ) : (
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold">
+                  {p.nome.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{tituloBr(p.nome)}</p>
+                <p className="truncate text-xs text-muted-foreground">{p.detalhes.filter((d) => d !== email).map(tituloBr).join(' · ')}</p>
+              </div>
+              {email && (
+                <a href={`mailto:${email}`} target="_top" aria-label={`E-mail para ${tituloBr(p.nome)}`} className="grid h-10 w-10 shrink-0 place-items-center rounded-full hover:bg-accent">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="M3 7l9 6 9-6" />
+                  </svg>
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {visiveis.length === 0 && <p className="text-center text-sm text-muted-foreground">Ninguém encontrado.</p>}
+    </div>
+  );
+}
+
 function ConteudoBloco({ bloco }: { readonly bloco: Bloco }) {
   switch (bloco.tipo) {
     case 'tabela':
@@ -217,25 +267,7 @@ function ConteudoBloco({ bloco }: { readonly bloco: Bloco }) {
     case 'imagem':
       return <img src={bloco.src} alt={bloco.titulo} className="mx-auto max-w-full p-6" />;
     case 'pessoas':
-      return (
-        <ul className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
-          {bloco.pessoas.map((p, i) => (
-            <li key={i} className="flex items-center gap-3">
-              {p.foto ? (
-                <img src={p.foto} alt="" className="h-10 w-10 shrink-0 rounded-full border object-cover" />
-              ) : (
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold">
-                  {p.nome.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                </div>
-              )}
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{tituloBr(p.nome)}</p>
-                <p className="truncate text-xs text-muted-foreground">{p.detalhes.join(' · ')}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      );
+      return <ListaPessoas pessoas={bloco.pessoas} />;
   }
 }
 
@@ -253,6 +285,56 @@ export function Avisos({ avisos }: { readonly avisos: readonly string[] }) {
   );
 }
 
+const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+/** Cada aula registrada vira um quadrado: presença, falta (com quantas) ou ainda sem registro. */
+function CalendarioFrequencia({ registros }: { readonly registros: readonly RegistroAula[] }) {
+  const porMes = registros.reduce<Map<string, RegistroAula[]>>((acc, r) => {
+    const [, mes = '', ano = ''] = r.data.split('/');
+    const chave = `${MESES[Number(mes) - 1] ?? mes}/${ano.slice(2)}`;
+    acc.set(chave, [...(acc.get(chave) ?? []), r]);
+    return acc;
+  }, new Map());
+  return (
+    <Card className="space-y-4 p-5 sm:col-span-2">
+      <p className="text-sm text-muted-foreground">Aula a aula</p>
+      <div className="space-y-3">
+        {[...porMes.entries()].map(([mes, lista]) => (
+          <div key={mes} className="flex items-start gap-3">
+            <span className="w-12 shrink-0 pt-2 font-mono text-xs text-muted-foreground">{mes}</span>
+            <ul className="cascata flex flex-wrap gap-1.5">
+              {lista.map((r) => (
+                <li
+                  key={r.data}
+                  title={`${r.data}: ${r.faltas === null ? 'não registrada' : r.faltas === 0 ? 'presente' : `${r.faltas} falta(s)`}`}
+                  className={cn(
+                    'relative grid h-10 w-10 place-items-center rounded-xl font-mono text-xs',
+                    r.faltas === null && 'border border-dashed text-muted-foreground',
+                    r.faltas === 0 && 'bg-foreground/10',
+                    r.faltas !== null && r.faltas > 0 && 'bg-destaque font-bold text-white',
+                  )}
+                >
+                  {r.data.slice(0, 2)}
+                  {r.faltas !== null && r.faltas > 0 && (
+                    <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-background px-1 text-[9px] text-destaque-texto ring-1 ring-destaque">
+                      {r.faltas}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-foreground/10" /> presente</span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-destaque" /> falta</span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded border border-dashed" /> sem registro</span>
+      </p>
+    </Card>
+  );
+}
+
 function ResumoDesempenho({ blocos }: { readonly blocos: readonly Bloco[] }) {
   const semestres = semestresDeNotas(blocos);
   if (semestres.length > 0) return <PainelSemestres semestres={semestres} />;
@@ -260,7 +342,8 @@ function ResumoDesempenho({ blocos }: { readonly blocos: readonly Bloco[] }) {
   const notas = blocos.flatMap((b) => (b.tipo === 'tabela' ? [analisarNotas(b.tabela)] : [])).find(Boolean) ?? null;
   if (!faltas && !notas) return null;
 
-  const restantes = faltas ? Math.max(0, faltas.maximo - faltas.faltas) : 0;
+  const restantes = faltas ? faltas.maximo - faltas.faltas : 0;
+  const registros = registrosDeFrequencia(blocos);
   const unica = notas?.linhas.length === 1 ? notas.linhas[0] : undefined;
 
   return (
@@ -270,10 +353,15 @@ function ResumoDesempenho({ blocos }: { readonly blocos: readonly Bloco[] }) {
           <p className="self-start text-sm text-muted-foreground">Faltas</p>
           <Medidor valor={faltas.faltas} maximo={faltas.maximo} rotulo="Faltas" />
           <p className={cn('text-sm', restantes <= faltas.maximo * 0.25 && 'font-medium text-destaque-texto')}>
-            {restantes === 0 ? 'Limite de faltas atingido' : `Ainda pode faltar ${restantes}`}
+            {restantes < 0
+              ? `Passou do limite de ${faltas.maximo} faltas`
+              : restantes === 0
+                ? 'No limite: mais uma falta reprova'
+                : `Ainda pode faltar ${restantes}`}
           </p>
         </Card>
       )}
+      {registros.length > 0 && <CalendarioFrequencia registros={registros} />}
       {unica && unica.avaliacoes.length > 0 && (
         <Card className="space-y-4 p-5">
           <p className="text-sm text-muted-foreground">Notas · média {MEDIA_APROVACAO}</p>
@@ -360,13 +448,16 @@ export function Blocos({ blocos }: { readonly blocos: readonly Bloco[] }) {
     else acc.push({ titulo: b.titulo, blocos: [b] });
     return acc;
   }, []);
+  for (const g of grupos) {
+    g.blocos = g.blocos.filter((b) => registrosDeFrequencia([b]).length === 0);
+  }
   for (const g of grupos) g.blocos.sort((a, b) => PRIORIDADE[a.tipo] - PRIORIDADE[b.tipo]);
 
   return (
     <div className="cascata space-y-4 sm:space-y-6">
       <ResumoDesempenho blocos={blocos} />
       <GradeDasTabelas blocos={blocos} />
-      {grupos.map((g, i) => (
+      {grupos.filter((g) => g.blocos.length > 0).map((g, i) => (
         <Card key={i} className="overflow-hidden">
           {g.titulo && (
             <CardHeader className="border-b p-5 pb-4 sm:p-6 sm:pb-4">

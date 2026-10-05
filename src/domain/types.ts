@@ -113,8 +113,33 @@ export type Bloco =
   | { readonly tipo: 'pessoas'; readonly titulo: string; readonly pessoas: readonly Pessoa[] }
   | { readonly tipo: 'imagem'; readonly titulo: string; readonly src: string };
 
+export interface Tarefa {
+  readonly titulo: string;
+  /** "dd/mm/aaaa hh:mm" */
+  readonly inicio: string;
+  readonly fim: string;
+  readonly possuiNota: boolean;
+  readonly enviada: boolean;
+  readonly corrigida: boolean;
+  readonly paragrafos: readonly string[];
+  readonly enviar: (() => void) | null;
+  readonly visualizar: (() => void) | null;
+}
+
+export interface EnvioTarefa {
+  readonly titulo: string;
+  readonly periodo: string;
+  readonly paragrafos: readonly string[];
+  readonly textos: readonly { readonly id: string; readonly rotulo: string; readonly obrigatorio: boolean }[];
+  readonly arquivos: readonly { readonly id: string; readonly rotulo: string }[];
+  readonly enviar: (textos: Readonly<Record<string, string>>, arquivos: Readonly<Record<string, File>>) => void;
+  readonly cancelar: (() => void) | null;
+}
+
 export type ConteudoTurma =
   | { readonly tipo: 'principal'; readonly noticia: Noticia | null; readonly topicos: readonly Topico[] }
+  | { readonly tipo: 'tarefas'; readonly tarefas: readonly Tarefa[] }
+  | { readonly tipo: 'enviar-tarefa'; readonly envio: EnvioTarefa }
   | { readonly tipo: 'secao'; readonly blocos: readonly Bloco[] };
 
 export interface PaginaTurma {
@@ -149,6 +174,7 @@ export interface CaixaPostal {
   readonly mensagens: readonly ResumoMensagem[];
   readonly pastas: readonly Atalho[];
   readonly marcarTodasLidas: (() => void) | null;
+  readonly escrever: (() => void) | null;
   readonly voltarSigaa: (() => void) | null;
 }
 
@@ -163,6 +189,17 @@ export interface LeituraMensagem {
   readonly voltar: (() => void) | null;
   readonly anterior: (() => void) | null;
   readonly proxima: (() => void) | null;
+  readonly responder: (() => void) | null;
+}
+
+export interface CompositorMensagem {
+  readonly destinatarios: readonly string[];
+  readonly assunto: string;
+  /** Pede sugestões de destinatário ao SIGAA e devolve os nomes encontrados. */
+  readonly sugerir: (termo: string) => Promise<readonly string[]>;
+  readonly adicionar: (nome: string) => Promise<readonly string[]>;
+  readonly enviar: (assunto: string, texto: string) => void;
+  readonly cancelar: (() => void) | null;
 }
 
 export interface ErroPagina {
@@ -179,4 +216,5 @@ export type Pagina =
   | { readonly tipo: 'erro'; readonly erro: ErroPagina }
   | { readonly tipo: 'caixa-postal'; readonly caixa: CaixaPostal }
   | { readonly tipo: 'mensagem'; readonly mensagem: LeituraMensagem }
+  | { readonly tipo: 'compor-mensagem'; readonly compositor: CompositorMensagem }
   | { readonly tipo: 'desconhecida' };

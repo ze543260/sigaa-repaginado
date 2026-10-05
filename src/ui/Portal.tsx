@@ -261,7 +261,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
   const notasEmCurso = semestreAtual?.linhas.filter((l) => !l.situacao) ?? [];
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-6 sm:px-6 sm:py-10 xl:grid-cols-[1fr_320px]">
+    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_280px] xl:grid-cols-[1fr_320px]">
       <div className="min-w-0 space-y-8 sm:space-y-10">
         <div className={cn('space-y-3', naAba(aba, 'inicio'))}>
           <p className="font-mono text-sm text-muted-foreground">
@@ -279,7 +279,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
                 </div>
               )}
               {portal.percentualIntegralizado !== null && (
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 max-w-sm flex-1">
                   <dt className="text-xs text-muted-foreground">Curso integralizado</dt>
                   <dd className="space-y-2">
                     <ContagemPontos className="text-4xl" valor={`${portal.percentualIntegralizado}%`} />

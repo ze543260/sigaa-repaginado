@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
 }
 
+// Chave própria do projeto: local em keystore.properties, no CI pelas variáveis de ambiente.
+def chave = new Properties()
+def arquivoChave = rootProject.file('keystore.properties')
+if (arquivoChave.exists()) arquivoChave.withInputStream { chave.load(it) }
+def caminhoChave = System.getenv('ANDROID_KEYSTORE') ?: chave['arquivo']
+def senhaChave = System.getenv('ANDROID_KEYSTORE_SENHA') ?: chave['senha']
+
 android {
     namespace 'br.sigaa.v2'
     compileSdk 35
@@ -10,8 +17,8 @@ android {
         applicationId 'br.sigaa.v2'
         minSdk 29
         targetSdk 35
-        versionCode 2
-        versionName '0.2.0'
+        versionCode 3
+        versionName '0.3.0'
         // "dono/repositorio" no GitHub com as versões publicadas em Releases; vazio desliga a busca.
         buildConfigField 'String', 'REPO_ATUALIZACAO', '"' + (project.findProperty('repoAtualizacao') ?: '') + '"'
     }
@@ -20,12 +27,27 @@ android {
         buildConfig true
     }
 
+    signingConfigs {
+        projeto {
+            if (caminhoChave) {
+                storeFile file(caminhoChave)
+                storePassword senhaChave
+                keyAlias 'sigaa'
+                keyPassword senhaChave
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            // Mesma assinatura das releases: o app instalado por cabo recebe as atualizações publicadas.
+            if (caminhoChave) signingConfig signingConfigs.projeto
+        }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig caminhoChave ? signingConfigs.projeto : signingConfigs.debug
         }
     }
 

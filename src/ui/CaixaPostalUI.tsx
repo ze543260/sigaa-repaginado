@@ -1,5 +1,6 @@
 import { tituloBr } from '../domain/texto';
-import type { CaixaPostal, LeituraMensagem } from '../domain/types';
+import { useRef, useState, type FormEvent } from 'react';
+import type { CaixaPostal, CompositorMensagem, LeituraMensagem } from '../domain/types';
 import { Button } from './components/Button';
 import { Card } from './components/Card';
 import { cn } from './cn';
@@ -27,6 +28,7 @@ export function CaixaPostalUI({ caixa }: { readonly caixa: CaixaPostal }) {
             {p.rotulo}
           </Button>
         ))}
+        {caixa.escrever && <Button variant="destaque" size="sm" onClick={caixa.escrever}>Escrever</Button>}
         {caixa.marcarTodasLidas && naoLidas > 0 && (
           <Button variant="ghost" size="sm" onClick={caixa.marcarTodasLidas}>Marcar todas como lidas</Button>
         )}
@@ -105,8 +107,112 @@ export function MensagemUI({ mensagem: m }: { readonly mensagem: LeituraMensagem
             ))}
           </div>
         )}
-        {m.automatica && <p className="text-xs text-muted-foreground">Mensagem automática — não precisa responder.</p>}
+        {m.automatica ? (
+          <p className="text-xs text-muted-foreground">Mensagem automática — não precisa responder.</p>
+        ) : (
+          m.responder && <Button variant="destaque" onClick={m.responder} className="h-11">Responder</Button>
+        )}
       </article>
+    </main>
+  );
+}
+
+export function CompositorUI({ compositor: c }: { readonly compositor: CompositorMensagem }) {
+  const [destinatarios, setDestinatarios] = useState<readonly string[]>(c.destinatarios);
+  const [termo, setTermo] = useState('');
+  const [sugestoes, setSugestoes] = useState<readonly string[]>([]);
+  const [buscando, setBuscando] = useState(false);
+  const [assunto, setAssunto] = useState(c.assunto);
+  const [texto, setTexto] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const espera = useRef(0);
+
+  const buscar = (valor: string) => {
+    setTermo(valor);
+    window.clearTimeout(espera.current);
+    if (valor.trim().length < 3) {
+      setSugestoes([]);
+      return;
+    }
+    espera.current = window.setTimeout(async () => {
+      setBuscando(true);
+      setSugestoes(await c.sugerir(valor));
+      setBuscando(false);
+    }, 400);
+  };
+
+  const adicionar = async (nome: string) => {
+    setSugestoes([]);
+    setTermo('');
+    setDestinatarios(await c.adicionar(nome));
+  };
+
+  const enviar = (e: FormEvent) => {
+    e.preventDefault();
+    setEnviando(true);
+    c.enviar(assunto, texto);
+  };
+
+  return (
+    <main className="mx-auto max-w-2xl space-y-6 px-4 py-6 sm:px-6 sm:py-10">
+      <h1 className="font-dot text-4xl font-extrabold leading-none">escrever</h1>
+      <form onSubmit={enviar} className="space-y-4">
+        <div className="space-y-2">
+          <span className="px-1 text-sm font-medium">Para</span>
+          {destinatarios.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {destinatarios.map((d) => (
+                <span key={d} className="rounded-full border px-3 py-1 text-sm">{tituloBr(d)}</span>
+              ))}
+            </div>
+          )}
+          <div className="relative">
+            <input
+              value={termo}
+              onChange={(e) => buscar(e.target.value)}
+              placeholder="Nome, setor ou login (3 letras ou mais)"
+              className="h-12 w-full rounded-2xl border bg-card px-4 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            {(sugestoes.length > 0 || buscando) && (
+              <ul className="absolute inset-x-0 top-full z-10 mt-1 max-h-64 overflow-auto rounded-2xl border bg-card p-1 shadow-lg">
+                {buscando && <li className="px-4 py-3 text-sm text-muted-foreground">Buscando…</li>}
+                {sugestoes.map((s) => (
+                  <li key={s}>
+                    <button type="button" onClick={() => adicionar(s)} className="w-full rounded-xl px-4 py-3 text-left text-sm hover:bg-accent">
+                      {tituloBr(s)}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <label className="block space-y-2">
+          <span className="px-1 text-sm font-medium">Assunto</span>
+          <input
+            required
+            value={assunto}
+            onChange={(e) => setAssunto(e.target.value)}
+            className="h-12 w-full rounded-2xl border bg-card px-4 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+        </label>
+        <label className="block space-y-2">
+          <span className="px-1 text-sm font-medium">Mensagem</span>
+          <textarea
+            required
+            rows={9}
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+            className="w-full rounded-2xl border bg-card px-4 py-3 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+        </label>
+        <div className="flex flex-wrap gap-2">
+          <Button type="submit" variant="destaque" size="lg" disabled={enviando || destinatarios.length === 0}>
+            {enviando ? 'Enviando…' : 'Enviar'}
+          </Button>
+          {c.cancelar && <Button type="button" variant="outline" size="lg" onClick={c.cancelar}>Cancelar</Button>}
+        </div>
+      </form>
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { resumirHorario } from '../domain/horario';
 import { ehSecaoAtual } from '../domain/secao';
 import type { Material, Noticia, PaginaTurma, Topico } from '../domain/types';
 import { Avisos, Blocos } from './Blocos';
+import { FormularioTarefa, ListaTarefas } from './TarefasUI';
 import { Button } from './components/Button';
 import { Card } from './components/Card';
 import { cn } from './cn';
@@ -256,11 +257,10 @@ export function Turma({ turma }: Props) {
         </div>
 
         <Avisos avisos={turma.avisos} />
-        {turma.conteudo.tipo === 'principal' ? (
-          <Principal noticia={turma.conteudo.noticia} topicos={turma.conteudo.topicos} />
-        ) : (
-          <Blocos blocos={turma.conteudo.blocos} />
-        )}
+        {turma.conteudo.tipo === 'principal' && <Principal noticia={turma.conteudo.noticia} topicos={turma.conteudo.topicos} />}
+        {turma.conteudo.tipo === 'secao' && <Blocos blocos={turma.conteudo.blocos} />}
+        {turma.conteudo.tipo === 'tarefas' && <ListaTarefas tarefas={turma.conteudo.tarefas} />}
+        {turma.conteudo.tipo === 'enviar-tarefa' && <FormularioTarefa envio={turma.conteudo.envio} />}
       </div>
     </main>
   );

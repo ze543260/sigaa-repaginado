@@ -1,5 +1,5 @@
 import type { Pagina } from '../domain/types';
-import { extrairCaixaPostal, extrairMensagem } from './caixa-postal';
+import { extrairCaixaPostal, extrairCompositor, extrairMensagem } from './caixa-postal';
 import { extrairErro } from './erro';
 import { extrairLogin } from './login';
 import { extrairPortal } from './portal-discente';
@@ -12,6 +12,8 @@ export function detectarPagina(url: URL, doc: Document): Pagina {
     if (erro) return { tipo: 'erro', erro };
   }
   if (url.pathname.startsWith('/cxpostal/')) {
+    const compositor = extrairCompositor(doc);
+    if (compositor) return { tipo: 'compor-mensagem', compositor };
     const mensagem = extrairMensagem(doc);
     if (mensagem) return { tipo: 'mensagem', mensagem };
     const caixa = extrairCaixaPostal(doc);

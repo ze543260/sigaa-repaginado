@@ -1,0 +1,53 @@
+name: Publicar versão
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run zip && npm run zip:firefox
+      - run: node scripts/build-android.mjs
+
+      - name: APK assinado
+        env:
+          ANDROID_KEYSTORE: ${{ runner.temp }}/sigaa.jks
+          ANDROID_KEYSTORE_SENHA: ${{ secrets.ANDROID_KEYSTORE_SENHA }}
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$ANDROID_KEYSTORE"
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon -PrepoAtualizacao=${{ github.repository }}
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSAO="${GITHUB_REF_NAME#v}"
+          cp android/app/build/outputs/apk/release/app-release.apk "sigaa-repaginado-$VERSAO.apk"
+          gh release create "$GITHUB_REF_NAME" \
+            "sigaa-repaginado-$VERSAO.apk" \
+            .output/sigaa-repaginado-*-chrome.zip \
+            .output/sigaa-repaginado-*-firefox.zip \
+            --title "SIGAA Repaginado $VERSAO" \
+            --notes "Projeto pessoal e não oficial, sem vínculo com a UNIFEI. Veja o README para instalar." \
+            --generate-notes

@@ -11,7 +11,7 @@ import { DadosPessoais, Portal, type AbaPortal } from './Portal';
 import { RelatorioUI } from './RelatorioUI';
 import { TelaLogin } from './TelaLogin';
 import { TelaErro } from './TelaErro';
-import { CaixaPostalUI, MensagemUI } from './CaixaPostalUI';
+import { CaixaPostalUI, CompositorUI, MensagemUI } from './CaixaPostalUI';
 import { Esqueleto } from './components/Graficos';
 import { plataforma } from '../plataforma';
 import { useManterSessao } from './sessao';
@@ -44,7 +44,7 @@ function IconeTema({ tema }: { readonly tema: Tema }) {
 
 const ABAS_TURMA: readonly { readonly item: string; readonly rotulo: string; readonly icone: AcaoNavegacao['icone'] }[] = [
   { item: 'Principal', rotulo: 'Aulas', icone: 'turmas' },
-  { item: 'Ver Notas', rotulo: 'Notas', icone: 'notas' },
+  { item: 'Tarefas', rotulo: 'Tarefas', icone: 'atividades' },
   { item: 'Frequência', rotulo: 'Frequência', icone: 'frequencia' },
 ];
 
@@ -67,7 +67,7 @@ export function App({ pagina, onVerOriginal }: Props) {
   const [navegando, setNavegando] = useState(false);
   const [aba, setAba] = useState<AbaPortal>('inicio');
   const [gavetaAberta, setGavetaAberta] = useState(false);
-  useManterSessao(pagina.tipo !== 'login' && pagina.tipo !== 'caixa-postal' && pagina.tipo !== 'mensagem');
+  useManterSessao(pagina.tipo !== 'login' && pagina.tipo !== 'caixa-postal' && pagina.tipo !== 'mensagem' && pagina.tipo !== 'compor-mensagem');
   const raiz = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -273,6 +273,7 @@ export function App({ pagina, onVerOriginal }: Props) {
         {pagina.tipo === 'erro' && <TelaErro erro={pagina.erro} />}
         {pagina.tipo === 'caixa-postal' && <CaixaPostalUI caixa={pagina.caixa} />}
         {pagina.tipo === 'mensagem' && <MensagemUI mensagem={pagina.mensagem} />}
+        {pagina.tipo === 'compor-mensagem' && <CompositorUI compositor={pagina.compositor} />}
         </div>
       </div>
       </div>

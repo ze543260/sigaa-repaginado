@@ -171,22 +171,50 @@ function textoDosBlocos(blocos: readonly Bloco[]): string {
 }
 
 /** Extrai total de faltas e limite permitido de uma página de frequência. */
+export interface RegistroAula {
+  readonly data: string;
+  /** null quando o professor ainda não registrou a frequência dessa aula. */
+  readonly faltas: number | null;
+}
+
+/** Tabela "Data | Situação" do mapa de frequência: "Presente", "2 Falta(s)" ou "Não Registrada". */
+export function registrosDeFrequencia(blocos: readonly Bloco[]): RegistroAula[] {
+  return blocos.flatMap((b) => {
+    if (b.tipo !== 'tabela') return [];
+    const { colunas, linhas } = b.tabela;
+    const iData = colunas.findIndex((c) => /^data$/i.test(c.trim()));
+    const iSituacao = colunas.findIndex((c) => /situa/i.test(c));
+    if (iData < 0 || iSituacao < 0) return [];
+    return linhas.flatMap((l): RegistroAula[] => {
+      const data = l.celulas[iData]?.trim() ?? '';
+      const situacao = l.celulas[iSituacao]?.trim() ?? '';
+      if (!/\d{2}\/\d{2}\/\d{4}/.test(data)) return [];
+      const faltas = situacao.match(/(\d+)\s*falta/i)?.[1];
+      if (faltas) return [{ data, faltas: Number(faltas) }];
+      if (/presente/i.test(situacao)) return [{ data, faltas: 0 }];
+      return [{ data, faltas: null }];
+    });
+  });
+}
+
 export function analisarFaltas(blocos: readonly Bloco[]): Faltas | null {
   const texto = textoDosBlocos(blocos);
+  const registros = registrosDeFrequencia(blocos);
+  const somadas = registros.reduce((t, r) => t + (r.faltas ?? 0), 0);
   const total =
     texto.match(/total\s+de\s+faltas\D{0,20}(\d+)/i)?.[1] ??
     texto.match(/(?:n[uú]mero|qtd\.?|quantidade)\s+de\s+faltas\D{0,20}(\d+)/i)?.[1];
+  // O SIGAA da UNIFEI exige presença em 75% das aulas definidas pela CH; o limite é o resto.
+  const aulasCh = texto.match(/aulas\s+definidas\s+pela\s+ch[^:\d]*:?\s*(\d+)/i)?.[1];
   const maximo =
     texto.match(/(?:m[aá]ximo\s+de\s+faltas|faltas\s+permitidas|limite\s+de\s+faltas)\D{0,40}(\d+)/i)?.[1] ??
+    (aulasCh ? String(Math.floor(Number(aulasCh) * LIMITE_FALTAS)) : undefined) ??
     (() => {
       const ch = texto.match(/carga\s+hor[aá]ria\D{0,20}(\d+)/i)?.[1];
       return ch ? String(Math.floor(Number(ch) * LIMITE_FALTAS)) : undefined;
     })();
 
-  const registros = blocos.flatMap((b) => (b.tipo === 'tabela' ? b.tabela.linhas.flatMap((l) => l.celulas) : []));
-  const marcadas = registros.filter((c) => /^(faltou|ausente|falta)$/i.test(c.trim())).length;
-
-  const faltas = total !== undefined ? Number(total) : marcadas > 0 ? marcadas : null;
+  const faltas = total !== undefined ? Number(total) : registros.length > 0 ? somadas : null;
   if (faltas === null || maximo === undefined) return null;
   return { faltas, maximo: Number(maximo) };
 }

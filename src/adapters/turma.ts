@@ -1,6 +1,7 @@
 import type { ConteudoTurma, Material, Noticia, PaginaTurma, SecaoMenuTurma, Topico } from '../domain/types';
 import { plataforma } from '../plataforma';
 import { extrairAvisos, extrairBlocos } from './blocos';
+import { extrairEnvioTarefa, extrairTarefas } from './tarefas';
 
 const texto = (el: Element | null | undefined): string =>
   el?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
@@ -90,6 +91,10 @@ function extrairConteudo(doc: Document): ConteudoTurma | null {
   if (doc.querySelector('.topico-aula, #ultimaNoticia')) {
     return { tipo: 'principal', noticia: extrairNoticia(doc), topicos: extrairTopicos(doc) };
   }
+  const envio = extrairEnvioTarefa(doc);
+  if (envio) return { tipo: 'enviar-tarefa', envio };
+  const tarefas = extrairTarefas(doc);
+  if (tarefas) return { tipo: 'tarefas', tarefas };
   const raiz = doc.querySelector('#conteudo');
   return raiz ? { tipo: 'secao', blocos: extrairBlocos(raiz) } : null;
 }
@@ -104,7 +109,7 @@ export function extrairTurma(doc: Document): PaginaTurma | null {
     nome,
     info: texto(doc.querySelector('#linkPeriodoTurma')).replace(/^-\s*/, ''),
     avisos: extrairAvisos(doc),
-    secaoAtual: conteudo.tipo === 'principal' ? 'Principal' : texto(doc.querySelector('#conteudo legend')),
+    secaoAtual: conteudo.tipo === 'principal' ? 'Principal' : conteudo.tipo === 'secao' ? texto(doc.querySelector('#conteudo legend')) : 'Tarefas',
     conteudo,
     menu: extrairMenu(doc),
     voltarPortal: clicavel(doc.getElementById('formAcoesTurma:botaoPortalDiscente')),
