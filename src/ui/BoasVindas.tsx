@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from './cn';
+import { SeletorEstilo } from './SeletorEstilo';
 import { ACENTOS, TEMAS, usarPreferencias, type Acento, type Tema } from './tema';
 
 const CHAVE = 'sigaa-v2:boas-vindas';
@@ -126,7 +127,11 @@ export function BoasVindas({ onFim }: { readonly onFim: () => void }) {
               <h1 className="font-dot text-5xl font-extrabold leading-[0.95]">do seu jeito</h1>
               <p className="text-[15px] text-muted-foreground">Dá para mudar depois na engrenagem, no topo da tela.</p>
               <div className="space-y-2">
-                <p className="px-1 text-xs text-muted-foreground">Tema</p>
+                <p className="px-1 text-xs text-muted-foreground">Estilo</p>
+                <SeletorEstilo />
+              </div>
+              <div className="space-y-2">
+                <p className="px-1 text-xs text-muted-foreground">Modo</p>
                 <div className="grid grid-cols-3 gap-1 rounded-full border p-1">
                   {TEMAS.map((t) => (
                     <button

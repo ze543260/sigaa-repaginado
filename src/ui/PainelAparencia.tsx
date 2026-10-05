@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from './cn';
+import { SeletorEstilo } from './SeletorEstilo';
 import { plataforma } from '../plataforma';
 import { ACENTOS, ESCALAS, TEMAS, usarPreferencias, type Acento, type Escala, type Tema } from './tema';
 
@@ -68,8 +69,13 @@ export function PainelAparencia() {
 
   return (
     <div className="space-y-5">
+      <fieldset>
+        <legend className="px-1 pb-2 text-xs text-muted-foreground">Estilo</legend>
+        <SeletorEstilo />
+      </fieldset>
+
       <fieldset className="space-y-2">
-        <legend className="px-1 pb-2 text-xs text-muted-foreground">Tema</legend>
+        <legend className="px-1 pb-2 text-xs text-muted-foreground">Modo</legend>
         <div className="grid grid-cols-3 gap-1 rounded-full border p-1">
           {TEMAS.map((t) => (
             <button

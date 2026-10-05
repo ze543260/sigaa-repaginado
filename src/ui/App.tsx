@@ -179,6 +179,7 @@ export function App({ pagina, onVerOriginal }: Props) {
       )}
       data-tema={tema === 'sistema' ? undefined : tema}
       data-acento={prefs.acento}
+      data-estilo={prefs.estilo}
       style={prefs.escala === 'normal' ? undefined : { zoom: ZOOM[prefs.escala] }}
       aria-busy={navegando}
     >

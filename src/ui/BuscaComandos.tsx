@@ -45,8 +45,8 @@ export function Favoritos({ itens, className }: Props & { readonly className?: s
   const comandos = useMemo(() => achatar(itens), [itens]).filter((c) => favoritos.has(c.chave));
   return (
     <section className={cn('space-y-3', className)}>
-      <h2 className="flex items-center justify-between px-1 text-sm font-medium text-muted-foreground">
-        Favoritos
+      <h2 className="flex items-center px-1 text-sm font-medium text-muted-foreground">
+        <span className="mr-auto">Favoritos</span>
         <button type="button" onClick={abrirBusca} className="rounded-full px-2 py-1 text-xs hover:bg-accent">
           {comandos.length ? 'Editar' : 'Adicionar'}
         </button>

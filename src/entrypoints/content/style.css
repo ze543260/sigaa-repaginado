@@ -3,6 +3,19 @@
 @tailwind utilities;
 
 .tema {
+  /* Tokens de estilo: cada tema troca estes valores, os componentes não mudam. */
+  --fonte-texto: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --fonte-mono: 'Space Mono', ui-monospace, monospace;
+  --fonte-titulo: Doto, 'Space Mono', monospace;
+  --raio-sm: 0.5rem;
+  --raio-md: 0.75rem;
+  --raio-lg: 1rem;
+  --raio-xl: 0.75rem;
+  --raio-2xl: 1rem;
+  --raio-3xl: 1.5rem;
+  --raio-pilula: 9999px;
+  --padrao: radial-gradient(hsl(var(--pontos)) 1px, transparent 1.2px);
+  --padrao-tamanho: 14px 14px;
   --background: 0 0% 93%;
   --foreground: 0 0% 0%;
   --card: 0 0% 100%;
@@ -89,8 +102,8 @@
 
 .tema {
   background-color: hsl(var(--background));
-  background-image: radial-gradient(hsl(var(--pontos)) 1px, transparent 1.2px);
-  background-size: 14px 14px;
+  background-image: var(--padrao);
+  background-size: var(--padrao-tamanho);
 }
 
 .tema.sem-pontos {
@@ -176,5 +189,109 @@ details[open] > :not(summary) {
 }
 .sem-animacao .desenhar,
 .sem-animacao .crescer {
+  animation: none;
+}
+
+/* ── Estilo "terminal" (Engenharia de Computação): fósforo verde, monoespaçada, cantos retos e grade de circuito. ── */
+.tema[data-estilo='terminal'] {
+  --fonte-texto: 'Space Mono', ui-monospace, monospace;
+  --fonte-titulo: 'Space Mono', ui-monospace, monospace;
+  --raio-sm: 2px;
+  --raio-md: 3px;
+  --raio-lg: 4px;
+  --raio-xl: 4px;
+  --raio-2xl: 4px;
+  --raio-3xl: 6px;
+  --raio-pilula: 3px;
+  --padrao:
+    linear-gradient(hsl(var(--pontos)) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--pontos)) 1px, transparent 1px);
+  --padrao-tamanho: 28px 28px;
+}
+
+.tema[data-estilo='terminal']:not([data-tema='escuro']) {
+  --background: 90 20% 95%;
+  --foreground: 150 60% 9%;
+  --card: 90 25% 99%;
+  --card-foreground: 150 60% 9%;
+  --primary: 150 60% 9%;
+  --primary-foreground: 90 25% 99%;
+  --secondary: 100 15% 89%;
+  --secondary-foreground: 150 60% 9%;
+  --muted: 100 15% 89%;
+  --muted-foreground: 150 22% 28%;
+  --accent: 100 18% 91%;
+  --accent-foreground: 150 60% 9%;
+  --border: 120 14% 78%;
+  --input: 120 12% 62%;
+  --pontos: 110 16% 86%;
+}
+
+.tema[data-estilo='terminal'][data-tema='escuro'] {
+  --background: 150 35% 3%;
+  --foreground: 118 68% 84%;
+  --card: 150 28% 6%;
+  --card-foreground: 118 68% 84%;
+  --primary: 118 68% 84%;
+  --primary-foreground: 150 35% 3%;
+  --secondary: 150 22% 10%;
+  --secondary-foreground: 118 68% 84%;
+  --muted: 150 22% 10%;
+  --muted-foreground: 128 22% 60%;
+  --accent: 150 24% 9%;
+  --accent-foreground: 118 68% 84%;
+  --border: 145 30% 16%;
+  --input: 145 24% 26%;
+  --pontos: 145 38% 9%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='terminal']:not([data-tema]) {
+    --background: 150 35% 3%;
+    --foreground: 118 68% 84%;
+    --card: 150 28% 6%;
+    --card-foreground: 118 68% 84%;
+    --primary: 118 68% 84%;
+    --primary-foreground: 150 35% 3%;
+    --secondary: 150 22% 10%;
+    --secondary-foreground: 118 68% 84%;
+    --muted: 150 22% 10%;
+    --muted-foreground: 128 22% 60%;
+    --accent: 150 24% 9%;
+    --accent-foreground: 118 68% 84%;
+    --border: 145 30% 16%;
+    --input: 145 24% 26%;
+    --pontos: 145 38% 9%;
+  }
+}
+
+/* Títulos viram prompt com cursor piscando; rótulos de seção viram comentário. */
+.tema[data-estilo='terminal'] h1.font-dot {
+  letter-spacing: -0.04em;
+}
+.tema[data-estilo='terminal'] h1.font-dot::before {
+  content: '> ';
+  color: hsl(var(--destaque-texto));
+}
+.tema[data-estilo='terminal'] h1.font-dot::after {
+  content: '_';
+  color: hsl(var(--destaque-texto));
+  animation: cursor-terminal 1.05s steps(1) infinite;
+}
+.tema[data-estilo='terminal'] section > h2 {
+  text-transform: lowercase;
+}
+.tema[data-estilo='terminal'] section > h2::before {
+  content: '// ';
+  color: hsl(var(--destaque-texto));
+}
+.tema[data-estilo='terminal'][data-tema='escuro'] h1.font-dot,
+.tema[data-estilo='terminal'][data-tema='escuro'] .font-dot {
+  text-shadow: 0 0 14px hsl(var(--foreground) / 0.35);
+}
+@keyframes cursor-terminal {
+  50% { opacity: 0; }
+}
+.sem-animacao h1.font-dot::after {
   animation: none;
 }

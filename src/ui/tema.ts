@@ -10,7 +10,11 @@ export interface Preferencias {
   readonly animacoes: boolean;
   readonly lembretes: boolean;
   readonly escala: Escala;
+  readonly estilo: Estilo;
 }
+
+export type Estilo = 'minimalista' | 'terminal';
+export const ESTILOS: readonly Estilo[] = ['minimalista', 'terminal'];
 
 export type Escala = 'compacta' | 'normal' | 'grande';
 export const ESCALAS: readonly Escala[] = ['compacta', 'normal', 'grande'];
@@ -19,7 +23,7 @@ export const ZOOM: Readonly<Record<Escala, number>> = { compacta: 0.9, normal: 1
 export const TEMAS: readonly Tema[] = ['sistema', 'claro', 'escuro'];
 export const ACENTOS: readonly Acento[] = ['vermelho', 'laranja', 'verde', 'azul', 'violeta', 'rosa'];
 
-const PADRAO: Preferencias = { tema: 'sistema', acento: 'vermelho', pontos: true, animacoes: true, lembretes: true, escala: 'normal' };
+const PADRAO: Preferencias = { tema: 'sistema', acento: 'vermelho', pontos: true, animacoes: true, lembretes: true, escala: 'normal', estilo: 'minimalista' };
 
 // O tema tem chave própria porque o anti-flash o lê antes da interface existir.
 const CHAVE_TEMA = 'sigaa-v2:tema';
@@ -36,6 +40,7 @@ function ler(): Preferencias {
       animacoes: typeof salvas.animacoes === 'boolean' ? salvas.animacoes : PADRAO.animacoes,
       lembretes: typeof salvas.lembretes === 'boolean' ? salvas.lembretes : PADRAO.lembretes,
       escala: ESCALAS.find((e) => e === salvas.escala) ?? PADRAO.escala,
+      estilo: ESTILOS.find((e) => e === salvas.estilo) ?? PADRAO.estilo,
     };
   } catch {
     return PADRAO;

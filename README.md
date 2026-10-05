@@ -60,7 +60,7 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
 
 - **Minimalista**, o atual: inspirado no Nothing OS, com matriz de pontos, monocromático e um único acento.
 - **Temas por curso**, que trazem a identidade da área para a interface. Por exemplo:
-  - **Engenharia de Computação**: terminal e circuito, com fonte monoespaçada e trilhas.
+  - **Engenharia de Computação: já disponível** como estilo "Terminal", com fósforo verde, fonte monoespaçada, grade de circuito e títulos como prompt.
   - **Engenharia Elétrica**: osciloscópio, com linhas de onda e fósforo verde.
   - **Engenharia Mecânica**: prancha técnica, com cotas e linhas de desenho.
   - **Engenharia Civil**: planta baixa e concreto.
@@ -68,7 +68,7 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
 - **Outras linhas**: brutalista, retrô (anos 90 e pixel art), editorial (como revista), alto contraste e AMOLED (preto puro, que poupa bateria em telas OLED).
 - **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal.
 
-Quer ver o seu curso ou um estilo aqui? Abra uma [sugestão](../../issues/new?template=sugestao.yml). Quem quiser desenhar um tema também é bem-vindo: a ideia é que criar um tema seja só montar um arquivo de tokens e algumas regras de estilo.
+Quer ver o seu curso ou um estilo aqui? Abra uma [sugestão](../../issues/new?template=sugestao.yml). Quem quiser desenhar um tema também é bem-vindo: um estilo é um bloco de tokens (cores, fontes, cantos e padrão de fundo) em `src/entrypoints/content/style.css`, mais algumas regras próprias. O Terminal serve de exemplo.
 
 ## Como usar
 
