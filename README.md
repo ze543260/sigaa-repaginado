@@ -56,10 +56,19 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
 
 ## Em desenvolvimento
 
-- **Novos temas**, além do claro e do escuro: alto contraste, AMOLED (preto puro, para poupar bateria em telas OLED) e uma opção que segue o horário do dia.
-- **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal, para achar a aula de relance.
+**Novos temas, cada um com a sua filosofia de design.** Não é só trocar cor: cada tema muda a tipografia, as formas, as animações e o "jeito" da interface.
 
-Tem sugestão de tema ou cor? Abra uma [sugestão](../../issues/new?template=sugestao.yml).
+- **Minimalista**, o atual: inspirado no Nothing OS, com matriz de pontos, monocromático e um único acento.
+- **Temas por curso**, que trazem a identidade da área para a interface. Por exemplo:
+  - **Engenharia de Computação**: terminal e circuito, com fonte monoespaçada e trilhas.
+  - **Engenharia Elétrica**: osciloscópio, com linhas de onda e fósforo verde.
+  - **Engenharia Mecânica**: prancha técnica, com cotas e linhas de desenho.
+  - **Engenharia Civil**: planta baixa e concreto.
+  - **Física e Matemática**: lousa, com giz e fórmulas.
+- **Outras linhas**: brutalista, retrô (anos 90 e pixel art), editorial (como revista), alto contraste e AMOLED (preto puro, que poupa bateria em telas OLED).
+- **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal.
+
+Quer ver o seu curso ou um estilo aqui? Abra uma [sugestão](../../issues/new?template=sugestao.yml). Quem quiser desenhar um tema também é bem-vindo: a ideia é que criar um tema seja só montar um arquivo de tokens e algumas regras de estilo.
 
 ## Como usar
 
