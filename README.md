@@ -52,7 +52,7 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
 - **Lembretes** 10 minutos antes da aula e na véspera de prazos.
 - **Widget** "próxima aula" na tela inicial.
 - **Bloqueio do app** com digital, opcional.
-- **Atualização automática** pelas releases deste repositório.
+- **Atualização automática sem reinstalar**: mudanças de interface chegam como um pacote assinado, aplicado na próxima abertura, sem instalador, sem Play Protect e sem verificação do fabricante. Só mudanças na parte nativa pedem um APK novo, avisado por notificação.
 
 ## Em desenvolvimento
 
