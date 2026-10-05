@@ -62,7 +62,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle estado) {
         super.onCreate(estado);
-        script = lerAsset("sigaa.js");
+        script = Ota.script(this, lerAsset("sigaa.js"));
+        Ota.buscar(getApplicationContext());
 
         raiz = new FrameLayout(this);
         webView = new WebView(this);
@@ -269,6 +270,7 @@ public class MainActivity extends Activity {
     }
 
     void fimAbertura() {
+        Ota.confirmar(this);
         if (abertura != null) abertura.sair();
         abertura = null;
     }

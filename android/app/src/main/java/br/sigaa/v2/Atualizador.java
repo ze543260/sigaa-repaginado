@@ -56,6 +56,12 @@ final class Atualizador {
                     return;
                 }
                 JSONArray anexos = release.optJSONArray("assets");
+                // Se só a interface mudou, o pacote assinado (Ota) cobre: nada de APK, nada de Play Protect.
+                if (!precisaDeApk(repo)) {
+                    Ota.buscarAgora(atividade.getApplicationContext());
+                    if (manual) avisar("Interface atualizada em segundo plano. Feche e abra o app.");
+                    return;
+                }
                 for (int i = 0; anexos != null && i < anexos.length(); i++) {
                     JSONObject anexo = anexos.getJSONObject(i);
                     if (anexo.optString("name").endsWith(".apk")) {
@@ -86,6 +92,15 @@ final class Atualizador {
                 .setContentIntent(toque)
                 .setAutoCancel(true)
                 .build());
+    }
+
+    private static boolean precisaDeApk(String repo) {
+        try {
+            JSONObject ota = new JSONObject(ler("https://github.com/" + repo + "/releases/latest/download/sigaa-ota.json"));
+            return ota.optInt("minNativo", Integer.MAX_VALUE) > BuildConfig.VERSION_CODE;
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     private void baixar(String url, String versao) {

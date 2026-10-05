@@ -1227,3 +1227,7 @@ details[open] > :not(summary) {
 .tema[data-estilo='admin'] section > h2::before { content: 'ƒx'; margin-right: 1ch; font-style: italic; color: hsl(var(--destaque-texto)); }
 .tema[data-estilo='admin'] section > h2 { font-family: var(--fonte-mono); }
 
+
+@keyframes descer {
+  from { opacity: 0; transform: translateY(-120%); }
+}

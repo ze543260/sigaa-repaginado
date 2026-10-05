@@ -27,6 +27,10 @@ jobs:
       - run: npm test
       - run: npm run zip && npm run zip:firefox
       - run: node scripts/build-android.mjs
+      - name: Pacote de atualização da interface (assinado)
+        env:
+          OTA_CHAVE_PRIVADA: ${{ secrets.OTA_CHAVE_PRIVADA }}
+        run: node scripts/assinar-ota.mjs
 
       - name: APK assinado
         env:
@@ -48,6 +52,8 @@ jobs:
             "sigaa-repaginado-$VERSAO.apk" \
             .output/sigaa-repaginado-*-chrome.zip \
             .output/sigaa-repaginado-*-firefox.zip \
+            .output/sigaa-ota.js \
+            .output/sigaa-ota.json \
             --title "SIGAA Repaginado $VERSAO" \
             --notes "Projeto pessoal e não oficial, sem vínculo com a UNIFEI. Veja o README para instalar." \
             --generate-notes

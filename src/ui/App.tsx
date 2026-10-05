@@ -1,3 +1,4 @@
+import { AvisoAtualizacao } from './AvisoAtualizacao';
 import { LogCompilacao, Surpresa, useSegredo } from './Surpresas';
 import { definicao } from './estilos';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
@@ -325,6 +326,7 @@ export function App({ pagina, onVerOriginal }: Props) {
       )}
       {boasVindas && <BoasVindas onFim={() => setBoasVindas(false)} />}
       {segredo.ativo && <Surpresa onFechar={segredo.fechar} />}
+      {!boasVindas && <AvisoAtualizacao />}
       <GavetaMenu
         titulo={pagina.tipo === 'turma' ? 'Menu da turma' : 'Menu do SIGAA'}
         itens={menuMovel}
