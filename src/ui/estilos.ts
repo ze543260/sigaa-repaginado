@@ -256,6 +256,33 @@ export const DEFINICOES = {
       simbolos: "💧💧🌱🍃💧",
     },
   },
+  materiais: {
+    nome: "Cristal",
+    curso: "Engenharia de Materiais",
+    acento: "violeta",
+    forma: "redondo",
+    descricao: "Rede cristalina hexagonal no fundo, tons frios e um diamante girando.",
+    amostra: {
+      fundo: "#0f0b1d",
+      texto: "#ebe8fb",
+      fonte: "'Space Mono', monospace",
+      titulo: "sigaa ◇",
+    },
+    piadas: {
+      saudacao: ["Seu limite de escoamento foi atingido na semana de provas.", "Tratamento térmico: café quente, depois choque térmico na prova.", "Discordância na rede: você e o horário de acordar.", "Tenacidade à fratura da sua paciência: baixa.", "Fase metaestável: estudando sem entender.", "Diagrama Fe-C da semana: 100% cementita (duro e quebradiço).", "Fluência: deformação lenta sob carga constante. Tipo você no 3º período.", "Seu grão está grosso: precisa de refino."],
+      'sem-aulas': ["Amostra em repouso. Sem ensaio hoje."],
+      'sem-atividades': ["Nenhuma tensão aplicada. Rede perfeita."],
+      'sem-tarefas': ["Nenhum corpo de prova na fila."],
+      erro: ["Fratura frágil no servidor do SIGAA."],
+      carregando: ["ensaiando à tração...", "medindo a dureza Vickers...", "resfriando lentamente...", "organizando a rede cristalina..."],
+    },
+    segredo: {
+      titulo: "estrutura perfeita",
+      texto: "Zero defeitos na rede. Isso não existe, mas você achou.",
+      efeito: "chuva",
+      simbolos: "◇⬡◆⬢✧",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;

@@ -847,3 +847,80 @@ details[open] > :not(summary) {
 .tema[data-estilo='ambiental'] h1.font-dot { font-weight: 600; letter-spacing: -0.03em; }
 .tema[data-estilo='ambiental'] section > h2::before { content: '△'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
 
+
+/* ── Estilo "Cristal (Engenharia de Materiais)" ── */
+.tema[data-estilo='materiais'] {
+  --fonte-titulo: 'Space Mono', ui-monospace, monospace;
+  --raio-sm: 6px;
+  --raio-md: 6px;
+  --raio-lg: 6px;
+  --raio-xl: 6px;
+  --raio-2xl: 6px;
+  --raio-3xl: 6px;
+  --raio-pilula: 9999px;
+  --padrao: radial-gradient(hsl(var(--pontos)) 1.5px, transparent 2px), radial-gradient(hsl(var(--pontos)) 1.5px, transparent 2px);
+  --padrao-tamanho: 26px 45px, 26px 45px;
+  --padrao-posicao: 0 0, 13px 22.5px;
+}
+
+.tema[data-estilo='materiais']:not([data-tema='escuro']) {
+  --background: 250 25% 96%;
+  --foreground: 255 40% 15%;
+  --card: 250 30% 99%;
+  --card-foreground: 255 40% 15%;
+  --primary: 255 40% 15%;
+  --primary-foreground: 250 30% 99%;
+  --secondary: 250 20% 90%;
+  --secondary-foreground: 255 40% 15%;
+  --muted: 250 20% 90%;
+  --muted-foreground: 255 18% 36%;
+  --accent: 250 22% 93%;
+  --accent-foreground: 255 40% 15%;
+  --border: 250 18% 80%;
+  --input: 250 15% 62%;
+  --pontos: 255 25% 84%;
+}
+
+.tema[data-estilo='materiais'][data-tema='escuro'] {
+  --background: 255 30% 8%;
+  --foreground: 250 40% 93%;
+  --card: 255 26% 12%;
+  --card-foreground: 250 40% 93%;
+  --primary: 250 40% 93%;
+  --primary-foreground: 255 26% 12%;
+  --secondary: 255 22% 17%;
+  --secondary-foreground: 250 40% 93%;
+  --muted: 255 22% 17%;
+  --muted-foreground: 250 18% 70%;
+  --accent: 255 22% 15%;
+  --accent-foreground: 250 40% 93%;
+  --border: 255 20% 24%;
+  --input: 255 16% 36%;
+  --pontos: 255 28% 18%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='materiais']:not([data-tema]) {
+    --background: 255 30% 8%;
+    --foreground: 250 40% 93%;
+    --card: 255 26% 12%;
+    --card-foreground: 250 40% 93%;
+    --primary: 250 40% 93%;
+    --primary-foreground: 255 26% 12%;
+    --secondary: 255 22% 17%;
+    --secondary-foreground: 250 40% 93%;
+    --muted: 255 22% 17%;
+    --muted-foreground: 250 18% 70%;
+    --accent: 255 22% 15%;
+    --accent-foreground: 250 40% 93%;
+    --border: 255 20% 24%;
+    --input: 255 16% 36%;
+    --pontos: 255 28% 18%;
+  }
+}
+.tema[data-estilo='materiais'] { background-position: var(--padrao-posicao); }
+.tema[data-estilo='materiais'] section > h2::before { content: '⬡'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='materiais'] h1.font-dot::after { content: ' ◇'; color: hsl(var(--destaque-texto)); display: inline-block; animation: girar-cristal 6s linear infinite; }
+@keyframes girar-cristal { to { transform: rotate(360deg); } }
+.sem-animacao h1.font-dot::after { animation: none; }
+
