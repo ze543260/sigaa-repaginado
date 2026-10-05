@@ -283,8 +283,12 @@ public class MainActivity extends Activity {
     @Override
     @SuppressWarnings("deprecation")
     public void onBackPressed() {
-        if (webView.canGoBack()) webView.goBack();
-        else super.onBackPressed();
+        // A interface pode ter uma tela sobreposta (configurações) que o voltar deve fechar primeiro.
+        webView.evaluateJavascript("window.__sigaaVoltar && window.__sigaaVoltar() ? 1 : 0", fechou -> {
+            if ("1".equals(fechou)) return;
+            if (webView.canGoBack()) webView.goBack();
+            else finish();
+        });
     }
 
     @Override

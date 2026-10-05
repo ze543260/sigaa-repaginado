@@ -14,9 +14,9 @@ import { TelaErro } from './TelaErro';
 import { CaixaPostalUI, CompositorUI, MensagemUI } from './CaixaPostalUI';
 import { Esqueleto } from './components/Graficos';
 import { plataforma } from '../plataforma';
-import { Sobre } from './Sobre';
+import { BoasVindas, jaViuBoasVindas } from './BoasVindas';
+import { TelaConfiguracoes } from './TelaConfiguracoes';
 import { useManterSessao } from './sessao';
-import { PainelAparencia } from './PainelAparencia';
 import { ContextoPreferencias, usePreferencias, ZOOM, type Tema } from './tema';
 import { Turma } from './Turma';
 
@@ -64,7 +64,8 @@ export function App({ pagina, onVerOriginal }: Props) {
   const controlePrefs = usePreferencias();
   const { prefs, alternarTema } = controlePrefs;
   const tema = prefs.tema;
-  const [aparenciaAberta, setAparenciaAberta] = useState(false);
+  const [configAberta, setConfigAberta] = useState(false);
+  const [boasVindas, setBoasVindas] = useState(() => !jaViuBoasVindas());
   const [navegando, setNavegando] = useState(false);
   const [aba, setAba] = useState<AbaPortal>('inicio');
   const [gavetaAberta, setGavetaAberta] = useState(false);
@@ -96,6 +97,20 @@ export function App({ pagina, onVerOriginal }: Props) {
       window.removeEventListener('pageshow', voltar);
     };
   }, []);
+
+  useEffect(() => {
+    const pai = window.parent as Window & { __sigaaVoltar?: () => boolean };
+    pai.__sigaaVoltar = () => {
+      if (configAberta) {
+        setConfigAberta(false);
+        return true;
+      }
+      return false;
+    };
+    return () => {
+      delete pai.__sigaaVoltar;
+    };
+  }, [configAberta]);
 
   const trocarTema = (e: MouseEvent<HTMLButtonElement>) => {
     const aplicar = () => {
@@ -174,7 +189,7 @@ export function App({ pagina, onVerOriginal }: Props) {
           navegando ? 'opacity-100' : 'opacity-0',
         )}
       />
-      <header className="sticky top-0 z-10 border-b bg-background/85 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b bg-background/95">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-1">
           {menuMovel.length > 0 && (
@@ -215,37 +230,19 @@ export function App({ pagina, onVerOriginal }: Props) {
             >
               <IconeTema tema={tema} />
             </Button>
-            <div className="relative hidden md:block">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setAparenciaAberta((a) => !a)}
-                aria-label="Aparência"
-                aria-expanded={aparenciaAberta}
-                title="Aparência"
-                className="w-8 px-0"
-              >
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setConfigAberta(true)}
+              aria-label="Configurações"
+              title="Configurações"
+              className="w-10 px-0 md:w-8"
+            >
+              <svg viewBox="0 0 24 24" className="h-5 w-5 md:h-4 md:w-4" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
                   <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                   <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
                 </svg>
-              </Button>
-              {aparenciaAberta && (
-                <>
-                  <div className="fixed inset-0 z-20" onClick={() => setAparenciaAberta(false)} aria-hidden="true" />
-                  <div
-                    role="dialog"
-                    aria-label="Configurações"
-                    className="absolute right-0 top-full z-30 mt-2 max-h-[calc(100vh-6rem)] w-80 overflow-y-auto origin-top-right animate-surgir rounded-3xl border bg-card p-5 text-card-foreground"
-                  >
-                    <PainelAparencia />
-                    <div className="mt-5 border-t pt-5">
-                      <Sobre pagina={pagina} />
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            </Button>
             <Button variant="outline" size="sm" onClick={onVerOriginal} className={pagina.tipo === 'login' ? '' : 'hidden md:inline-flex'}>
               Ver original
             </Button>
@@ -281,6 +278,18 @@ export function App({ pagina, onVerOriginal }: Props) {
         </div>
       </div>
       </div>
+      {configAberta && (
+        <TelaConfiguracoes
+          pagina={pagina}
+          onFechar={() => setConfigAberta(false)}
+          onVerOriginal={onVerOriginal}
+          onRever={() => {
+            setConfigAberta(false);
+            setBoasVindas(true);
+          }}
+        />
+      )}
+      {boasVindas && <BoasVindas onFim={() => setBoasVindas(false)} />}
       <GavetaMenu
         titulo={pagina.tipo === 'turma' ? 'Menu da turma' : 'Menu do SIGAA'}
         itens={menuMovel}
@@ -293,29 +302,17 @@ export function App({ pagina, onVerOriginal }: Props) {
           acoes={acoes}
           conteudoMais={
             <>
-              <details className="rounded-3xl border">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 text-sm font-medium [&::-webkit-details-marker]:hidden">
-                  Configurações
-                  <svg viewBox="0 0 16 16" className="h-4 w-4 opacity-50 transition-transform [details[open]>summary>&]:rotate-90" aria-hidden="true">
-                    <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" />
-                  </svg>
-                </summary>
-                <div className="px-5 pb-5">
-                  <PainelAparencia />
-                </div>
-              </details>
+              <button
+                type="button"
+                onClick={() => setConfigAberta(true)}
+                className="flex min-h-12 w-full items-center justify-between rounded-3xl border px-5 text-sm font-medium"
+              >
+                Configurações e sobre
+                <svg viewBox="0 0 16 16" className="h-4 w-4 opacity-50" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </button>
               {pagina.tipo === 'portal-discente' && <DadosPessoais portal={pagina.portal} />}
-              <details className="rounded-3xl border">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 text-sm font-medium [&::-webkit-details-marker]:hidden">
-                  Sobre o app
-                  <svg viewBox="0 0 16 16" className="h-4 w-4 opacity-50 transition-transform [details[open]>summary>&]:rotate-90" aria-hidden="true">
-                    <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="2" />
-                  </svg>
-                </summary>
-                <div className="px-5 pb-5">
-                  <Sobre pagina={pagina} />
-                </div>
-              </details>
               <button type="button" onClick={onVerOriginal} className="min-h-12 w-full rounded-full border text-sm">
                 Ver SIGAA original
               </button>

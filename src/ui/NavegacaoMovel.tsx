@@ -55,7 +55,7 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
     <>
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/90 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1.5 backdrop-blur md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1.5 md:hidden"
       >
         <div className="mx-auto flex max-w-md gap-1">
           {acoes.map((acao) => (
@@ -89,7 +89,7 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
       </nav>
 
       {folhaAberta && conteudoMais && (
-        <div className="fixed inset-0 z-40 animate-[entrar_120ms_ease-out_both] bg-background/70 backdrop-blur-sm md:hidden" onClick={fechar}>
+        <div className="fixed inset-0 z-40 animate-[entrar_120ms_ease-out_both] bg-background/85 md:hidden" onClick={fechar}>
           <div
             role="dialog"
             aria-modal="true"
@@ -100,7 +100,7 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
             <div className="flex justify-center px-5 pb-2 pt-4">
               <span className="h-1 w-10 rounded-full bg-foreground/20" aria-hidden="true" />
             </div>
-            <div className="flex-1 space-y-3 overflow-y-auto px-5 pb-[max(1rem,env(safe-area-inset-bottom))]">{conteudoMais}</div>
+            <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-5 pb-[max(1rem,env(safe-area-inset-bottom))]">{conteudoMais}</div>
           </div>
         </div>
       )}

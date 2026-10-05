@@ -139,7 +139,7 @@ export function BuscaComandos({ itens }: Props) {
       </button>
 
       {aberto && (
-        <div className="fixed inset-0 z-50 animate-[entrar_120ms_ease-out_both] bg-background/70 p-4 backdrop-blur-sm" onPointerDown={() => setAberto(false)}>
+        <div className="fixed inset-0 z-50 animate-[entrar_120ms_ease-out_both] bg-background/85 p-4" onPointerDown={() => setAberto(false)}>
           <div
             className="mx-auto mt-[15vh] w-full max-w-lg animate-surgir overflow-hidden rounded-3xl border bg-card text-card-foreground"
             onPointerDown={(e) => e.stopPropagation()}

@@ -90,7 +90,7 @@ export function GavetaMenu({ titulo, itens, aberta, onFechar, onVerOriginal }: G
   if (!aberta) return null;
 
   return (
-    <div className="fixed inset-0 z-40 animate-[entrar_120ms_ease-out_both] bg-background/70 backdrop-blur-sm lg:hidden" onClick={onFechar}>
+    <div className="fixed inset-0 z-40 animate-[entrar_120ms_ease-out_both] bg-background/85 lg:hidden" onClick={onFechar}>
       <nav
         aria-label={titulo}
         onClick={(e) => e.stopPropagation()}
