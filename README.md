@@ -59,13 +59,21 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
 **Novos temas, cada um com a sua filosofia de design.** Não é só trocar cor: cada tema muda a tipografia, as formas, as animações e o "jeito" da interface.
 
 - **Minimalista**, o atual: inspirado no Nothing OS, com matriz de pontos, monocromático e um único acento.
-- **Temas por curso**, que trazem a identidade da área para a interface. Por exemplo:
-  - **Engenharia de Computação: já disponível** como estilo "Terminal", com fósforo verde, fonte monoespaçada, grade de circuito e títulos como prompt.
-  - **Engenharia Elétrica**: osciloscópio, com linhas de onda e fósforo verde.
-  - **Engenharia Mecânica**: prancha técnica, com cotas e linhas de desenho.
-  - **Engenharia Civil**: planta baixa e concreto.
-  - **Física e Matemática**: lousa, com giz e fórmulas.
-- **Piadas e segredos de cada área**: o Terminal já tem comando do dia, log de compilação no carregamento e selo de "build" nas notas. E tem pelo menos um segredo escondido. Dica: insista no logo.
+- **Temas por curso, já disponíveis** (engrenagem › Estilo):
+  - **Terminal**, de Engenharia de Computação: fósforo verde e prompt.
+  - **Osciloscópio**, de Engenharia Elétrica: grade de divisões e traço ciano.
+  - **Prancha técnica**, de Engenharia Mecânica: papel azul de projeto e cotas.
+  - **Canteiro**, de Engenharia Civil: concreto e faixa de obra.
+  - **Kanban**, de Engenharia de Produção: post-its e caneta.
+  - **Lousa**, de Física e Matemática: giz e quadro branco.
+  - **Painel CLP**, de Controle e Automação: diagrama ladder e LED.
+  - **Curvas de nível**, de Engenharia Ambiental e Hídrica: mapa topográfico.
+  - **Cristal**, de Engenharia de Materiais: rede hexagonal.
+  - **8-bit**, de Ciência da Computação e Sistemas de Informação: fliperama.
+  - **Solar**, de Engenharia de Energia: raios de sol.
+  - **Tabela periódica**, de Química: elementos.
+  - **Planilha**, de Administração: células e fórmulas.
+- **Piadas e segredos de cada área**: cada tema tem o seu comando do dia, textos para telas vazias, log de carregamento e um segredo escondido. Dica: insista no logo.
 - **Outras linhas**: brutalista, retrô (anos 90 e pixel art), editorial (como revista), alto contraste e AMOLED (preto puro, que poupa bateria em telas OLED).
 - **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal.
 
