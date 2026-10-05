@@ -625,3 +625,77 @@ details[open] > :not(summary) {
 .tema[data-estilo='producao'] section > h2::before { content: '▤'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
 .tema[data-estilo='producao'] section > h2 { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; }
 
+
+/* ── Estilo "Lousa (Física e Matemática)" ── */
+.tema[data-estilo='lousa'] {
+  --fonte-titulo: Caveat, 'Space Grotesk', cursive;
+  --raio-sm: 6px;
+  --raio-md: 6px;
+  --raio-lg: 6px;
+  --raio-xl: 6px;
+  --raio-2xl: 6px;
+  --raio-3xl: 6px;
+  --padrao: radial-gradient(hsl(var(--pontos)) 0.8px, transparent 1.2px), radial-gradient(hsl(var(--pontos) / 0.6) 0.6px, transparent 1px);
+  --padrao-tamanho: 23px 17px, 11px 29px;
+}
+
+.tema[data-estilo='lousa']:not([data-tema='escuro']) {
+  --background: 0 0% 97%;
+  --foreground: 220 60% 25%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 60% 25%;
+  --primary: 220 60% 25%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 20% 92%;
+  --secondary-foreground: 220 60% 25%;
+  --muted: 220 20% 92%;
+  --muted-foreground: 220 25% 38%;
+  --accent: 220 25% 94%;
+  --accent-foreground: 220 60% 25%;
+  --border: 220 15% 82%;
+  --input: 220 15% 65%;
+  --pontos: 220 15% 88%;
+}
+
+.tema[data-estilo='lousa'][data-tema='escuro'] {
+  --background: 150 25% 11%;
+  --foreground: 60 15% 93%;
+  --card: 150 22% 14%;
+  --card-foreground: 60 15% 93%;
+  --primary: 60 15% 93%;
+  --primary-foreground: 150 22% 14%;
+  --secondary: 150 18% 19%;
+  --secondary-foreground: 60 15% 93%;
+  --muted: 150 18% 19%;
+  --muted-foreground: 80 10% 74%;
+  --accent: 150 20% 17%;
+  --accent-foreground: 60 15% 93%;
+  --border: 150 15% 28%;
+  --input: 150 12% 40%;
+  --pontos: 150 18% 20%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='lousa']:not([data-tema]) {
+    --background: 150 25% 11%;
+    --foreground: 60 15% 93%;
+    --card: 150 22% 14%;
+    --card-foreground: 60 15% 93%;
+    --primary: 60 15% 93%;
+    --primary-foreground: 150 22% 14%;
+    --secondary: 150 18% 19%;
+    --secondary-foreground: 60 15% 93%;
+    --muted: 150 18% 19%;
+    --muted-foreground: 80 10% 74%;
+    --accent: 150 20% 17%;
+    --accent-foreground: 60 15% 93%;
+    --border: 150 15% 28%;
+    --input: 150 12% 40%;
+    --pontos: 150 18% 20%;
+  }
+}
+.tema[data-estilo='lousa'] h1.font-dot { font-size: 1.4em; line-height: 1; }
+.tema[data-estilo='lousa'] main [class*='rounded-3xl'].border { border-style: dashed; border-width: 2px; }
+.tema[data-estilo='lousa'] section > h2::before { content: '∑'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='lousa'][data-tema='escuro'] .font-dot { text-shadow: 0 0 1px hsl(var(--foreground) / 0.6), 1px 1px 0 hsl(var(--foreground) / 0.08); }
+

@@ -175,6 +175,33 @@ export const DEFINICOES = {
       simbolos: "🟨🟪🟩✓✓",
     },
   },
+  lousa: {
+    nome: "Lousa",
+    curso: "Física e Matemática",
+    acento: "rosa",
+    forma: "redondo",
+    descricao: "Quadro verde com giz no escuro e quadro branco no claro, título escrito à mão.",
+    amostra: {
+      fundo: "#16261d",
+      texto: "#eeeee2",
+      fonte: "Caveat, cursive",
+      titulo: "sigaa ∑",
+    },
+    piadas: {
+      saudacao: ["Seja x a sua vontade de estudar. Então x → 0.", "Prova trivial, deixada como exercício ao leitor.", "Considere uma vaca esférica no vácuo...", "Δt de estudo × motivação = constante. Infelizmente.", "Lim (dias até a prova) → 0⁺", "Pelo teorema do confronto, você passa. Talvez.", "Entropia não diminui. Nem a pilha de listas.", "Schrödinger: até ver a nota, você passou e reprovou."],
+      'sem-aulas': ["∅ aulas hoje. Conjunto vazio, coração cheio."],
+      'sem-atividades': ["Não existe tarefa t tal que t esteja pendente. ∎"],
+      'sem-tarefas': ["Nenhuma tarefa. Q.E.D."],
+      erro: ["Divisão por zero no servidor do SIGAA."],
+      carregando: ["apagando a lousa...", "derivando o portal...", "integrando por partes...", "aplicando a regra da cadeia..."],
+    },
+    segredo: {
+      titulo: "q.e.d.",
+      texto: "Demonstrado. Agora é só aplicar no exercício 47.",
+      efeito: "chuva",
+      simbolos: "∫∑π∞√∂∆λ",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
