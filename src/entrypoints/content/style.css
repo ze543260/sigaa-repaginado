@@ -1003,3 +1003,79 @@ details[open] > :not(summary) {
 @keyframes piscar-retro { 50% { opacity: 0; } }
 .sem-animacao section > h2::before { animation: none; }
 
+
+/* ── Estilo "Solar (Engenharia de Energia)" ── */
+.tema[data-estilo='energia'] {
+  --fonte-titulo: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --raio-sm: 16px;
+  --raio-md: 16px;
+  --raio-lg: 16px;
+  --raio-xl: 16px;
+  --raio-2xl: 16px;
+  --raio-3xl: 16px;
+  --raio-pilula: 9999px;
+  --padrao: repeating-conic-gradient(from 0deg at 100% 0%, hsl(var(--pontos)) 0deg 2deg, transparent 2deg 9deg);
+  --padrao-tamanho: 100% 100%;
+}
+
+.tema[data-estilo='energia']:not([data-tema='escuro']) {
+  --background: 40 60% 95%;
+  --foreground: 20 50% 12%;
+  --card: 40 70% 99%;
+  --card-foreground: 20 50% 12%;
+  --primary: 20 50% 12%;
+  --primary-foreground: 40 70% 99%;
+  --secondary: 38 50% 88%;
+  --secondary-foreground: 20 50% 12%;
+  --muted: 38 50% 88%;
+  --muted-foreground: 20 30% 32%;
+  --accent: 38 55% 91%;
+  --accent-foreground: 20 50% 12%;
+  --border: 35 40% 76%;
+  --input: 35 30% 58%;
+  --pontos: 40 70% 88%;
+}
+
+.tema[data-estilo='energia'][data-tema='escuro'] {
+  --background: 20 30% 7%;
+  --foreground: 40 80% 90%;
+  --card: 20 25% 11%;
+  --card-foreground: 40 80% 90%;
+  --primary: 40 80% 90%;
+  --primary-foreground: 20 25% 11%;
+  --secondary: 20 22% 16%;
+  --secondary-foreground: 40 80% 90%;
+  --muted: 20 22% 16%;
+  --muted-foreground: 35 30% 70%;
+  --accent: 20 22% 14%;
+  --accent-foreground: 40 80% 90%;
+  --border: 25 25% 22%;
+  --input: 25 20% 34%;
+  --pontos: 30 40% 12%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='energia']:not([data-tema]) {
+    --background: 20 30% 7%;
+    --foreground: 40 80% 90%;
+    --card: 20 25% 11%;
+    --card-foreground: 40 80% 90%;
+    --primary: 40 80% 90%;
+    --primary-foreground: 20 25% 11%;
+    --secondary: 20 22% 16%;
+    --secondary-foreground: 40 80% 90%;
+    --muted: 20 22% 16%;
+    --muted-foreground: 35 30% 70%;
+    --accent: 20 22% 14%;
+    --accent-foreground: 40 80% 90%;
+    --border: 25 25% 22%;
+    --input: 25 20% 34%;
+    --pontos: 30 40% 12%;
+  }
+}
+.tema[data-estilo='energia'] h1.font-dot { font-weight: 600; letter-spacing: -0.03em; }
+.tema[data-estilo='energia'] h1.font-dot::after { content: ' ☀'; display: inline-block; color: hsl(var(--destaque-texto)); animation: girar-sol 10s linear infinite; }
+.tema[data-estilo='energia'] section > h2::before { content: '⚡'; margin-right: 1ch; }
+@keyframes girar-sol { to { transform: rotate(360deg); } }
+.sem-animacao h1.font-dot::after { animation: none; }
+

@@ -310,6 +310,33 @@ export const DEFINICOES = {
       simbolos: "★♥◆▲●",
     },
   },
+  energia: {
+    nome: "Solar",
+    curso: "Engenharia de Energia",
+    acento: "laranja",
+    forma: "redondo",
+    descricao: "Raios de sol no fundo, tons quentes e um sol girando no título.",
+    amostra: {
+      fundo: "#160e09",
+      texto: "#fbe7c2",
+      fonte: "'Space Grotesk', sans-serif",
+      titulo: "sigaa ☀",
+    },
+    piadas: {
+      saudacao: ["Eficiência do painel: 22%. A sua de manhã: 3%.", "Energia não se cria nem se perde, só se transforma em sono.", "Bandeira tarifária do seu humor: vermelha.", "Fator de capacidade da sua semana: baixo.", "Matriz energética do estudante: 100% café.", "Pico de demanda: véspera de prova.", "Seu inversor está desligado. Tente reiniciar com uma soneca.", "Geração distribuída de dúvidas na turma."],
+      'sem-aulas': ["Dia de sol pleno e nenhuma aula. Carregue as baterias."],
+      'sem-atividades': ["Demanda zero. Excedente de energia pra você."],
+      'sem-tarefas': ["Nenhuma carga na rede."],
+      erro: ["Apagão no servidor do SIGAA."],
+      carregando: ["rastreando o sol...", "carregando baterias...", "sincronizando com a rede...", "convertendo CC em CA..."],
+    },
+    segredo: {
+      titulo: "energia limpa",
+      texto: "100% renovável. Igual à sua vontade depois do fim de semana.",
+      efeito: "chuva",
+      simbolos: "☀⚡☀✦⚡",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
