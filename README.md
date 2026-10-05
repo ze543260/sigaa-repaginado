@@ -54,6 +54,13 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
 - **Bloqueio do app** com digital, opcional.
 - **Atualização automática** pelas releases deste repositório.
 
+## Em desenvolvimento
+
+- **Novos temas**, além do claro e do escuro: alto contraste, AMOLED (preto puro, para poupar bateria em telas OLED) e uma opção que segue o horário do dia.
+- **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal, para achar a aula de relance.
+
+Tem sugestão de tema ou cor? Abra uma [sugestão](../../issues/new?template=sugestao.yml).
+
 ## Como usar
 
 ### App Android
