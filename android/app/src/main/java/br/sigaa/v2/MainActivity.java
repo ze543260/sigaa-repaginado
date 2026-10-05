@@ -79,6 +79,7 @@ public class MainActivity extends Activity {
             raiz.addView(abertura);
         }
         bloqueio = new Bloqueio(this, webView);
+        if (BuildConfig.DIAGNOSTICO && estado == null) Diagnostico.agendar(this, webView);
         atualizador = new Atualizador(this);
         if (getIntent().getBooleanExtra(Atualizador.EXTRA_INSTALAR, false)) atualizador.verificar(true);
         else if (estado == null) atualizador.verificarEmSegundoPlano();
@@ -141,11 +142,29 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPageStarted(WebView view, String url, android.graphics.Bitmap icone) {
+                if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("página: " + Uri.parse(url).getPath());
                 if (!injetaNoInicio && url.startsWith(ORIGEM_SIGAA)) view.evaluateJavascript(script, null);
             }
+
+            @Override
+            public boolean onRenderProcessGone(WebView view, android.webkit.RenderProcessGoneDetail detalhe) {
+                if (!BuildConfig.DIAGNOSTICO) return super.onRenderProcessGone(view, detalhe);
+                Diagnostico.registrar("processo de render morreu (travou: " + detalhe.didCrash() + ")");
+                return true;
+            }
         });
+        if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("injeção no início: " + injetaNoInicio + " · tamanho do script: " + script.length() / 1024 + " KB");
 
         webView.setWebChromeClient(new android.webkit.WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(android.webkit.ConsoleMessage m) {
+                if (BuildConfig.DIAGNOSTICO && m.messageLevel() != android.webkit.ConsoleMessage.MessageLevel.LOG
+                        && m.messageLevel() != android.webkit.ConsoleMessage.MessageLevel.DEBUG) {
+                    Diagnostico.registrar(m.messageLevel() + ": " + m.message() + " @" + m.lineNumber());
+                }
+                return false;
+            }
+
             @Override
             public boolean onShowFileChooser(WebView view, android.webkit.ValueCallback<Uri[]> retorno, FileChooserParams params) {
                 if (arquivosPendentes != null) arquivosPendentes.onReceiveValue(null);
@@ -288,6 +307,7 @@ public class MainActivity extends Activity {
     }
 
     void fimAbertura() {
+        if (BuildConfig.DIAGNOSTICO) Diagnostico.registrar("interface avisou que montou");
         Ota.confirmar(this);
         if (abertura != null) abertura.sair();
         abertura = null;

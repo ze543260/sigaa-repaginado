@@ -20,6 +20,7 @@ android {
         versionCode 39
         versionName '0.6.16'
         // "dono/repositorio" no GitHub com as versões publicadas em Releases; vazio desliga a busca.
+        buildConfigField 'boolean', 'DIAGNOSTICO', 'false'
         buildConfigField 'String', 'REPO_ATUALIZACAO', '"' + (project.findProperty('repoAtualizacao') ?: '') + '"'
     }
 
@@ -42,6 +43,14 @@ android {
         debug {
             // Mesma assinatura das releases: o app instalado por cabo recebe as atualizações publicadas.
             if (caminhoChave) signingConfig signingConfigs.projeto
+        }
+        diagnostico {
+            initWith debug
+            // Instala ao lado do app normal e registra a abertura para achar telas pretas em aparelhos específicos.
+            applicationIdSuffix '.diag'
+            versionNameSuffix '-diag'
+            buildConfigField 'boolean', 'DIAGNOSTICO', 'true'
+            matchingFallbacks = ['debug']
         }
         release {
             minifyEnabled true
