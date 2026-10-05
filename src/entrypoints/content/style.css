@@ -1153,3 +1153,77 @@ details[open] > :not(summary) {
 .tema[data-estilo='quimica'] h1.font-dot::before { content: 'Sg'; display: inline-grid; place-items: center; font-size: 0.42em; width: 2.1em; height: 2.1em; margin-right: 0.35em; vertical-align: 0.35em; border: 2px solid hsl(var(--destaque)); border-radius: 4px; color: hsl(var(--destaque-texto)); }
 .tema[data-estilo='quimica'] section > h2::before { content: '⚗'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
 
+
+/* ── Estilo "Planilha (Administração)" ── */
+.tema[data-estilo='admin'] {
+  --fonte-titulo: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --raio-sm: 2px;
+  --raio-md: 2px;
+  --raio-lg: 2px;
+  --raio-xl: 2px;
+  --raio-2xl: 2px;
+  --raio-3xl: 2px;
+  --raio-pilula: 4px;
+  --padrao: linear-gradient(hsl(var(--pontos)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--pontos)) 1px, transparent 1px);
+  --padrao-tamanho: 96px 28px;
+}
+
+.tema[data-estilo='admin']:not([data-tema='escuro']) {
+  --background: 0 0% 98%;
+  --foreground: 0 0% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --primary: 0 0% 10%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 140 15% 92%;
+  --secondary-foreground: 0 0% 10%;
+  --muted: 140 15% 92%;
+  --muted-foreground: 0 0% 34%;
+  --accent: 140 20% 94%;
+  --accent-foreground: 0 0% 10%;
+  --border: 140 10% 80%;
+  --input: 0 0% 62%;
+  --pontos: 140 10% 88%;
+}
+
+.tema[data-estilo='admin'][data-tema='escuro'] {
+  --background: 140 10% 9%;
+  --foreground: 0 0% 94%;
+  --card: 140 8% 12%;
+  --card-foreground: 0 0% 94%;
+  --primary: 0 0% 94%;
+  --primary-foreground: 140 8% 12%;
+  --secondary: 140 8% 17%;
+  --secondary-foreground: 0 0% 94%;
+  --muted: 140 8% 17%;
+  --muted-foreground: 0 0% 68%;
+  --accent: 140 8% 15%;
+  --accent-foreground: 0 0% 94%;
+  --border: 140 8% 24%;
+  --input: 140 6% 36%;
+  --pontos: 140 8% 14%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='admin']:not([data-tema]) {
+    --background: 140 10% 9%;
+    --foreground: 0 0% 94%;
+    --card: 140 8% 12%;
+    --card-foreground: 0 0% 94%;
+    --primary: 0 0% 94%;
+    --primary-foreground: 140 8% 12%;
+    --secondary: 140 8% 17%;
+    --secondary-foreground: 0 0% 94%;
+    --muted: 140 8% 17%;
+    --muted-foreground: 0 0% 68%;
+    --accent: 140 8% 15%;
+    --accent-foreground: 0 0% 94%;
+    --border: 140 8% 24%;
+    --input: 140 6% 36%;
+    --pontos: 140 8% 14%;
+  }
+}
+.tema[data-estilo='admin'] h1.font-dot { font-weight: 600; letter-spacing: -0.03em; }
+.tema[data-estilo='admin'] section > h2::before { content: 'ƒx'; margin-right: 1ch; font-style: italic; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='admin'] section > h2 { font-family: var(--fonte-mono); }
+

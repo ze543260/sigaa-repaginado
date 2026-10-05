@@ -364,6 +364,33 @@ export const DEFINICOES = {
       simbolos: "⚗🧪⚛⚗🧪",
     },
   },
+  admin: {
+    nome: "Planilha",
+    curso: "Administração",
+    acento: "verde",
+    forma: "quadrado",
+    descricao: "Grade de células no fundo, fórmulas nos títulos e cara de relatório.",
+    amostra: {
+      fundo: "#141a16",
+      texto: "#efefef",
+      fonte: "'Space Grotesk', sans-serif",
+      titulo: "ƒx sigaa",
+    },
+    piadas: {
+      saudacao: ["=SE(estudou; \"passa\"; \"DP\")", "Seu ROI de estudo está negativo.", "Reunião de alinhamento com você mesmo às 7h.", "Matriz SWOT da semana: só ameaças.", "KPI do dia: tarefas entregues. Meta: 1.", "Fluxo de caixa: entra mesada, sai café.", "Vamos sinergizar a agenda e mitigar as faltas.", "#REF! — a vontade de estudar foi excluída."],
+      'sem-aulas': ["Agenda livre. Ótimo dia pra um brainstorming na rede."],
+      'sem-atividades': ["Backlog zerado. Bater a meta nunca foi tão fácil."],
+      'sem-tarefas': ["Nenhum entregável."],
+      erro: ["#N/D: o SIGAA não respondeu."],
+      carregando: ["consolidando relatórios...", "atualizando a tabela dinâmica...", "calculando o EBITDA...", "alinhando expectativas..."],
+    },
+    segredo: {
+      titulo: "meta batida",
+      texto: "Bônus de fim de ano liberado (em forma de férias).",
+      efeito: "chuva",
+      simbolos: "$📈💼$📊",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
