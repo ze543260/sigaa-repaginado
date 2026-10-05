@@ -1,3 +1,4 @@
+import { usarPreferencias } from './tema';
 import { tituloBr } from '../domain/texto';
 import { useState } from 'react';
 import { MEDIA_APROVACAO, prever, type LinhaNotas, type Semestre } from '../domain/desempenho';
@@ -50,16 +51,44 @@ export function TextoPrevisao({ linha, compacto = false }: { readonly linha: Lin
   }
 }
 
+function SeloBuild({ linha }: { readonly linha: LinhaNotas }) {
+  const { prefs } = usarPreferencias();
+  if (prefs.estilo !== 'terminal') return null;
+  const p = prever(linha);
+  const estado =
+    p.tipo === 'sem-notas' || p.tipo === 'sem-dados' ? 'pending'
+      : (p.tipo === 'encerrada' && p.aprovado) || (p.tipo === 'precisa' && p.nota <= MEDIA_APROVACAO) ? 'passing'
+        : p.tipo === 'precisa' ? 'running'
+          : 'failing';
+  return (
+    <span
+      className={cn(
+        'inline-flex shrink-0 overflow-hidden rounded-full border font-mono text-[10px] leading-5',
+        estado === 'failing' && 'border-destaque',
+      )}
+      title="Status da disciplina, à moda do CI"
+    >
+      <span className="bg-foreground/10 px-1.5">build</span>
+      <span className={cn('px-1.5', estado === 'passing' && 'bg-destaque text-white', estado === 'failing' && 'bg-destaque/20 text-destaque-texto')}>
+        {estado}
+      </span>
+    </span>
+  );
+}
+
 export function LinhaDisciplina({ linha }: { readonly linha: LinhaNotas }) {
   return (
     <li className="space-y-2 px-5 py-4">
-      <div className="flex items-start justify-between gap-3">
-        <p className="min-w-0 text-sm font-medium">{capitalizar(linha.rotulo)}</p>
-        {linha.faltas !== null && (
-          <span className={cn('shrink-0 rounded-full border px-2 py-0.5 font-mono text-[11px]', linha.faltas > 0 && 'border-destaque/60')}>
-            {linha.faltas} {linha.faltas === 1 ? 'falta' : 'faltas'}
-          </span>
-        )}
+      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+        <p className="min-w-0 flex-1 basis-40 text-sm font-medium">{capitalizar(linha.rotulo)}</p>
+        <span className="flex shrink-0 items-center gap-1.5">
+          <SeloBuild linha={linha} />
+          {linha.faltas !== null && (
+            <span className={cn('rounded-full border px-2 py-0.5 font-mono text-[11px]', linha.faltas > 0 && 'border-destaque/60')}>
+              {linha.faltas} {linha.faltas === 1 ? 'falta' : 'faltas'}
+            </span>
+          )}
+        </span>
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
         {linha.avaliacoes.map((a) => (

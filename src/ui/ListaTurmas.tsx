@@ -1,3 +1,4 @@
+import { PiadaDoContexto, usePiada } from './Surpresas';
 import { tituloBr } from '../domain/texto';
 import { useEffect, useState } from 'react';
 import { diaSigaaHoje, horaConfirmada, horariosDoCodigo, intervaloDoBloco, ordemHorario, relativo, resumirHorario, siglaDisciplina } from '../domain/horario';
@@ -28,6 +29,7 @@ const hhmm = (d: Date): string => d.toTimeString().slice(0, 5);
 
 export function AulasDeHoje({ turmas }: Props) {
   const agora = useAgora();
+  const temPiada = !!usePiada('sem-aulas');
   const dia = diaSigaaHoje(agora);
   const hoje = turmas
     .flatMap((t) => {
@@ -41,7 +43,11 @@ export function AulasDeHoje({ turmas }: Props) {
     .sort((a, b) => ordemHorario(a.primeira) - ordemHorario(b.primeira));
 
   if (hoje.length === 0) {
-    return <p className="px-1 text-sm text-muted-foreground">Sem aulas hoje.</p>;
+    return (
+      <p className="px-1 text-sm text-muted-foreground">
+        <PiadaDoContexto contexto="sem-aulas" className="font-mono" /> {!temPiada && 'Sem aulas hoje.'}
+      </p>
+    );
   }
 
   return (

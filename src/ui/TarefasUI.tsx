@@ -1,3 +1,4 @@
+import { PiadaDoContexto } from './Surpresas';
 import { useState, type FormEvent } from 'react';
 import { lerData, relativo } from '../domain/horario';
 import type { EnvioTarefa, Tarefa } from '../domain/types';
@@ -88,7 +89,13 @@ function CartaoTarefa({ t, agora }: { readonly t: Tarefa; readonly agora: Date }
 
 export function ListaTarefas({ tarefas }: { readonly tarefas: readonly Tarefa[] }) {
   const agora = new Date();
-  if (tarefas.length === 0) return <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">Nenhuma tarefa publicada.</Card>;
+  if (tarefas.length === 0) {
+    return (
+      <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">
+        Nenhuma tarefa publicada. <PiadaDoContexto contexto="sem-tarefas" className="mt-2 block font-mono" />
+      </Card>
+    );
+  }
   const ordenadas = [...tarefas].sort((a, b) => ORDEM[estadoDa(a, agora)] - ORDEM[estadoDa(b, agora)]);
   return (
     <div className="cascata space-y-3">

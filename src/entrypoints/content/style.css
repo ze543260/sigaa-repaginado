@@ -282,7 +282,8 @@ details[open] > :not(summary) {
   text-transform: lowercase;
 }
 .tema[data-estilo='terminal'] section > h2::before {
-  content: '// ';
+  content: '//';
+  margin-right: 1ch;
   color: hsl(var(--destaque-texto));
 }
 .tema[data-estilo='terminal'][data-tema='escuro'] h1.font-dot,
@@ -294,4 +295,9 @@ details[open] > :not(summary) {
 }
 .sem-animacao h1.font-dot::after {
   animation: none;
+}
+
+@keyframes fogos {
+  0% { transform: translate(0, 0) scale(0.3); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
 }

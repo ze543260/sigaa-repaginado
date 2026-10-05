@@ -1,3 +1,4 @@
+import { Digitando, PiadaDoContexto, usePiada } from './Surpresas';
 import { tituloBr } from '../domain/texto';
 import { useEffect, useState } from 'react';
 import { horariosDoCodigo, intervaloDoBloco, lerData, ordemHorario } from '../domain/horario';
@@ -149,6 +150,7 @@ function ConteudoAtividade({ atividade: a, feita }: { readonly atividade: Ativid
 }
 
 function ListaAtividades({ atividades }: { readonly atividades: readonly Atividade[] }) {
+  const piadaVazia = usePiada('sem-atividades');
   const { feita } = useFeitas();
   const pendentes = atividades
     .filter((a) => a.status !== 'passada')
@@ -156,7 +158,11 @@ function ListaAtividades({ atividades }: { readonly atividades: readonly Ativida
   const encerradas = atividades.filter((a) => a.status === 'passada');
 
   if (atividades.length === 0) {
-    return <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">Nada pendente por enquanto.</Card>;
+    return (
+      <Card className="border-dashed p-6 text-center text-sm text-muted-foreground">
+        {piadaVazia ? <Digitando texto={piadaVazia} className="font-mono" /> : 'Nada pendente por enquanto.'}
+      </Card>
+    );
   }
 
   return (
@@ -267,6 +273,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
           <p className="font-mono text-sm text-muted-foreground">
             {saudacao()} · semestre {portal.semestre}
           </p>
+          <PiadaDoContexto contexto="saudacao" className="block font-mono text-xs text-destaque-texto" />
           <h1 className="font-dot text-4xl font-extrabold capitalize leading-[0.95] sm:text-7xl">{primeiroNome || 'olá'}</h1>
           {(ira || portal.percentualIntegralizado !== null) && (
             <dl className="flex gap-6 pt-2 lg:hidden">

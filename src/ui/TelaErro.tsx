@@ -1,3 +1,4 @@
+import { PiadaDoContexto } from './Surpresas';
 import { tituloBr } from '../domain/texto';
 import { lerPortalSalvo } from '../domain/cache';
 import type { ErroPagina, Turma } from '../domain/types';
@@ -59,6 +60,7 @@ export function TelaErro({ erro }: { readonly erro: ErroPagina }) {
         <IconeErro tipo={erro.tipo} />
         <h1 className="font-dot text-4xl font-extrabold leading-none sm:text-6xl">{TITULO[erro.tipo]}</h1>
         <p className="text-muted-foreground">{DESCRICAO[erro.tipo]}</p>
+        <PiadaDoContexto contexto="erro" className="font-mono text-sm text-destaque-texto" />
         {erro.tipo === 'indisponivel' && erro.mensagem && (
           <p className="max-w-prose rounded-2xl border px-4 py-3 font-mono text-xs text-muted-foreground">{erro.mensagem}</p>
         )}

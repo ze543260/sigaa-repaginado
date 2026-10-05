@@ -1,3 +1,4 @@
+import { LogCompilacao, Surpresa, useSegredo } from './Surpresas';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { ehSecaoAtual } from '../domain/secao';
@@ -65,6 +66,7 @@ export function App({ pagina, onVerOriginal }: Props) {
   const { prefs, alternarTema } = controlePrefs;
   const tema = prefs.tema;
   const [configAberta, setConfigAberta] = useState(false);
+  const segredo = useSegredo();
   const [boasVindas, setBoasVindas] = useState(() => !jaViuBoasVindas());
   const [navegando, setNavegando] = useState(false);
   const [aba, setAba] = useState<AbaPortal>('inicio');
@@ -205,7 +207,7 @@ export function App({ pagina, onVerOriginal }: Props) {
               <Icone d={ICONES.menu} />
             </Button>
           )}
-          <span className="flex items-center gap-2" aria-label="Sigaa">
+          <span className="flex select-none items-center gap-2" aria-label="Sigaa" onClick={segredo.tocarLogo}>
             <span className="font-dot text-2xl font-extrabold leading-none" aria-hidden="true">
               sigaa
             </span>
@@ -260,7 +262,7 @@ export function App({ pagina, onVerOriginal }: Props) {
       >
         {navegando && pagina.tipo !== 'login' && (
           <div className="mx-auto max-w-3xl animate-entrar px-4 py-6 sm:px-6 sm:py-10" role="status" aria-label="Carregando">
-            <Esqueleto />
+            {prefs.estilo === 'terminal' ? <LogCompilacao /> : <Esqueleto />}
           </div>
         )}
         <div className={cn(navegando && pagina.tipo !== 'login' && 'hidden')}>
@@ -291,6 +293,7 @@ export function App({ pagina, onVerOriginal }: Props) {
         />
       )}
       {boasVindas && <BoasVindas onFim={() => setBoasVindas(false)} />}
+      {segredo.ativo && <Surpresa onFechar={segredo.fechar} />}
       <GavetaMenu
         titulo={pagina.tipo === 'turma' ? 'Menu da turma' : 'Menu do SIGAA'}
         itens={menuMovel}

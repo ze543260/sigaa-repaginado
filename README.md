@@ -65,6 +65,7 @@ Este projeto é uma prova de que dá para ter uma interface decente **em cima do
   - **Engenharia Mecânica**: prancha técnica, com cotas e linhas de desenho.
   - **Engenharia Civil**: planta baixa e concreto.
   - **Física e Matemática**: lousa, com giz e fórmulas.
+- **Piadas e segredos de cada área**: o Terminal já tem comando do dia, log de compilação no carregamento e selo de "build" nas notas. E tem pelo menos um segredo escondido. Dica: insista no logo.
 - **Outras linhas**: brutalista, retrô (anos 90 e pixel art), editorial (como revista), alto contraste e AMOLED (preto puro, que poupa bateria em telas OLED).
 - **Mais cores de destaque**, inclusive uma cor por disciplina na grade semanal.
 
