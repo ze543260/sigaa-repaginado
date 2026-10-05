@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Estilo } from './estilos';
 import { cn } from './cn';
 import { usarPreferencias } from './tema';
@@ -25,11 +25,13 @@ function engrenagem(cx: number, cy: number, r: number, dentes: number): string {
 const CENAS: Record<Estilo, () => ReactNode> = {
   minimalista: () => (
     <g>
-      {Array.from({ length: 21 * 7 }, (_, i) => {
-        const x = i % 21;
-        const y = Math.floor(i / 21);
-        return <circle key={i} cx={20 + x * 8} cy={36 + y * 8} r="2.4" fill={x === 10 && y === 3 ? D : F} className="ilu-ponto" style={atraso((x + y) * 0.06)} />;
-      })}
+      {Array.from({ length: 21 }, (_, x) => (
+        <g key={x} className="ilu-ponto" style={atraso(x * 0.08)}>
+          {Array.from({ length: 7 }, (_, y) => (
+            <circle key={y} cx={20 + x * 8} cy={36 + y * 8} r="2.4" fill={x === 10 && y === 3 ? D : F} />
+          ))}
+        </g>
+      ))}
     </g>
   ),
   terminal: () => (
@@ -205,8 +207,20 @@ const CENAS: Record<Estilo, () => ReactNode> = {
 export function IlustracaoLogin({ className, estilo: fixo }: { readonly className?: string; readonly estilo?: Estilo }) {
   const atual = usarPreferencias().prefs.estilo;
   const estilo = fixo ?? atual;
+  const ref = useRef<SVGSVGElement>(null);
+  const [visivel, setVisivel] = useState(true);
+
+  // Fora da tela a cena congela: no seletor são 15 ao mesmo tempo.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(([e]) => setVisivel(!!e?.isIntersecting));
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <svg viewBox="0 0 200 120" className={cn('ilustracao-login w-full', className)} aria-hidden="true">
+    <svg ref={ref} viewBox="0 0 200 120" className={cn('ilustracao-login w-full', !visivel && 'ilu-pausada', className)} aria-hidden="true">
       {CENAS[estilo]()}
     </svg>
   );

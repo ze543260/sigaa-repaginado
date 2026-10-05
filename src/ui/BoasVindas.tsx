@@ -185,7 +185,7 @@ export function BoasVindas({ onFim }: { readonly onFim: () => void }) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex gap-2" aria-label={`Passo ${passo + 1} de ${ultimo + 1}`}>
             {[0, 1, 2, 3].map((i) => (
-              <span key={i} className={cn('h-2 rounded-full transition-all duration-300', i === passo ? 'w-6 bg-destaque' : 'w-2 bg-foreground/20')} />
+              <span key={i} className={cn('h-2 rounded-full transition-[width,background-color] duration-300', i === passo ? 'w-6 bg-destaque' : 'w-2 bg-foreground/20')} />
             ))}
           </div>
           <div className="flex gap-2">

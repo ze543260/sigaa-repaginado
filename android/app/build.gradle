@@ -17,8 +17,8 @@ android {
         applicationId 'br.sigaa.v2'
         minSdk 29
         targetSdk 35
-        versionCode 33
-        versionName '0.6.10'
+        versionCode 34
+        versionName '0.6.11'
         // "dono/repositorio" no GitHub com as versões publicadas em Releases; vazio desliga a busca.
         buildConfigField 'String', 'REPO_ATUALIZACAO', '"' + (project.findProperty('repoAtualizacao') ?: '') + '"'
     }

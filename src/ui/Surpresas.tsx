@@ -24,7 +24,12 @@ export function Digitando({ texto, className }: { readonly texto: string; readon
   const [n, setN] = useState(0);
   useEffect(() => {
     setN(0);
-    const id = window.setInterval(() => setN((v) => (v >= texto.length ? v : v + 1)), 28);
+    let n = 0;
+    const id = window.setInterval(() => {
+      n += 1;
+      setN(n);
+      if (n >= texto.length) window.clearInterval(id);
+    }, 28);
     return () => window.clearInterval(id);
   }, [texto]);
   return (
