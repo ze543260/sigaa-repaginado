@@ -699,3 +699,78 @@ details[open] > :not(summary) {
 .tema[data-estilo='lousa'] section > h2::before { content: '∑'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
 .tema[data-estilo='lousa'][data-tema='escuro'] .font-dot { text-shadow: 0 0 1px hsl(var(--foreground) / 0.6), 1px 1px 0 hsl(var(--foreground) / 0.08); }
 
+
+/* ── Estilo "Painel CLP (Engenharia de Controle e Automação)" ── */
+.tema[data-estilo='controle'] {
+  --fonte-titulo: 'Space Mono', ui-monospace, monospace;
+  --raio-sm: 3px;
+  --raio-md: 3px;
+  --raio-lg: 3px;
+  --raio-xl: 3px;
+  --raio-2xl: 3px;
+  --raio-3xl: 3px;
+  --raio-pilula: 4px;
+  --padrao: linear-gradient(90deg, hsl(var(--pontos)) 2px, transparent 2px), linear-gradient(hsl(var(--pontos) / 0.6) 1px, transparent 1px);
+  --padrao-tamanho: 160px 100%, 100% 48px;
+}
+
+.tema[data-estilo='controle']:not([data-tema='escuro']) {
+  --background: 210 8% 90%;
+  --foreground: 210 15% 12%;
+  --card: 210 10% 97%;
+  --card-foreground: 210 15% 12%;
+  --primary: 210 15% 12%;
+  --primary-foreground: 210 10% 97%;
+  --secondary: 210 8% 84%;
+  --secondary-foreground: 210 15% 12%;
+  --muted: 210 8% 84%;
+  --muted-foreground: 210 10% 32%;
+  --accent: 210 8% 87%;
+  --accent-foreground: 210 15% 12%;
+  --border: 210 8% 72%;
+  --input: 210 6% 55%;
+  --pontos: 210 8% 80%;
+}
+
+.tema[data-estilo='controle'][data-tema='escuro'] {
+  --background: 210 12% 9%;
+  --foreground: 90 20% 90%;
+  --card: 210 12% 13%;
+  --card-foreground: 90 20% 90%;
+  --primary: 90 20% 90%;
+  --primary-foreground: 210 12% 13%;
+  --secondary: 210 10% 18%;
+  --secondary-foreground: 90 20% 90%;
+  --muted: 210 10% 18%;
+  --muted-foreground: 210 10% 66%;
+  --accent: 210 10% 16%;
+  --accent-foreground: 90 20% 90%;
+  --border: 210 10% 24%;
+  --input: 210 8% 36%;
+  --pontos: 210 10% 15%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='controle']:not([data-tema]) {
+    --background: 210 12% 9%;
+    --foreground: 90 20% 90%;
+    --card: 210 12% 13%;
+    --card-foreground: 90 20% 90%;
+    --primary: 90 20% 90%;
+    --primary-foreground: 210 12% 13%;
+    --secondary: 210 10% 18%;
+    --secondary-foreground: 90 20% 90%;
+    --muted: 210 10% 18%;
+    --muted-foreground: 210 10% 66%;
+    --accent: 210 10% 16%;
+    --accent-foreground: 90 20% 90%;
+    --border: 210 10% 24%;
+    --input: 210 8% 36%;
+    --pontos: 210 10% 15%;
+  }
+}
+.tema[data-estilo='controle'] h1.font-dot::after { content: ''; display: inline-block; width: 0.32em; height: 0.32em; margin-left: 0.3em; vertical-align: middle; border-radius: 50%; background: hsl(var(--destaque)); box-shadow: 0 0 10px hsl(var(--destaque)); animation: led-clp 1.2s steps(1) infinite; }
+.tema[data-estilo='controle'] section > h2::before { content: '⏻'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='controle'] section > h2 { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; }
+@keyframes led-clp { 50% { opacity: 0.25; box-shadow: none; } }
+

@@ -202,6 +202,33 @@ export const DEFINICOES = {
       simbolos: "∫∑π∞√∂∆λ",
     },
   },
+  controle: {
+    nome: "Painel CLP",
+    curso: "Engenharia de Controle e Automação",
+    acento: "verde",
+    forma: "quadrado",
+    descricao: "Painel de comando: trilhos de diagrama ladder, LED piscando e tudo em caixa alta.",
+    amostra: {
+      fundo: "#141a20",
+      texto: "#e3edd9",
+      fonte: "'Space Mono', monospace",
+      titulo: "SIGAA ●",
+    },
+    piadas: {
+      saudacao: ["Malha fechada: estudar, errar, estudar de novo.", "Seu PID está com ganho derivativo demais: ansiedade.", "Overshoot na semana de provas detectado.", "Erro em regime permanente: 0,5 ponto na média.", "Estado do sistema: estável, porém marginalmente.", "Saída do CLP: café = 1.", "Zieger-Nichols não sintoniza o seu sono.", "Planta não controlável: a agenda do semestre."],
+      'sem-aulas': ["Sistema em repouso. Nenhuma entrada ativa."],
+      'sem-atividades': ["Setpoint atingido. Erro zero."],
+      'sem-tarefas': ["Nenhum degrau aplicado."],
+      erro: ["Watchdog do SIGAA estourou."],
+      carregando: ["varrendo entradas do CLP...", "executando o ladder...", "ajustando Kp, Ki e Kd...", "aguardando resposta ao degrau..."],
+    },
+    segredo: {
+      titulo: "sistema estável",
+      texto: "Polos no semiplano esquerdo. Pode relaxar.",
+      efeito: "chuva",
+      simbolos: "●○●⏻⚡",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
