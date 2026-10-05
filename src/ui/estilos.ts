@@ -148,6 +148,33 @@ export const DEFINICOES = {
       simbolos: "🧱🧱⛏🏗🦺",
     },
   },
+  producao: {
+    nome: "Kanban",
+    curso: "Engenharia de Produção",
+    acento: "violeta",
+    forma: "quadrado",
+    descricao: "Quadro de post-its, título em caneta e foco no que está em andamento.",
+    amostra: {
+      fundo: "#fff3b0",
+      texto: "#1e2235",
+      fonte: "Caveat, cursive",
+      titulo: "sigaa ✓",
+    },
+    piadas: {
+      saudacao: ["Kaizen do dia: estudar 1% a mais que ontem.", "Gargalo identificado: o SIGAA.", "Just in time: entregar a tarefa às 23h59.", "Seu lead time de estudo está acima da meta.", "5S no quarto: seiri, seiton... depois eu termino.", "Diagrama de Ishikawa da reprovação: causa raiz = sono.", "WIP limit: 3 tarefas. Você: 11.", "Lean é cortar desperdício. Começa pelo Instagram."],
+      'sem-aulas': ["Linha parada. Ótimo dia pra um kaizen pessoal."],
+      'sem-atividades': ["Coluna \"a fazer\" vazia. Raro como um processo estável."],
+      'sem-tarefas': ["Nenhum cartão no quadro."],
+      erro: ["Andon aceso: o SIGAA parou a linha."],
+      carregando: ["puxando cartões do backlog...", "medindo o takt time do servidor...", "eliminando desperdícios...", "rodando o PDCA..."],
+    },
+    segredo: {
+      titulo: "lote entregue",
+      texto: "Zero defeitos. Six Sigma ficaria orgulhoso.",
+      efeito: "chuva",
+      simbolos: "🟨🟪🟩✓✓",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;

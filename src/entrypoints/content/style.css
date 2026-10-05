@@ -550,3 +550,78 @@ details[open] > :not(summary) {
 .tema[data-estilo='civil'] section > h2 { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; }
 .tema[data-estilo='civil'] section > h2::before { content: '▲'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
 
+
+/* ── Estilo "Kanban (Engenharia de Produção)" ── */
+.tema[data-estilo='producao'] {
+  --fonte-titulo: Caveat, 'Space Grotesk', cursive;
+  --raio-sm: 2px;
+  --raio-md: 2px;
+  --raio-lg: 2px;
+  --raio-xl: 2px;
+  --raio-2xl: 2px;
+  --raio-3xl: 2px;
+  --raio-pilula: 9999px;
+  --padrao: radial-gradient(hsl(var(--pontos)) 1px, transparent 1.4px);
+  --padrao-tamanho: 18px 18px;
+}
+
+.tema[data-estilo='producao']:not([data-tema='escuro']) {
+  --background: 45 40% 94%;
+  --foreground: 230 30% 15%;
+  --card: 52 100% 88%;
+  --card-foreground: 230 30% 15%;
+  --primary: 230 30% 15%;
+  --primary-foreground: 52 100% 88%;
+  --secondary: 45 30% 86%;
+  --secondary-foreground: 230 30% 15%;
+  --muted: 45 30% 86%;
+  --muted-foreground: 230 15% 32%;
+  --accent: 50 80% 82%;
+  --accent-foreground: 230 30% 15%;
+  --border: 45 25% 72%;
+  --input: 45 20% 55%;
+  --pontos: 40 30% 84%;
+}
+
+.tema[data-estilo='producao'][data-tema='escuro'] {
+  --background: 230 25% 10%;
+  --foreground: 45 40% 92%;
+  --card: 230 22% 15%;
+  --card-foreground: 45 40% 92%;
+  --primary: 45 40% 92%;
+  --primary-foreground: 230 22% 15%;
+  --secondary: 230 20% 20%;
+  --secondary-foreground: 45 40% 92%;
+  --muted: 230 20% 20%;
+  --muted-foreground: 45 15% 70%;
+  --accent: 230 20% 18%;
+  --accent-foreground: 45 40% 92%;
+  --border: 230 18% 26%;
+  --input: 230 15% 38%;
+  --pontos: 230 20% 17%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='producao']:not([data-tema]) {
+    --background: 230 25% 10%;
+    --foreground: 45 40% 92%;
+    --card: 230 22% 15%;
+    --card-foreground: 45 40% 92%;
+    --primary: 45 40% 92%;
+    --primary-foreground: 230 22% 15%;
+    --secondary: 230 20% 20%;
+    --secondary-foreground: 45 40% 92%;
+    --muted: 230 20% 20%;
+    --muted-foreground: 45 15% 70%;
+    --accent: 230 20% 18%;
+    --accent-foreground: 45 40% 92%;
+    --border: 230 18% 26%;
+    --input: 230 15% 38%;
+    --pontos: 230 20% 17%;
+  }
+}
+.tema[data-estilo='producao'] h1.font-dot { font-size: 1.35em; line-height: 1; }
+.tema[data-estilo='producao'] main [class*='rounded-3xl'].border { box-shadow: 3px 4px 0 hsl(var(--foreground) / 0.12); }
+.tema[data-estilo='producao'] section > h2::before { content: '▤'; margin-right: 1ch; color: hsl(var(--destaque-texto)); }
+.tema[data-estilo='producao'] section > h2 { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; }
+
