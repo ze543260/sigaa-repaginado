@@ -9,6 +9,8 @@ import { Button } from './components/Button';
 import { Card } from './components/Card';
 import { cn } from './cn';
 import { usarPreferencias } from './tema';
+import { analisarFaltas } from '../domain/desempenho';
+import { guardarFaltas } from './faltas';
 
 interface Props {
   readonly turma: PaginaTurma;
@@ -250,6 +252,12 @@ function Principal({ noticia, topicos }: { readonly noticia: Noticia | null; rea
 }
 
 export function Turma({ turma }: Props) {
+  useEffect(() => {
+    if (turma.conteudo.tipo !== 'secao') return;
+    const faltas = analisarFaltas(turma.conteudo.blocos);
+    if (faltas) guardarFaltas(tituloBr(turma.nome), faltas.faltas, faltas.maximo);
+  }, [turma]);
+
   return (
     <main className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[220px_1fr]">
       <aside className="hidden space-y-6 lg:sticky lg:top-24 lg:block lg:self-start">

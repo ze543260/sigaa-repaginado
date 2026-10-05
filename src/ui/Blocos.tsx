@@ -246,10 +246,49 @@ function ListaPessoas({ pessoas }: { readonly pessoas: readonly Pessoa[] }) {
   );
 }
 
+const EXTENSAO_ROTULO = (nome: string): string => nome.match(/\.([a-z0-9]{1,4})$/i)?.[1]?.toUpperCase() ?? 'ARQ';
+
+function ListaArquivos({ tabela, iTopico }: { readonly tabela: Tabela; readonly iTopico: number }) {
+  const grupos = tabela.linhas.reduce<Map<string, Tabela['linhas'][number][]>>((acc, l) => {
+    const topico = l.celulas[iTopico] || 'Sem aula';
+    acc.set(topico, [...(acc.get(topico) ?? []), l]);
+    return acc;
+  }, new Map());
+  return (
+    <div className="divide-y">
+      {[...grupos.entries()].map(([topico, linhas]) => (
+        <section key={topico} className="space-y-2 p-4 sm:p-5">
+          <h3 className="text-xs font-medium text-muted-foreground">{topico}</h3>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {linhas.map((l, i) => (
+              <li key={i}>
+                <button
+                  type="button"
+                  disabled={!l.abrir}
+                  onClick={l.abrir ?? undefined}
+                  className="flex min-h-12 w-full items-center gap-3 rounded-2xl border px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
+                >
+                  <span className="w-12 shrink-0 rounded-md bg-secondary py-1 text-center font-mono text-[10px] font-semibold">{EXTENSAO_ROTULO(l.celulas[0] ?? '')}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium [overflow-wrap:anywhere]">{l.celulas[0]}</span>
+                    {l.celulas[1] && <span className="block text-xs text-muted-foreground">{l.celulas[1]}</span>}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+
 function ConteudoBloco({ bloco }: { readonly bloco: Bloco }) {
   switch (bloco.tipo) {
-    case 'tabela':
-      return <TabelaUI tabela={bloco.tabela} />;
+    case 'tabela': {
+      const iTopico = bloco.tabela.colunas.findIndex((c) => /t[oó]pico de aula/i.test(c));
+      return iTopico > 0 ? <ListaArquivos tabela={bloco.tabela} iTopico={iTopico} /> : <TabelaUI tabela={bloco.tabela} />;
+    }
     case 'pares':
       return (
         <dl className="grid gap-x-6 gap-y-1 p-5 text-sm sm:grid-cols-[minmax(140px,auto)_1fr] sm:gap-y-3 sm:p-6">
@@ -433,18 +472,22 @@ const CODIGO_HORARIO = /^\s*[1-7]+[MTN][1-6]+(\s+[1-7]+[MTN][1-6]+)*/;
 
 /** Tabelas com coluna de horário (matrícula, comprovante, turmas) viram grade semanal com conflitos marcados. */
 function GradeDasTabelas({ blocos }: { readonly blocos: readonly Bloco[] }) {
-  const turmas = blocos.flatMap((b) => {
-    if (b.tipo !== 'tabela') return [];
+  const grupos = blocos.map((b) => {
+    if (b.tipo !== 'tabela') return { titulo: '', turmas: [] };
     const { colunas, linhas } = b.tabela;
     const iHorario = colunas.findIndex((c, i) => /hor[aá]rio/i.test(c) || linhas.filter((l) => CODIGO_HORARIO.test(l.celulas[i] ?? '')).length >= Math.max(2, linhas.length / 2));
-    if (iHorario < 0) return [];
+    if (iHorario < 0) return { titulo: '', turmas: [] };
     const iNome = colunas.findIndex((c) => /disciplina|componente|nome/i.test(c));
-    return linhas.flatMap((l) => {
+    const daTabela = linhas.flatMap((l) => {
       const horario = l.celulas[iHorario]?.match(CODIGO_HORARIO)?.[0]?.trim();
       const nome = (l.celulas[iNome >= 0 ? iNome : 0] ?? '').split('\n')[0]?.replace(/^\S+\s*-\s*/, '') ?? '';
       return horario && nome ? [{ codigo: '', nome, local: '', horario, acessar: l.abrir ?? (() => {}) }] : [];
     });
-  });
+    return { titulo: b.titulo, turmas: daTabela };
+  }).filter((g) => g.turmas.length > 0);
+  // Tabelas separadas por semestre (ex.: todas as turmas): só o mais recente vira grade, senão sobram conflitos falsos.
+  const porSemestre = grupos.length > 1 && grupos.every((g) => /^\d{4}\.\d/.test(g.titulo));
+  const turmas = porSemestre ? grupos[0]!.turmas : grupos.flatMap((g) => g.turmas);
   if (turmas.length < 2) return null;
 
   const ocupacao = new Map<string, string[]>();
@@ -458,7 +501,7 @@ function GradeDasTabelas({ blocos }: { readonly blocos: readonly Bloco[] }) {
 
   return (
     <Card className="space-y-4 p-4 sm:p-5">
-      <p className="text-sm text-muted-foreground">Grade da semana</p>
+      <p className="text-sm text-muted-foreground">Grade da semana{porSemestre && ` · ${grupos[0]!.titulo}`}</p>
       <GradeSemanal turmas={turmas} />
       {conflitos.length > 0 && (
         <div role="alert" className="space-y-1 rounded-2xl border border-destaque/60 px-4 py-3 text-sm">

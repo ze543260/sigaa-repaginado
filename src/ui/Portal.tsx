@@ -12,6 +12,7 @@ import { LinhaDisciplina } from './PainelNotas';
 import { CHAVE_FEITAS, useConjunto } from './memoria';
 import { usarPreferencias } from './tema';
 import { EstadoVazio } from './IlustracaoLogin';
+import { chaveTurma, lerFaltas, MARGEM_AVISO } from './faltas';
 import { Button } from './components/Button';
 import { Card, CardContent, CardHeader, CardTitle } from './components/Card';
 import { BarraPontos, ContagemPontos, Sinal } from './components/Glifos';
@@ -261,6 +262,11 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
   const outrosIndices = portal.indices.filter((i) => i.rotulo !== 'IRA');
   const { feita, alternar } = useFeitas();
   const estilo = usarPreferencias().prefs.estilo;
+  const faltasSalvas = lerFaltas();
+  const perigoFaltas = portal.turmas.flatMap((t) => {
+    const f = faltasSalvas[chaveTurma(t.nome)];
+    return f && f.maximo - f.faltas <= MARGEM_AVISO ? [{ turma: t, ...f }] : [];
+  });
   const temAulaHoje = aulasDoDia(portal.turmas, new Date()).length > 0;
   const urgentes = portal.atividades.filter((a) => a.status === 'semana' && !feita(a)).length;
   const proximas = portal.atividades.filter((a) => a.status !== 'passada' && !feita(a)).slice(0, 3);
@@ -308,6 +314,37 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
                 </div>
               )}
             </dl>
+          )}
+          {perigoFaltas.length > 2 ? (
+            <details className="text-sm">
+              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+                <Sinal />
+                {perigoFaltas.length} turmas no limite de faltas ou acima
+              </summary>
+              <div className="mt-2 space-y-1 pl-4">
+                {perigoFaltas.map(({ turma, faltas, maximo }) => (
+                  <button key={turma.nome} type="button" onClick={turma.acessar} className="flex items-center gap-2 text-left text-sm">
+                    <Sinal />
+                    <span>
+                      <strong className="font-medium">{tituloBr(turma.nome)}</strong>
+                      {maximo - faltas < 0 ? ` passou do limite de faltas (${faltas}/${maximo})` : maximo === faltas ? ': no limite de faltas' : `: só pode faltar mais ${maximo - faltas}`}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </details>
+          ) : (
+            <>
+          {perigoFaltas.map(({ turma, faltas, maximo }) => (
+            <button key={turma.nome} type="button" onClick={turma.acessar} className="flex items-center gap-2 text-left text-sm">
+              <Sinal />
+              <span>
+                <strong className="font-medium">{tituloBr(turma.nome)}</strong>
+                {maximo - faltas < 0 ? ` passou do limite de faltas (${faltas}/${maximo})` : maximo === faltas ? ': no limite de faltas' : `: só pode faltar mais ${maximo - faltas}`}
+              </span>
+            </button>
+          ))}
+            </>
           )}
           {urgentes > 0 && (
             <p className="flex items-center gap-2 text-sm">

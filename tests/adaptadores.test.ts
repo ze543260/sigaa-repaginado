@@ -114,4 +114,24 @@ describe('Telas fora do portal no mesmo caminho', () => {
       expect(tabela?.tipo === 'tabela' && tabela.tabela.linhas[0]?.abrir).toBeTypeOf('function');
     }
   });
+
+  it('todas as turmas viram um relatório por semestre, mesmo com "Tempo de Sessão" no topo', () => {
+    const doc = new DOMParser().parseFromString(
+      `<html><body><div id="painel">Tempo de Sessão: 00:25</div><div id="conteudo"><h2><a href="#">Portal do Discente</a> &gt; Todas as Turmas</h2>
+      <table class="listagem"><thead><tr><th>Disciplina</th><th>Turma</th><th>CH Total</th><th>Horário</th><th> </th></tr></thead>
+      <tbody><tr><td class="periodo" colspan="6">2026.2</td></tr>
+      <tr><td>MAT01 - CÁLCULO B</td><td>06</td><td>64h</td><td>2M23 4M45</td><td><a href="#" onclick="return false">ir</a></td></tr>
+      <tr><td class="periodo" colspan="6">2026.1</td></tr>
+      <tr><td>MAT00 - CÁLCULO A</td><td>08</td><td>64h</td><td>2T34 4T12</td><td><a href="#" onclick="return false">ir</a></td></tr></tbody></table></div></body></html>`,
+      'text/html',
+    );
+    const pagina = detectarPagina(new URL('https://sigaa.exemplo/sigaa/portais/discente/turmas.jsf'), doc);
+    expect(pagina.tipo).toBe('relatorio');
+    if (pagina.tipo === 'relatorio') {
+      expect(pagina.relatorio.titulo).toBe('Todas as Turmas');
+      expect(pagina.relatorio.blocos.map((b) => b.titulo)).toEqual(['2026.2', '2026.1']);
+      const primeiro = pagina.relatorio.blocos[0];
+      expect(primeiro?.tipo === 'tabela' && primeiro.tabela.linhas[0]?.abrir).toBeTypeOf('function');
+    }
+  });
 });

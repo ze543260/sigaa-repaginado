@@ -5,6 +5,7 @@ import { extrairLogin } from './login';
 import { extrairPortal } from './portal-discente';
 import { extrairPaginaGenerica, extrairRelatorio } from './relatorio';
 import { extrairTurma } from './turma';
+import { extrairTurmasAnteriores } from './turmas-anteriores';
 
 export function detectarPagina(url: URL, doc: Document): Pagina {
   if (doc.getElementById('sigaa-offline')) {
@@ -22,6 +23,9 @@ export function detectarPagina(url: URL, doc: Document): Pagina {
 
   const login = extrairLogin(doc);
   if (login) return { tipo: 'login', login };
+
+  const anteriores = extrairTurmasAnteriores(doc);
+  if (anteriores) return { tipo: 'relatorio', relatorio: anteriores };
 
   const relatorio = extrairRelatorio(doc);
   if (relatorio) return { tipo: 'relatorio', relatorio };
