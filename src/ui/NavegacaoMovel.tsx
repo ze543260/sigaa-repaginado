@@ -1,22 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { cn } from './cn';
+import { useIcones, type NomeIcone } from './icones';
 
-export const ICONES = {
-  inicio: 'M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z',
-  buscar: 'M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm9 3l-4.3-4.3',
-  turmas: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11',
-  atividades: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2',
-  voltar: 'M15 5l-7 7 7 7',
-  mais: 'M5 12h.01M12 12h.01M19 12h.01',
-  menu: 'M4 7h16M4 12h16M4 17h10',
-  notas: 'M5 19V9M10 19V5M15 19v-7M20 19v-4',
-  frequencia: 'M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm4 9l2 2 4-4',
-} as const;
+export { ICONES } from './icones';
 
 export interface AcaoNavegacao {
   readonly id: string;
   readonly rotulo: string;
-  readonly icone: keyof typeof ICONES;
+  readonly icone: NomeIcone;
   readonly ativo?: boolean;
   readonly onClick: () => void;
 }
@@ -43,6 +34,7 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
     return () => window.removeEventListener('keydown', esc);
   }, [folhaAberta]);
 
+  const icones = useIcones();
   if (acoes.length === 0 && !conteudoMais) return null;
 
   const botao =
@@ -67,7 +59,7 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
               onClick={acao.onClick}
             >
               <span key={acao.ativo ? 'ativo' : 'inativo'} className={cn(pilula(acao.ativo), acao.ativo && 'pulinho')}>
-                <Icone d={ICONES[acao.icone]} />
+                <Icone d={icones[acao.icone]} />
               </span>
               {acao.rotulo}
             </button>
@@ -80,7 +72,7 @@ export function NavegacaoMovel({ acoes, conteudoMais }: Props) {
               aria-expanded={folhaAberta}
             >
               <span className={pilula(folhaAberta)}>
-                <Icone d={ICONES.mais} />
+                <Icone d={icones.mais} />
               </span>
               Mais
             </button>

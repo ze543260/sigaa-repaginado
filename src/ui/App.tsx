@@ -11,7 +11,8 @@ import { Button } from './components/Button';
 import { BarraLateral, GavetaMenu } from './MenuLateral';
 import { abrirRelato, aoPedirRelato, registrarErros } from './relato';
 import { RelatoUI } from './RelatoUI';
-import { Icone, ICONES, NavegacaoMovel, type AcaoNavegacao } from './NavegacaoMovel';
+import { iconesDo } from './icones';
+import { Icone, NavegacaoMovel, type AcaoNavegacao } from './NavegacaoMovel';
 import { DadosPessoais, Portal, type AbaPortal } from './Portal';
 import { RelatorioUI } from './RelatorioUI';
 import { TelaLogin } from './TelaLogin';
@@ -261,7 +262,7 @@ export function App({ pagina, onVerOriginal }: Props) {
               aria-expanded={gavetaAberta}
               className="-ml-2 w-10 px-0 lg:hidden"
             >
-              <Icone d={ICONES.menu} />
+              <Icone d={iconesDo(prefs.estilo).menu} />
             </Button>
           )}
           <span className="casca-logo flex select-none items-center gap-2" aria-label="Sigaa"
@@ -282,7 +283,7 @@ export function App({ pagina, onVerOriginal }: Props) {
             {menu.length > 0 && (
               <Button variant="ghost" size="sm" onClick={abrirBusca} aria-label="Buscar no SIGAA" className="w-10 px-0 md:hidden">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-                  <path d={ICONES.buscar} strokeLinecap="round" />
+                  <path d={iconesDo(prefs.estilo).buscar} strokeLinecap="round" />
                 </svg>
               </Button>
             )}

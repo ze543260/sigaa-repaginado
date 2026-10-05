@@ -16,7 +16,7 @@ const Seta = () => (
   </svg>
 );
 
-function useAgora(intervaloMs = 30_000): Date {
+export function useAgora(intervaloMs = 30_000): Date {
   const [agora, setAgora] = useState(() => new Date());
   useEffect(() => {
     const id = window.setInterval(() => setAgora(new Date()), intervaloMs);
@@ -25,13 +25,11 @@ function useAgora(intervaloMs = 30_000): Date {
   return agora;
 }
 
-const hhmm = (d: Date): string => d.toTimeString().slice(0, 5);
+export const hhmm = (d: Date): string => d.toTimeString().slice(0, 5);
 
-export function AulasDeHoje({ turmas }: Props) {
-  const agora = useAgora();
-  const temPiada = !!usePiada('sem-aulas');
+export function aulasDoDia(turmas: readonly Turma[], agora: Date) {
   const dia = diaSigaaHoje(agora);
-  const hoje = turmas
+  return turmas
     .flatMap((t) => {
       const aulas = horariosDoCodigo(t.horario)
         .filter((h) => h.dia === dia)
@@ -41,6 +39,12 @@ export function AulasDeHoje({ turmas }: Props) {
       return primeira && ultima ? [{ turma: t, primeira, ultima }] : [];
     })
     .sort((a, b) => ordemHorario(a.primeira) - ordemHorario(b.primeira));
+}
+
+export function AulasDeHoje({ turmas }: Props) {
+  const agora = useAgora();
+  const temPiada = !!usePiada('sem-aulas');
+  const hoje = aulasDoDia(turmas, agora);
 
   if (hoje.length === 0) {
     return (

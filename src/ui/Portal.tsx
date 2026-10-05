@@ -14,6 +14,7 @@ import { usarPreferencias } from './tema';
 import { Button } from './components/Button';
 import { Card, CardContent, CardHeader, CardTitle } from './components/Card';
 import { BarraPontos, ContagemPontos, Sinal } from './components/Glifos';
+import { BateriaSolar, HudRetro, KanbanAtividades, LadderHoje, PlanilhaTurmas, TabelaPeriodicaTurmas, TerminalHoje, TerminalTurmas } from './Variantes';
 import { AnelProgresso, GraficoBarras } from './components/Graficos';
 import { cn } from './cn';
 import { GradeSemanal } from './GradeSemanal';
@@ -257,7 +258,8 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
   const primeiroNome = portal.nome.split(' ')[0]?.toLowerCase() ?? '';
   const ira = portal.indices.find((i) => i.rotulo === 'IRA');
   const outrosIndices = portal.indices.filter((i) => i.rotulo !== 'IRA');
-  const { feita } = useFeitas();
+  const { feita, alternar } = useFeitas();
+  const estilo = usarPreferencias().prefs.estilo;
   const urgentes = portal.atividades.filter((a) => a.status === 'semana' && !feita(a)).length;
   const proximas = portal.atividades.filter((a) => a.status !== 'passada' && !feita(a)).slice(0, 3);
   useLembretes(portal, feita);
@@ -275,7 +277,12 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
           </p>
           <PiadaDoContexto contexto="saudacao" className="block font-mono text-xs text-destaque-texto" />
           <h1 className="font-dot text-4xl font-extrabold capitalize leading-[0.95] sm:text-7xl">{primeiroNome || 'olá'}</h1>
-          {(ira || portal.percentualIntegralizado !== null) && (
+          {estilo === 'retro' && (
+            <div className="pt-2 lg:hidden">
+              <HudRetro nome={primeiroNome} ira={ira?.valor} integralizado={portal.percentualIntegralizado} semestre={portal.semestre} />
+            </div>
+          )}
+          {estilo !== 'retro' && (ira || portal.percentualIntegralizado !== null) && (
             <dl className="flex gap-6 pt-2 lg:hidden">
               {ira && (
                 <div>
@@ -290,7 +297,11 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
                   <dt className="text-xs text-muted-foreground">Curso integralizado</dt>
                   <dd className="space-y-2">
                     <ContagemPontos className="text-4xl" valor={`${portal.percentualIntegralizado}%`} />
-                    <BarraPontos valor={portal.percentualIntegralizado} pontos={20} rotulo="Curso integralizado" />
+                    {estilo === 'energia' ? (
+                      <BateriaSolar valor={portal.percentualIntegralizado} />
+                    ) : (
+                      <BarraPontos valor={portal.percentualIntegralizado} pontos={20} rotulo="Curso integralizado" />
+                    )}
                   </dd>
                 </div>
               )}
@@ -309,7 +320,13 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
         <Documentos portal={portal} className={naAba(aba, 'inicio')} />
 
         <Secao titulo="Hoje" className={naAba(aba, 'inicio')}>
-          <AulasDeHoje turmas={portal.turmas} />
+          {estilo === 'terminal' ? (
+            <TerminalHoje turmas={portal.turmas} />
+          ) : estilo === 'controle' ? (
+            <LadderHoje turmas={portal.turmas} />
+          ) : (
+            <AulasDeHoje turmas={portal.turmas} />
+          )}
         </Secao>
 
         {proximas.length > 0 && (
@@ -334,7 +351,11 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
         )}
 
         <Secao titulo="Minhas atividades" className={naAba(aba, 'atividades')}>
-          <ListaAtividades atividades={portal.atividades} />
+          {estilo === 'producao' ? (
+            <KanbanAtividades atividades={portal.atividades} feita={feita} alternar={alternar} />
+          ) : (
+            <ListaAtividades atividades={portal.atividades} />
+          )}
         </Secao>
 
         {notasEmCurso.length > 0 && (
@@ -357,7 +378,15 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
         </Secao>
 
         <Secao titulo={`Turmas · ${portal.turmas.length}`} className={naAba(aba, 'turmas')}>
-          <ListaTurmas turmas={portal.turmas} />
+          {estilo === 'admin' ? (
+            <PlanilhaTurmas turmas={portal.turmas} />
+          ) : estilo === 'quimica' ? (
+            <TabelaPeriodicaTurmas turmas={portal.turmas} />
+          ) : estilo === 'terminal' ? (
+            <TerminalTurmas turmas={portal.turmas} />
+          ) : (
+            <ListaTurmas turmas={portal.turmas} />
+          )}
         </Secao>
 
         {portal.atualizacoes.length > 0 && (
