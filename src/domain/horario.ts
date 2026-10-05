@@ -58,7 +58,7 @@ export function siglaDisciplina(nome: string): string {
   return sigla.slice(0, 5) || nome.slice(0, 3).toUpperCase();
 }
 
-// Manhã confirmada pelo atestado; tarde e noite seguem o padrão de 55 min com intervalo e podem variar.
+// M2–M5 e T1–T4 conferidos na tabela de horários do SIGAA; M1, T5 e noite são estimados.
 const FAIXAS: Readonly<Record<string, readonly [string, string]>> = {
   M1: ['07:00', '07:55'], M2: ['07:55', '08:50'], M3: ['08:50', '09:45'], M4: ['10:10', '11:05'], M5: ['11:05', '12:00'],
   T1: ['13:30', '14:25'], T2: ['14:25', '15:20'], T3: ['15:45', '16:40'], T4: ['16:40', '17:35'], T5: ['17:35', '18:30'],
@@ -68,7 +68,9 @@ const FAIXAS: Readonly<Record<string, readonly [string, string]>> = {
 export const faixaHoraria = (h: Pick<Horario, 'turno' | 'aula'>): readonly [string, string] | null =>
   FAIXAS[`${h.turno}${h.aula}`] ?? null;
 
-export const horaConfirmada = (h: Pick<Horario, 'turno'>): boolean => h.turno === 'M';
+const CONFIRMADOS = new Set(['M2', 'M3', 'M4', 'M5', 'T1', 'T2', 'T3', 'T4']);
+
+export const horaConfirmada = (h: Pick<Horario, 'turno' | 'aula'>): boolean => CONFIRMADOS.has(`${h.turno}${h.aula}`);
 
 /** Data local com a hora "HH:MM" aplicada. */
 export function naHora(dia: Date, hhmm: string): Date {

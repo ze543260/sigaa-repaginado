@@ -116,7 +116,7 @@ android/      app Android (WebView, biometria, lembretes, widget)
 
 - Feito e testado com o SIGAA da **UNIFEI**. Outras instituições que usam SIGAA podem funcionar em parte.
 - Se o SIGAA mudar o HTML, algum adaptador pode quebrar. Nesse caso, a página cai para o visual original.
-- Os horários da manhã foram conferidos no atestado. Os da tarde e da noite são estimados.
+- Os horários M2–M5 e T1–T4 vêm da tabela do SIGAA. M1, T5 e os da noite ainda são estimados.
 
 ## Licença
 
