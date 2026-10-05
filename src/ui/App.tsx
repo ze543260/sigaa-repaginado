@@ -24,7 +24,7 @@ import { plataforma } from '../plataforma';
 import { BoasVindas, jaViuBoasVindas } from './BoasVindas';
 import { TelaConfiguracoes } from './TelaConfiguracoes';
 import { useManterSessao } from './sessao';
-import { ContextoPreferencias, usePreferencias, ZOOM, type Tema } from './tema';
+import { ContextoPreferencias, TEMAS, usePreferencias, ZOOM, type Tema } from './tema';
 import { Turma } from './Turma';
 
 interface Props {
@@ -100,7 +100,8 @@ export function App({ pagina, onVerOriginal }: Props) {
 
   // Guarda as cores reais do estilo para o anti-flash da próxima página pintar o esqueleto certo.
   useEffect(() => {
-    const quadro = requestAnimationFrame(() => {
+    // Espera a transição de tema terminar: ler estilos computados no meio dela custa quadros.
+    const quadro = window.setTimeout(() => {
       const el = raiz.current;
       if (!el) return;
       const css = getComputedStyle(el);
@@ -123,8 +124,8 @@ export function App({ pagina, onVerOriginal }: Props) {
       } catch {
         /* sem armazenamento: o anti-flash usa as cores padrão */
       }
-    });
-    return () => cancelAnimationFrame(quadro);
+    }, 700);
+    return () => window.clearTimeout(quadro);
   }, [prefs]);
   const [boasVindas, setBoasVindas] = useState(() => !jaViuBoasVindas());
   const [navegando, setNavegando] = useState(false);
@@ -174,13 +175,19 @@ export function App({ pagina, onVerOriginal }: Props) {
   }, [configAberta]);
 
   const trocarTema = (e: MouseEvent<HTMLButtonElement>) => {
-    const aplicar = () => {
-      raiz.current?.classList.add('trocando-tema');
-      flushSync(alternarTema);
-      raiz.current?.classList.remove('trocando-tema');
-    };
     const semMovimento = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!document.startViewTransition || semMovimento) return aplicar();
+    const el = raiz.current;
+    if (!document.startViewTransition || semMovimento || !el) return alternarTema();
+
+    // Dentro da transição só troca o atributo: re-renderizar o app inteiro ali atrasava o início da animação.
+    const proximo = TEMAS[(TEMAS.indexOf(tema) + 1) % TEMAS.length] ?? 'sistema';
+    const aplicar = () => {
+      el.classList.add('trocando-tema');
+      if (proximo === 'sistema') el.removeAttribute('data-tema');
+      else el.setAttribute('data-tema', proximo);
+      void el.offsetHeight;
+      el.classList.remove('trocando-tema');
+    };
 
     const { clientX: x, clientY: y } = e;
     const raio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
@@ -188,7 +195,7 @@ export function App({ pagina, onVerOriginal }: Props) {
     html.setProperty('--sigaa-x', `${x}px`);
     html.setProperty('--sigaa-y', `${y}px`);
     html.setProperty('--sigaa-r', `${raio}px`);
-    document.startViewTransition(aplicar);
+    document.startViewTransition(aplicar).finished.finally(() => flushSync(alternarTema));
   };
 
   const menu = pagina.tipo === 'portal-discente' ? pagina.portal.menu : [];
