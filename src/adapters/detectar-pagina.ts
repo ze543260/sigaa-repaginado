@@ -3,7 +3,7 @@ import { extrairCaixaPostal, extrairCompositor, extrairMensagem } from './caixa-
 import { extrairErro } from './erro';
 import { extrairLogin } from './login';
 import { extrairPortal } from './portal-discente';
-import { extrairRelatorio } from './relatorio';
+import { extrairPaginaGenerica, extrairRelatorio } from './relatorio';
 import { extrairTurma } from './turma';
 
 export function detectarPagina(url: URL, doc: Document): Pagina {
@@ -29,12 +29,16 @@ export function detectarPagina(url: URL, doc: Document): Pagina {
   const turma = extrairTurma(doc);
   if (turma) return { tipo: 'turma', turma };
 
-  if (url.pathname.includes('/portais/discente/')) {
+  // Outras telas também ficam em /portais/discente/ (ex.: turmas anteriores); o portal se reconhece pelos seus blocos.
+  if (url.pathname.includes('/portais/discente/') && doc.querySelector('#agenda-docente, #avaliacao-portal, #turmas-portal')) {
     return { tipo: 'portal-discente', portal: extrairPortal(doc) };
   }
 
   const erro = extrairErro(url, doc);
   if (erro) return { tipo: 'erro', erro };
+
+  const generica = extrairPaginaGenerica(doc);
+  if (generica) return { tipo: 'relatorio', relatorio: generica };
 
   return { tipo: 'desconhecida' };
 }

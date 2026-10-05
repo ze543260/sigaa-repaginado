@@ -97,3 +97,21 @@ describe('Caixa postal', () => {
     expect(caixa?.escrever).toBeTypeOf('function');
   });
 });
+
+describe('Telas fora do portal no mesmo caminho', () => {
+  it('turmas anteriores viram página genérica, não o portal', () => {
+    const doc = new DOMParser().parseFromString(
+      `<html><head><title>SIGAA - Turmas</title></head><body><div id="conteudo"><h2>Turmas anteriores</h2>
+      <table class="listing"><thead><tr><th>Componente Curricular</th><th>Período</th></tr></thead>
+      <tbody><tr><td><a href="#">CÁLCULO A</a></td><td>2026.1</td></tr></tbody></table></div></body></html>`,
+      'text/html',
+    );
+    const pagina = detectarPagina(new URL('https://sigaa.exemplo/sigaa/portais/discente/turmas.jsf'), doc);
+    expect(pagina.tipo).toBe('relatorio');
+    if (pagina.tipo === 'relatorio') {
+      expect(pagina.relatorio.titulo).toBe('Turmas anteriores');
+      const tabela = pagina.relatorio.blocos.find((b) => b.tipo === 'tabela');
+      expect(tabela?.tipo === 'tabela' && tabela.tabela.linhas[0]?.abrir).toBeTypeOf('function');
+    }
+  });
+});

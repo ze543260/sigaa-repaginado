@@ -13,3 +13,18 @@ export function extrairRelatorio(doc: Document): Relatorio | null {
     voltar: voltar ? () => voltar.click() : () => doc.defaultView?.history.back(),
   };
 }
+
+/** Qualquer tela comum do SIGAA com tabelas ou formulários em #conteudo, mostrada no visual genérico. */
+export function extrairPaginaGenerica(doc: Document): Relatorio | null {
+  const conteudo = doc.querySelector('#conteudo');
+  if (!conteudo) return null;
+  const blocos = extrairBlocos(conteudo);
+  if (!blocos.some((b) => b.tipo === 'tabela' || b.tipo === 'pares')) return null;
+  const titulo = texto(conteudo.querySelector('h2')) || texto(conteudo.querySelector('legend')) || doc.title.replace(/^SIGAA\s*-\s*/, '') || 'SIGAA';
+  return {
+    titulo,
+    avisos: extrairAvisos(doc),
+    blocos,
+    voltar: () => doc.defaultView?.history.back(),
+  };
+}
