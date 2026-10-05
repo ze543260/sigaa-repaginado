@@ -229,6 +229,33 @@ export const DEFINICOES = {
       simbolos: "●○●⏻⚡",
     },
   },
+  ambiental: {
+    nome: "Curvas de nível",
+    curso: "Engenharia Ambiental e Hídrica",
+    acento: "azul",
+    forma: "redondo",
+    descricao: "Mapa topográfico: linhas de relevo no fundo, tons de terra e de água.",
+    amostra: {
+      fundo: "#0e1c18",
+      texto: "#e6efd8",
+      fonte: "'Space Grotesk', sans-serif",
+      titulo: "sigaa △",
+    },
+    piadas: {
+      saudacao: ["Sua bacia hidrográfica de tarefas está transbordando.", "Vazão de estudo: abaixo da mínima ecológica.", "Pegada de carbono do seu café: alta.", "Ciclo hidrológico: evapora a motivação, precipita na prova.", "Tempo de concentração da turma: 15 minutos.", "Licenciamento ambiental da sua procrastinação: negado.", "Curva-chave do semestre: quanto mais lista, mais choro.", "Reciclagem de conteúdo: a prova repete a lista. Ou não."],
+      'sem-aulas': ["Dia de cheia nula: nenhuma aula no hidrograma."],
+      'sem-atividades': ["Reservatório de tarefas vazio. Aproveite o estio."],
+      'sem-tarefas': ["Nenhum afluente de tarefas."],
+      erro: ["Enchente no servidor do SIGAA."],
+      carregando: ["medindo a vazão do servidor...", "traçando curvas de nível...", "tratando o efluente do JSF...", "calculando o tempo de retorno..."],
+    },
+    segredo: {
+      titulo: "chuva de projeto",
+      texto: "Tempo de retorno: 100 anos. Você teve sorte.",
+      efeito: "chuva",
+      simbolos: "💧💧🌱🍃💧",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;
