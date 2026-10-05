@@ -283,6 +283,33 @@ export const DEFINICOES = {
       simbolos: "◇⬡◆⬢✧",
     },
   },
+  retro: {
+    nome: "8-bit",
+    curso: "Ciência da Computação e Sistemas de Informação",
+    acento: "rosa",
+    forma: "quadrado",
+    descricao: "Pixel art: fonte de fliperama, xadrez de fundo e sombras duras.",
+    amostra: {
+      fundo: "#120f2b",
+      texto: "#f5f5f5",
+      fonte: "'Press Start 2P', monospace",
+      titulo: "SIGAA",
+    },
+    piadas: {
+      saudacao: ["PRESS START TO ESTUDAR", "Você ganhou +1 XP por abrir o SIGAA.", "Chefão da fase: Cálculo II. Vidas: 3.", "Save point encontrado. Salvando progresso...", "It's dangerous to go alone! Leve café.", "Combo: 3 provas na mesma semana!", "HIGH SCORE da turma: 9,8. O seu: carregando...", "Achievement desbloqueado: sobreviveu à segunda-feira."],
+      'sem-aulas': ["Fase bônus: sem aulas hoje!"],
+      'sem-atividades': ["Inventário de tarefas vazio. Vai explorar o mapa."],
+      'sem-tarefas': ["Nenhuma missão ativa."],
+      erro: ["GAME OVER. O SIGAA não respondeu. CONTINUE? 10... 9..."],
+      carregando: ["carregando fase 2-1...", "soprando o cartucho...", "renderizando sprites...", "aguardando o player 2..."],
+    },
+    segredo: {
+      titulo: "1UP!",
+      texto: "Vida extra concedida. Use com sabedoria na semana de provas.",
+      efeito: "chuva",
+      simbolos: "★♥◆▲●",
+    },
+  },
 } as const satisfies Record<string, DefinicaoEstilo>;
 
 export type Estilo = keyof typeof DEFINICOES;

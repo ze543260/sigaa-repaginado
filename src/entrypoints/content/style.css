@@ -924,3 +924,82 @@ details[open] > :not(summary) {
 @keyframes girar-cristal { to { transform: rotate(360deg); } }
 .sem-animacao h1.font-dot::after { animation: none; }
 
+
+/* ── Estilo "8-bit (Ciência da Computação e Sistemas de Informação)" ── */
+.tema[data-estilo='retro'] {
+  --fonte-titulo: 'Press Start 2P', 'Space Mono', monospace;
+  --fonte-texto: 'Space Mono', ui-monospace, monospace;
+  --raio-sm: 0px;
+  --raio-md: 0px;
+  --raio-lg: 0px;
+  --raio-xl: 0px;
+  --raio-2xl: 0px;
+  --raio-3xl: 0px;
+  --raio-pilula: 0px;
+  --raio-ponto: 0px;
+  --padrao: conic-gradient(hsl(var(--pontos)) 25%, transparent 0 50%, hsl(var(--pontos)) 0 75%, transparent 0);
+  --padrao-tamanho: 16px 16px;
+}
+
+.tema[data-estilo='retro']:not([data-tema='escuro']) {
+  --background: 80 25% 85%;
+  --foreground: 120 40% 12%;
+  --card: 80 30% 92%;
+  --card-foreground: 120 40% 12%;
+  --primary: 120 40% 12%;
+  --primary-foreground: 80 30% 92%;
+  --secondary: 80 20% 76%;
+  --secondary-foreground: 120 40% 12%;
+  --muted: 80 20% 76%;
+  --muted-foreground: 120 25% 25%;
+  --accent: 80 25% 80%;
+  --accent-foreground: 120 40% 12%;
+  --border: 100 20% 55%;
+  --input: 100 20% 45%;
+  --pontos: 80 22% 82%;
+}
+
+.tema[data-estilo='retro'][data-tema='escuro'] {
+  --background: 250 40% 10%;
+  --foreground: 0 0% 96%;
+  --card: 250 35% 15%;
+  --card-foreground: 0 0% 96%;
+  --primary: 0 0% 96%;
+  --primary-foreground: 250 35% 15%;
+  --secondary: 250 30% 20%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 250 30% 20%;
+  --muted-foreground: 250 15% 72%;
+  --accent: 250 30% 18%;
+  --accent-foreground: 0 0% 96%;
+  --border: 250 30% 30%;
+  --input: 250 25% 42%;
+  --pontos: 250 38% 12%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tema[data-estilo='retro']:not([data-tema]) {
+    --background: 250 40% 10%;
+    --foreground: 0 0% 96%;
+    --card: 250 35% 15%;
+    --card-foreground: 0 0% 96%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 250 35% 15%;
+    --secondary: 250 30% 20%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 250 30% 20%;
+    --muted-foreground: 250 15% 72%;
+    --accent: 250 30% 18%;
+    --accent-foreground: 0 0% 96%;
+    --border: 250 30% 30%;
+    --input: 250 25% 42%;
+    --pontos: 250 38% 12%;
+  }
+}
+.tema[data-estilo='retro'] h1.font-dot { font-size: clamp(1.15rem, 6.5vw, 2.6rem); line-height: 1.35; font-weight: 400; }
+.tema[data-estilo='retro'] .font-dot { font-weight: 400; }
+.tema[data-estilo='retro'] main [class*='rounded-3xl'].border { box-shadow: 4px 4px 0 hsl(var(--foreground) / 0.25); }
+.tema[data-estilo='retro'] section > h2::before { content: '►'; margin-right: 1ch; color: hsl(var(--destaque-texto)); animation: piscar-retro 1s steps(1) infinite; }
+@keyframes piscar-retro { 50% { opacity: 0; } }
+.sem-animacao section > h2::before { animation: none; }
+
