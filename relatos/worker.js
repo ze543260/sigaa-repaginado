@@ -45,7 +45,6 @@ export default {
       '| | |',
       '|---|---|',
       `| Versão | ${linha(d.versao, 40)} |`,
-      `| Interface | ${linha(d.interface, 40)} |`,
       `| Plataforma | ${linha(d.plataforma)} |`,
       `| Tela | ${linha(d.tela, 40)} |`,
       `| Estilo | ${linha(d.estilo, 40)} |`,
