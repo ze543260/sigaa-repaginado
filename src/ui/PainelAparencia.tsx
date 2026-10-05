@@ -6,7 +6,7 @@ import { ACENTOS, ESCALAS, TEMAS, usarPreferencias, type Acento, type Escala, ty
 
 const NOME_ESCALA: Readonly<Record<Escala, string>> = { compacta: 'Compacto', normal: 'Normal', grande: 'Grande' };
 
-const NOME_TEMA: Readonly<Record<Tema, string>> = { sistema: 'Sistema', claro: 'Claro', escuro: 'Escuro' };
+const NOME_TEMA: Readonly<Record<Tema, string>> = { claro: 'Claro', escuro: 'Escuro' };
 
 const NOME_ACENTO: Readonly<Record<Acento, string>> = {
   vermelho: 'Vermelho',
@@ -76,7 +76,7 @@ export function PainelAparencia() {
 
       <fieldset className="space-y-2">
         <legend className="px-1 pb-2 text-xs text-muted-foreground">Modo</legend>
-        <div className="grid grid-cols-3 gap-1 rounded-full border p-1">
+        <div className="grid grid-cols-2 gap-1 rounded-full border p-1">
           {TEMAS.map((t) => (
             <button
               key={t}

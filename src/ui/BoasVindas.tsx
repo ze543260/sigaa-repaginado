@@ -24,7 +24,7 @@ function marcarVisto(): void {
   }
 }
 
-const NOME_TEMA: Readonly<Record<Tema, string>> = { sistema: 'Sistema', claro: 'Claro', escuro: 'Escuro' };
+const NOME_TEMA: Readonly<Record<Tema, string>> = { claro: 'Claro', escuro: 'Escuro' };
 const AMOSTRA: Readonly<Record<Acento, string>> = {
   vermelho: 'hsl(357 80% 47%)',
   laranja: 'hsl(17 88% 40%)',
@@ -138,7 +138,7 @@ export function BoasVindas({ onFim }: { readonly onFim: () => void }) {
               </div>
               <div className="space-y-2">
                 <p className="px-1 text-xs text-muted-foreground">Modo</p>
-                <div className="grid grid-cols-3 gap-1 rounded-full border p-1">
+                <div className="grid grid-cols-2 gap-1 rounded-full border p-1">
                   {TEMAS.map((t) => (
                     <button
                       key={t}

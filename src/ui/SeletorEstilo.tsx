@@ -28,7 +28,7 @@ export function SeletorEstilo() {
             <span
               className="tema relative flex h-24 items-center justify-center overflow-hidden"
               data-estilo={e}
-              data-tema={prefs.tema === 'sistema' ? undefined : prefs.tema}
+              data-tema={prefs.tema}
               data-acento={info.acento}
               style={{ borderRadius: 0 }}
               aria-hidden="true"

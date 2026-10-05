@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-export type Tema = 'sistema' | 'claro' | 'escuro';
+export type Tema = 'claro' | 'escuro';
 export type Acento = 'vermelho' | 'laranja' | 'verde' | 'azul' | 'violeta' | 'rosa';
 
 export interface Preferencias {
@@ -21,10 +21,13 @@ export type Escala = 'compacta' | 'normal' | 'grande';
 export const ESCALAS: readonly Escala[] = ['compacta', 'normal', 'grande'];
 export const ZOOM: Readonly<Record<Escala, number>> = { compacta: 0.9, normal: 1, grande: 1.12 };
 
-export const TEMAS: readonly Tema[] = ['sistema', 'claro', 'escuro'];
+export const TEMAS: readonly Tema[] = ['claro', 'escuro'];
+
+// Sem escolha salva (ou a antiga opção "sistema"), começa pelo modo atual do aparelho.
+const temaDoAparelho = (): Tema => (typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
 export const ACENTOS: readonly Acento[] = ['vermelho', 'laranja', 'verde', 'azul', 'violeta', 'rosa'];
 
-const PADRAO: Preferencias = { tema: 'sistema', acento: 'vermelho', pontos: true, animacoes: true, lembretes: true, escala: 'normal', estilo: 'minimalista' };
+const PADRAO: Preferencias = { tema: 'claro', acento: 'vermelho', pontos: true, animacoes: true, lembretes: true, escala: 'normal', estilo: 'minimalista' };
 
 // O tema tem chave própria porque o anti-flash o lê antes da interface existir.
 const CHAVE_TEMA = 'sigaa-v2:tema';
@@ -32,7 +35,7 @@ const CHAVE_PREFS = 'sigaa-v2:prefs';
 
 function ler(): Preferencias {
   try {
-    const tema = TEMAS.find((t) => t === localStorage.getItem(CHAVE_TEMA)) ?? PADRAO.tema;
+    const tema = TEMAS.find((t) => t === localStorage.getItem(CHAVE_TEMA)) ?? temaDoAparelho();
     const salvas = JSON.parse(localStorage.getItem(CHAVE_PREFS) ?? '{}') as Partial<Preferencias>;
     return {
       tema,
@@ -44,7 +47,7 @@ function ler(): Preferencias {
       estilo: ESTILOS.find((e) => e === salvas.estilo) ?? PADRAO.estilo,
     };
   } catch {
-    return PADRAO;
+    return { ...PADRAO, tema: temaDoAparelho() };
   }
 }
 
@@ -71,7 +74,7 @@ export function usePreferencias(): ControlePreferencias {
     prefs,
     alterar: (mudanca) => setPrefs((atual) => ({ ...atual, ...mudanca })),
     alternarTema: () =>
-      setPrefs((atual) => ({ ...atual, tema: TEMAS[(TEMAS.indexOf(atual.tema) + 1) % TEMAS.length] ?? 'sistema' })),
+      setPrefs((atual) => ({ ...atual, tema: atual.tema === 'escuro' ? 'claro' : 'escuro' })),
   };
 }
 

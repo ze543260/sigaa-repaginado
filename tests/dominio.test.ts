@@ -55,3 +55,14 @@ describe('títulos com unidade', () => {
     expect(tituloBr('ENGENHARIA DE COMPUTAÇÃO/IESTI')).toBe('Engenharia de Computação/IESTI');
   });
 });
+
+import { maisNova } from '../src/ui/AvisoVersaoNova';
+
+describe('Comparação de versões', () => {
+  it('compara numericamente, não como texto', () => {
+    expect(maisNova('0.6.10', '0.6.9')).toBe(true);
+    expect(maisNova('0.6.9', '0.6.10')).toBe(false);
+    expect(maisNova('0.7', '0.6.12')).toBe(true);
+    expect(maisNova('0.6.12', '0.6.12')).toBe(false);
+  });
+});

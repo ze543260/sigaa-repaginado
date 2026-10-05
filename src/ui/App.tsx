@@ -12,6 +12,7 @@ import { Button } from './components/Button';
 import { BarraLateral, GavetaMenu } from './MenuLateral';
 import { abrirRelato, aoPedirRelato, registrarErros } from './relato';
 import { RelatoUI } from './RelatoUI';
+import { AvisoVersaoNova } from './AvisoVersaoNova';
 import { iconesDo } from './icones';
 import { Icone, NavegacaoMovel, type AcaoNavegacao } from './NavegacaoMovel';
 import { DadosPessoais, Portal, type AbaPortal } from './Portal';
@@ -24,7 +25,7 @@ import { plataforma } from '../plataforma';
 import { BoasVindas, jaViuBoasVindas } from './BoasVindas';
 import { TelaConfiguracoes } from './TelaConfiguracoes';
 import { useManterSessao } from './sessao';
-import { ContextoPreferencias, TEMAS, usePreferencias, ZOOM, type Tema } from './tema';
+import { ContextoPreferencias, usePreferencias, ZOOM, type Tema } from './tema';
 import { Turma } from './Turma';
 
 interface Props {
@@ -36,7 +37,6 @@ interface Props {
 const DOWNLOAD_MS = 4000;
 
 const NOME_TEMA: Readonly<Record<Tema, string>> = {
-  sistema: 'Tema do sistema',
   claro: 'Tema claro',
   escuro: 'Tema escuro',
 };
@@ -180,11 +180,10 @@ export function App({ pagina, onVerOriginal }: Props) {
     if (!document.startViewTransition || semMovimento || !el) return alternarTema();
 
     // Dentro da transição só troca o atributo: re-renderizar o app inteiro ali atrasava o início da animação.
-    const proximo = TEMAS[(TEMAS.indexOf(tema) + 1) % TEMAS.length] ?? 'sistema';
+    const proximo: Tema = tema === 'escuro' ? 'claro' : 'escuro';
     const aplicar = () => {
       el.classList.add('trocando-tema');
-      if (proximo === 'sistema') el.removeAttribute('data-tema');
-      else el.setAttribute('data-tema', proximo);
+      el.setAttribute('data-tema', proximo);
       void el.offsetHeight;
       el.classList.remove('trocando-tema');
     };
@@ -256,7 +255,7 @@ export function App({ pagina, onVerOriginal }: Props) {
         !prefs.pontos && 'sem-pontos',
         !prefs.animacoes && 'sem-animacao',
       )}
-      data-tema={tema === 'sistema' ? undefined : tema}
+      data-tema={tema}
       data-acento={prefs.acento}
       data-estilo={prefs.estilo}
       style={prefs.escala === 'normal' ? undefined : { zoom: ZOOM[prefs.escala] }}
@@ -378,6 +377,7 @@ export function App({ pagina, onVerOriginal }: Props) {
       {boasVindas && <BoasVindas onFim={() => setBoasVindas(false)} />}
       {segredo.ativo && <Surpresa onFechar={segredo.fechar} />}
       {!boasVindas && <AvisoAtualizacao />}
+      {!boasVindas && pagina.tipo !== 'login' && <AvisoVersaoNova />}
       {relatoAberto && <RelatoUI tela={pagina.tipo} estilo={prefs.estilo} onFechar={() => setRelatoAberto(false)} />}
       <GavetaMenu
         titulo={pagina.tipo === 'turma' ? 'Menu da turma' : 'Menu do SIGAA'}
