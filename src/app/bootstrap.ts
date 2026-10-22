@@ -78,6 +78,19 @@ function ajustarViewport(): () => void {
   };
 }
 
+const transparente = (cor: string): boolean => cor === 'transparent' || /rgba\(.*,\s*0\)$/.test(cor);
+
+/**
+ * No tema escuro o WebView fica pintado de preto, e ele aparece onde a página não tem fundo.
+ * O SIGAA original foi feito para fundo branco: sem isso, o texto preto some no preto.
+ */
+function fundoClaroNoOriginal(ponte: PonteAndroid): void {
+  const semFundo = [document.documentElement, document.body].every((el) => !el || transparente(getComputedStyle(el).backgroundColor));
+  if (semFundo) document.documentElement.style.setProperty('background-color', '#fff', 'important');
+  document.documentElement.style.setProperty('color-scheme', 'light');
+  ponte.tema(false);
+}
+
 async function iniciar(): Promise<void> {
   if (window.__sigaaV2 || window.top !== window || !/^\/(sigaa|cxpostal)\//.test(location.pathname)) return;
 
@@ -110,6 +123,7 @@ async function iniciar(): Promise<void> {
       quadro.remove();
       liberarViewport();
       mostrarOriginal();
+      if (ponteAndroid) fundoClaroNoOriginal(ponteAndroid);
     },
   };
 
