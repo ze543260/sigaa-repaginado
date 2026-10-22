@@ -26,12 +26,12 @@ final class Ponte {
     /** {"disponivel": bool, "salvo": bool} */
     @JavascriptInterface
     public String infoApp() {
-        return "{\"nativo\":\"" + BuildConfig.VERSION_NAME + "\",\"interface\":\"" + (Ota.usandoBaixada ? "baixada" : "embutida") + "\"}";
+        return json("nativo", BuildConfig.VERSION_NAME, "interface", Ota.usandoBaixada ? "baixada" : "embutida");
     }
 
     @JavascriptInterface
     public String loginInfo() {
-        return "{\"disponivel\":" + cofre.disponivel() + ",\"salvo\":" + cofre.temSalvo() + "}";
+        return json("disponivel", cofre.disponivel(), "salvo", cofre.temSalvo());
     }
 
     @JavascriptInterface
@@ -143,5 +143,16 @@ final class Ponte {
 
     private void avisar(String mensagem) {
         atividade.runOnUiThread(() -> Toast.makeText(atividade, mensagem, Toast.LENGTH_SHORT).show());
+    }
+
+    /** Monta um objeto JSON a partir de pares chave/valor, com o escape feito pelo JSONObject. */
+    private static String json(Object... pares) {
+        org.json.JSONObject objeto = new org.json.JSONObject();
+        try {
+            for (int i = 0; i + 1 < pares.length; i += 2) objeto.put((String) pares[i], pares[i + 1]);
+        } catch (org.json.JSONException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return objeto.toString();
     }
 }

@@ -10,31 +10,31 @@ def caminhoChave = System.getenv('ANDROID_KEYSTORE') ?: chave['arquivo']
 def senhaChave = System.getenv('ANDROID_KEYSTORE_SENHA') ?: chave['senha']
 
 android {
-    namespace 'br.sigaa.v2'
-    compileSdk 35
+    namespace = 'br.sigaa.v2'
+    compileSdk = 35
 
     defaultConfig {
-        applicationId 'br.sigaa.v2'
-        minSdk 29
-        targetSdk 35
-        versionCode 43
-        versionName '0.6.20'
+        applicationId = 'br.sigaa.v2'
+        minSdk = 29
+        targetSdk = 35
+        versionCode = 43
+        versionName = '0.6.20'
         // "dono/repositorio" no GitHub com as versões publicadas em Releases; vazio desliga a busca.
         buildConfigField 'boolean', 'DIAGNOSTICO', 'false'
         buildConfigField 'String', 'REPO_ATUALIZACAO', '"' + (project.findProperty('repoAtualizacao') ?: '') + '"'
     }
 
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
 
     signingConfigs {
         projeto {
             if (caminhoChave) {
-                storeFile file(caminhoChave)
-                storePassword senhaChave
-                keyAlias 'sigaa'
-                keyPassword senhaChave
+                storeFile = file(caminhoChave)
+                storePassword = senhaChave
+                keyAlias = 'sigaa'
+                keyPassword = senhaChave
             }
         }
     }
@@ -42,27 +42,27 @@ android {
     buildTypes {
         debug {
             // Mesma assinatura das releases: o app instalado por cabo recebe as atualizações publicadas.
-            if (caminhoChave) signingConfig signingConfigs.projeto
+            if (caminhoChave) signingConfig = signingConfigs.projeto
         }
         diagnostico {
             initWith debug
             // Instala ao lado do app normal e registra a abertura para achar telas pretas em aparelhos específicos.
-            applicationIdSuffix '.diag'
-            versionNameSuffix '-diag'
+            applicationIdSuffix = '.diag'
+            versionNameSuffix = '-diag'
             buildConfigField 'boolean', 'DIAGNOSTICO', 'true'
             matchingFallbacks = ['debug']
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig caminhoChave ? signingConfigs.projeto : signingConfigs.debug
+            signingConfig = caminhoChave ? signingConfigs.projeto : signingConfigs.debug
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
