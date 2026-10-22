@@ -84,13 +84,13 @@ export function LinhaDisciplina({ linha }: { readonly linha: LinhaNotas }) {
         <span className="flex shrink-0 items-center gap-1.5">
           <SeloBuild linha={linha} />
           {linha.faltas !== null && (
-            <span className={cn('rounded-full border px-2 py-0.5 font-mono text-[11px]', linha.faltas > 0 && 'border-destaque/60')}>
+            <span className={cn('rounded-full border px-2 py-0.5 font-mono text-xs', linha.faltas > 0 && 'border-destaque/60')}>
               {linha.faltas} {linha.faltas === 1 ? 'falta' : 'faltas'}
             </span>
           )}
         </span>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
+      <div className="sensivel flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
         {linha.avaliacoes.map((a) => (
           <span key={a.nome}>
             {a.nome.replace(/unidade/i, 'U').replace(/\s+/g, '')} <span className="text-foreground">{a.nota === null ? '—' : fmtNota(a.nota)}</span>
@@ -100,7 +100,9 @@ export function LinhaDisciplina({ linha }: { readonly linha: LinhaNotas }) {
           <span>Rec <span className="text-foreground">{fmtNota(linha.recuperacao)}</span></span>
         )}
       </div>
-      <TextoPrevisao linha={linha} compacto />
+      <div className="sensivel">
+        <TextoPrevisao linha={linha} compacto />
+      </div>
     </li>
   );
 }
@@ -123,7 +125,7 @@ function Simulador({ concluidas, emCurso }: { readonly concluidas: readonly numb
           <p className="text-sm text-muted-foreground">Simulador de média</p>
           <p className="text-xs text-muted-foreground">Média simples das disciplinas, sem peso de carga horária</p>
         </div>
-        <div className="text-right">
+        <div className="sensivel text-right">
           <p className="font-dot text-4xl font-extrabold leading-none">{fmtNota(media)}</p>
           {atual !== null && (
             <p className={cn('font-mono text-xs', media >= atual ? 'text-muted-foreground' : 'text-destaque-texto')}>
@@ -168,11 +170,11 @@ export function PainelSemestres({ semestres }: { readonly semestres: readonly Se
           <p className="text-sm text-muted-foreground">Média por semestre</p>
           {encerrados.length === 1 ? (
             <div className="flex items-baseline gap-3">
-              <span className="font-dot text-6xl font-extrabold">{fmtNota(encerrados[0]?.media ?? 0)}</span>
+              <span className="sensivel font-dot text-6xl font-extrabold">{fmtNota(encerrados[0]?.media ?? 0)}</span>
               <span className="font-mono text-sm text-muted-foreground">{encerrados[0]?.periodo}</span>
             </div>
           ) : encerrados.length > 1 ? (
-            <GraficoLinha rotulo="Média por semestre" limite={MEDIA_APROVACAO} pontos={encerrados.map((s) => ({ rotulo: s.periodo, valor: s.media ?? 0 }))} />
+            <div className="sensivel"><GraficoLinha rotulo="Média por semestre" limite={MEDIA_APROVACAO} pontos={encerrados.map((s) => ({ rotulo: s.periodo, valor: s.media ?? 0 }))} /></div>
           ) : (
             <p className="text-sm text-muted-foreground">Nenhum semestre encerrado ainda.</p>
           )}

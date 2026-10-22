@@ -11,6 +11,8 @@ export interface Preferencias {
   readonly lembretes: boolean;
   readonly escala: Escala;
   readonly estilo: Estilo;
+  /** Esconde IRA e notas até a pessoa tocar nelas. */
+  readonly discreto: boolean;
 }
 
 import { ESTILOS, type Estilo } from './estilos';
@@ -27,7 +29,7 @@ export const TEMAS: readonly Tema[] = ['claro', 'escuro'];
 const temaDoAparelho = (): Tema => (typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
 export const ACENTOS: readonly Acento[] = ['vermelho', 'laranja', 'verde', 'azul', 'violeta', 'rosa'];
 
-const PADRAO: Preferencias = { tema: 'claro', acento: 'vermelho', pontos: true, animacoes: true, lembretes: true, escala: 'normal', estilo: 'minimalista' };
+const PADRAO: Preferencias = { tema: 'claro', acento: 'vermelho', pontos: true, animacoes: true, lembretes: true, escala: 'normal', estilo: 'minimalista', discreto: false };
 
 // O tema tem chave própria porque o anti-flash o lê antes da interface existir.
 const CHAVE_TEMA = 'sigaa-v2:tema';
@@ -45,6 +47,7 @@ function ler(): Preferencias {
       lembretes: typeof salvas.lembretes === 'boolean' ? salvas.lembretes : PADRAO.lembretes,
       escala: ESCALAS.find((e) => e === salvas.escala) ?? PADRAO.escala,
       estilo: ESTILOS.find((e) => e === salvas.estilo) ?? PADRAO.estilo,
+      discreto: typeof salvas.discreto === 'boolean' ? salvas.discreto : PADRAO.discreto,
     };
   } catch {
     return { ...PADRAO, tema: temaDoAparelho() };

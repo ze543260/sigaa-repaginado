@@ -152,6 +152,17 @@ details[open] > :not(summary) {
   outline-offset: 2px;
 }
 
+/* Modo discreto: IRA e notas ficam borrados até a pessoa segurar ou passar o mouse. */
+.modo-discreto .sensivel {
+  filter: blur(0.4em);
+  transition: filter 150ms;
+}
+.modo-discreto .sensivel:hover,
+.modo-discreto .sensivel:active,
+.modo-discreto .sensivel:focus-within {
+  filter: none;
+}
+
 @keyframes pulso {
   50% { opacity: 0.45; }
 }

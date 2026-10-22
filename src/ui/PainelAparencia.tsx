@@ -165,6 +165,12 @@ export function PainelAparencia() {
           />
         )}
         <Interruptor
+          rotulo="Modo discreto"
+          descricao="Borra IRA e notas; segure ou passe o mouse para ver"
+          ligado={prefs.discreto}
+          onMudar={(discreto) => alterar({ discreto })}
+        />
+        <Interruptor
           rotulo="Animações"
           descricao="Transições, contagens e entradas"
           ligado={prefs.animacoes}

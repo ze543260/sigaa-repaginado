@@ -440,13 +440,15 @@ function ResumoDesempenho({ blocos }: { readonly blocos: readonly Bloco[] }) {
       {unica && unica.avaliacoes.length > 0 && (
         <Card className="space-y-4 p-5">
           <p className="text-sm text-muted-foreground">Notas · média {MEDIA_APROVACAO}</p>
-          <GraficoBarras
-            rotulo="Notas"
-            maximo={10}
-            limite={MEDIA_APROVACAO}
-            barras={unica.avaliacoes.map((a) => ({ rotulo: a.nome, valor: a.nota ?? 0, detalhe: a.nota === null ? '—' : fmt(a.nota) }))}
-          />
-          <TextoPrevisao linha={unica} />
+          <div className="sensivel space-y-4">
+            <GraficoBarras
+              rotulo="Notas"
+              maximo={10}
+              limite={MEDIA_APROVACAO}
+              barras={unica.avaliacoes.map((a) => ({ rotulo: a.nome, valor: a.nota ?? 0, detalhe: a.nota === null ? '—' : fmt(a.nota) }))}
+            />
+            <TextoPrevisao linha={unica} />
+          </div>
         </Card>
       )}
       {notas && !unica && (
