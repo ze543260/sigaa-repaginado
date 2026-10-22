@@ -63,7 +63,7 @@ export function AulasDeHoje({ turmas }: Props) {
         const estado = !tempo ? null : agora >= tempo.fim ? 'passou' : agora >= tempo.inicio ? 'agora' : 'depois';
         const aprox = horaConfirmada(primeira) ? '' : '~';
         return (
-          <li key={turma.codigo || turma.nome} className={cn('relative transition-opacity', estado === 'passou' && 'opacity-50')}>
+          <li key={turma.codigo || turma.nome} className={cn('relative transition-opacity', estado === 'passou' && 'opacity-70')}>
             <span className="absolute -left-14 top-3 w-8 text-right font-mono text-[11px] leading-tight text-muted-foreground">
               {tempo ? `${aprox}${hhmm(tempo.inicio)}` : `${primeira.turno}${primeira.aula}`}
               {tempo ? <span className="block">{hhmm(tempo.fim)}</span> : aulas > 1 && <span className="block">–{ultima.turno}{ultima.aula}</span>}

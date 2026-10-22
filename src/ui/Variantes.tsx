@@ -30,7 +30,7 @@ export function TerminalHoje({ turmas }: { readonly turmas: readonly Turma[] }) 
           key={turma.codigo || turma.nome}
           type="button"
           onClick={turma.acessar}
-          className={cn('flex w-full gap-2 py-1 text-left hover:bg-accent', estado === 'passou' && 'opacity-50')}
+          className={cn('flex w-full gap-2 py-1 text-left hover:bg-accent', estado === 'passou' && 'opacity-70')}
         >
           <span className={cn('w-12 shrink-0', estado === 'agora' && 'text-destaque-texto')}>
             {estado === 'agora' ? '[RUN]' : estado === 'passou' ? '[ OK]' : '[   ]'}
@@ -71,7 +71,7 @@ export function LadderHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
             key={turma.codigo || turma.nome}
             type="button"
             onClick={turma.acessar}
-            className={cn('flex w-full items-center py-3 text-left', estado === 'passou' && 'opacity-50')}
+            className={cn('flex w-full items-center py-3 text-left', estado === 'passou' && 'opacity-70')}
           >
             <span className={cn('h-0.5 w-3 shrink-0', ligado ? 'bg-destaque' : 'bg-foreground/50')} />
             <span className="flex shrink-0 flex-col items-center px-1">
@@ -307,7 +307,7 @@ export function LinhaDoTempo({ turmas, modo }: { readonly turmas: readonly Turma
         <ul className="space-y-1 font-mono text-xs">
           {hoje.map(({ turma, quando, estado }, n) => (
             <li key={turma.codigo || turma.nome}>
-              <button type="button" onClick={turma.acessar} className={cn('flex w-full gap-2 text-left hover:underline', estado === 'passou' && 'opacity-50')}>
+              <button type="button" onClick={turma.acessar} className={cn('flex w-full gap-2 text-left hover:underline', estado === 'passou' && 'opacity-70')}>
                 <span className={cn(estado === 'agora' && 'text-destaque-texto')}>CH{n + 1}</span>
                 <span className="text-muted-foreground">{quando}</span>
                 <span className="min-w-0 truncate">{tituloBr(turma.nome)}</span>
@@ -328,7 +328,7 @@ export function LinhaDoTempo({ turmas, modo }: { readonly turmas: readonly Turma
         const a = posicao(tempo!.inicio);
         const b = posicao(tempo!.fim);
         return (
-          <button key={turma.codigo || turma.nome} type="button" onClick={turma.acessar} className={cn('flex w-full items-center gap-2 text-left', estado === 'passou' && 'opacity-50')}>
+          <button key={turma.codigo || turma.nome} type="button" onClick={turma.acessar} className={cn('flex w-full items-center gap-2 text-left', estado === 'passou' && 'opacity-70')}>
             <span className="w-[30%] shrink-0 truncate text-xs font-semibold uppercase">{siglaDisciplina(turma.nome)}</span>
             <span className="relative h-6 flex-1 bg-secondary">
               <span
@@ -401,7 +401,7 @@ export function GlifoHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
       <ul className="space-y-2">
         {hoje.map(({ turma, quando, estado }) => (
           <li key={turma.codigo || turma.nome}>
-            <button type="button" onClick={turma.acessar} className={cn('flex w-full items-baseline gap-3 text-left', estado === 'passou' && 'opacity-40')}>
+            <button type="button" onClick={turma.acessar} className={cn('flex w-full items-baseline gap-3 text-left', estado === 'passou' && 'opacity-70')}>
               <span className={cn('font-dot text-lg font-extrabold', estado === 'agora' && 'text-destaque-texto')}>{quando.split('-')[0]}</span>
               <span className="min-w-0 truncate text-sm">{tituloBr(turma.nome)}</span>
             </button>
@@ -468,7 +468,7 @@ export function TrilhaHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
               className={cn(
                 'casca-card relative z-[1] flex max-w-[70%] items-center gap-3 rounded-full border bg-card px-4 py-2 text-left',
                 esquerda ? 'ml-[8%]' : 'ml-auto mr-[8%]',
-                estado === 'passou' && 'opacity-50',
+                estado === 'passou' && 'opacity-70',
                 estado === 'agora' && 'border-destaque',
               )}
             >
