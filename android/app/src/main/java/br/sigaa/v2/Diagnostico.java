@@ -109,7 +109,7 @@ final class Diagnostico {
         NotificationManager gerente = atividade.getSystemService(NotificationManager.class);
         gerente.createNotificationChannel(new NotificationChannel("diagnostico", "Diagnóstico", NotificationManager.IMPORTANCE_HIGH));
         gerente.notify(77, new Notification.Builder(atividade, "diagnostico")
-                .setSmallIcon(R.drawable.ic_sigaa)
+                .setSmallIcon(R.drawable.ic_notif_sigaa)
                 .setContentTitle("Diagnóstico pronto")
                 .setContentText("Toque para enviar (WhatsApp, e-mail…)")
                 .setContentIntent(toque)

@@ -29,7 +29,7 @@ public final class Lembretes extends BroadcastReceiver {
         AlarmManager alarmes = ctx.getSystemService(AlarmManager.class);
         SharedPreferences prefs = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-        for (int i = 0; i < prefs.getInt(QTD, 0); i++) alarmes.cancel(intencao(ctx, i, null, null));
+        for (int i = 0; i < prefs.getInt(QTD, 0); i++) alarmes.cancel(intencao(ctx, i, null, null, null));
 
         int n = 0;
         JSONArray aulas = new JSONArray();
@@ -46,7 +46,7 @@ public final class Lembretes extends BroadcastReceiver {
                 if (quando <= agora) continue;
                 // Inexato de propósito: dispensa a permissão de alarme exato e alguns minutos não importam aqui.
                 alarmes.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, quando,
-                        intencao(ctx, n++, l.optString("titulo"), l.optString("texto")));
+                        intencao(ctx, n++, l.optString("titulo"), l.optString("texto"), tipo(l)));
             }
         } catch (JSONException e) {
             // Lista inválida: fica sem lembretes até a próxima abertura do portal.
@@ -68,17 +68,42 @@ public final class Lembretes extends BroadcastReceiver {
         WidgetProximaAula.salvarAulas(ctx, aulas, prazo);
     }
 
-    private static PendingIntent intencao(Context ctx, int codigo, String titulo, String texto) {
-        Intent i = new Intent(ctx, Lembretes.class).putExtra("titulo", titulo).putExtra("texto", texto);
+    private static String tipo(JSONObject lembrete) {
+        if (lembrete.has("aula")) return "aula";
+        if (lembrete.has("prazo")) return "prazo";
+        return "resumo";
+    }
+
+    private static PendingIntent intencao(Context ctx, int codigo, String titulo, String texto, String tipo) {
+        Intent i = new Intent(ctx, Lembretes.class).putExtra("titulo", titulo).putExtra("texto", texto).putExtra("tipo", tipo);
         return PendingIntent.getBroadcast(ctx, codigo, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        mostrar(ctx, intent.getStringExtra("titulo"), intent.getStringExtra("texto"));
+        mostrar(ctx, intent.getStringExtra("titulo"), intent.getStringExtra("texto"), intent.getStringExtra("tipo"));
     }
 
+    /** Avisos imediatos da interface (nota nova, limite de faltas): o tipo sai do título. */
     static void mostrar(Context ctx, String titulo, String texto) {
+        String t = titulo == null ? "" : titulo.toLowerCase(java.util.Locale.ROOT);
+        mostrar(ctx, titulo, texto, t.contains("nota") ? "nota" : t.contains("falta") ? "faltas" : null);
+    }
+
+    static int icone(String tipo) {
+        if (tipo == null) return R.drawable.ic_notif_sigaa;
+        switch (tipo) {
+            case "aula": return R.drawable.ic_notif_aula;
+            case "prazo": return R.drawable.ic_notif_prazo;
+            case "nota": return R.drawable.ic_notif_nota;
+            case "faltas": return R.drawable.ic_notif_faltas;
+            default: return R.drawable.ic_notif_sigaa;
+        }
+    }
+
+    static final int COR = android.graphics.Color.rgb(0xD7, 0x19, 0x1F);
+
+    private static void mostrar(Context ctx, String titulo, String texto, String tipo) {
         if (Build.VERSION.SDK_INT >= 33
                 && ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
@@ -89,7 +114,8 @@ public final class Lembretes extends BroadcastReceiver {
                 new Intent(ctx, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
                 PendingIntent.FLAG_IMMUTABLE);
         Notification n = new Notification.Builder(ctx, CANAL)
-                .setSmallIcon(R.drawable.ic_sigaa)
+                .setSmallIcon(icone(tipo))
+                .setColor(COR)
                 .setContentTitle(titulo)
                 .setContentText(texto)
                 .setStyle(new Notification.BigTextStyle().bigText(texto))

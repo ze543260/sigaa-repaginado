@@ -83,7 +83,8 @@ final class Atualizador {
         android.app.NotificationManager gerente = atividade.getSystemService(android.app.NotificationManager.class);
         gerente.createNotificationChannel(new android.app.NotificationChannel("atualizacoes", "Atualizações", android.app.NotificationManager.IMPORTANCE_LOW));
         gerente.notify(42, new android.app.Notification.Builder(atividade, "atualizacoes")
-                .setSmallIcon(R.drawable.ic_sigaa)
+                .setSmallIcon(R.drawable.ic_notif_atualizar)
+                .setColor(Lembretes.COR)
                 .setContentTitle("Versão " + versao + " disponível")
                 .setContentText("Toque para atualizar quando quiser.")
                 .setContentIntent(toque)

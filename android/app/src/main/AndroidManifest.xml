@@ -8,7 +8,8 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@drawable/ic_sigaa"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:label="SIGAA Repaginado"
         android:networkSecurityConfig="@xml/seguranca_rede"
         android:supportsRtl="false"
