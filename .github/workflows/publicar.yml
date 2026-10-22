@@ -7,6 +7,11 @@ on:
 permissions:
   contents: write
 
+# Duas tags seguidas não podem publicar ao mesmo tempo.
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
 jobs:
   publicar:
     runs-on: ubuntu-latest
@@ -48,12 +53,13 @@ jobs:
         run: |
           VERSAO="${GITHUB_REF_NAME#v}"
           cp android/app/build/outputs/apk/release/app-release.apk "sigaa-repaginado-$VERSAO.apk"
-          gh release create "$GITHUB_REF_NAME" \
-            "sigaa-repaginado-$VERSAO.apk" \
-            .output/sigaa-repaginado-*-chrome.zip \
-            .output/sigaa-repaginado-*-firefox.zip \
-            .output/sigaa-ota.js \
-            .output/sigaa-ota.json \
-            --title "SIGAA Repaginado $VERSAO" \
-            --notes "Projeto pessoal e não oficial, sem vínculo com a UNIFEI. Veja o README para instalar." \
-            --generate-notes
+          ARQUIVOS=("sigaa-repaginado-$VERSAO.apk" .output/sigaa-repaginado-*-chrome.zip .output/sigaa-repaginado-*-firefox.zip .output/sigaa-ota.js .output/sigaa-ota.json)
+          # Se a release já foi criada à mão, só substitui os arquivos em vez de falhar.
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "${ARQUIVOS[@]}" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "${ARQUIVOS[@]}" \
+              --title "SIGAA Repaginado $VERSAO" \
+              --notes "Projeto pessoal e não oficial, sem vínculo com a UNIFEI. Veja o README para instalar." \
+              --generate-notes
+          fi
