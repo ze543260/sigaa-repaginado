@@ -1,7 +1,7 @@
 import { AvisoAtualizacao } from './AvisoAtualizacao';
 import { LogCompilacao, Surpresa, useSegredo } from './Surpresas';
 import { definicao } from './estilos';
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type TouchEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { ehSecaoAtual } from '../domain/secao';
 import type { ItemMenu, Pagina, PaginaTurma } from '../domain/types';
@@ -57,6 +57,44 @@ const ABAS_TURMA: readonly { readonly item: string; readonly rotulo: string; rea
   { item: 'Tarefas', rotulo: 'Tarefas', icone: 'atividades' },
   { item: 'Frequência', rotulo: 'Frequência', icone: 'frequencia' },
 ];
+
+const ABAS: readonly AbaPortal[] = ['inicio', 'turmas', 'atividades'];
+
+/**
+ * Deslizar na horizontal troca de aba no celular. Ignora gestos que começam em controles
+ * que já usam o arrasto (sliders, áreas com rolagem lateral, campos de texto).
+ */
+function useDeslizarAbas(aba: AbaPortal, irPara: (aba: AbaPortal) => void) {
+  const inicio = useRef<{ readonly x: number; readonly y: number } | null>(null);
+  return {
+    onTouchStart: (e: TouchEvent) => {
+      const alvo = e.target as HTMLElement;
+      const toque = e.touches[0];
+      const rolaDeLado = (el: HTMLElement | null): boolean =>
+        !!el &&
+        el !== e.currentTarget &&
+        ((/auto|scroll/.test(getComputedStyle(el).overflowX) && el.scrollWidth > el.clientWidth + 1) || rolaDeLado(el.parentElement));
+      inicio.current =
+        !toque || e.touches.length > 1 || matchMedia('(min-width: 768px)').matches || alvo.closest('input, textarea, select, [role="slider"]') || rolaDeLado(alvo)
+          ? null
+          : { x: toque.clientX, y: toque.clientY };
+    },
+    onTouchEnd: (e: TouchEvent) => {
+      const de = inicio.current;
+      const toque = e.changedTouches[0];
+      inicio.current = null;
+      if (!de || !toque) return;
+      const dx = toque.clientX - de.x;
+      const dy = toque.clientY - de.y;
+      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      const proxima = ABAS[ABAS.indexOf(aba) + (dx < 0 ? 1 : -1)];
+      if (proxima) {
+        navigator.vibrate?.(8);
+        irPara(proxima);
+      }
+    },
+  };
+}
 
 function acoesDaTurma(turma: PaginaTurma): AcaoNavegacao[] {
   const itens = turma.menu.flatMap((secao) => secao.itens);
@@ -230,15 +268,18 @@ export function App({ pagina, onVerOriginal, aoMontar }: Props) {
           }))
         : [];
   const extrasBusca = useMemo(
-    () =>
-      pagina.tipo !== 'portal-discente'
+    () => [
+      comando('Aparência', prefs.discreto ? 'Desligar modo discreto' : 'Ligar modo discreto (esconder notas)', () => controlePrefs.alterar({ discreto: !prefs.discreto })),
+      ...(pagina.tipo !== 'portal-discente'
         ? []
         : [
             ...pagina.portal.turmas.map((t) => comando('Turma', tituloBr(t.nome), t.acessar)),
             ...pagina.portal.atividades.flatMap((a) => (a.abrir ? [comando(`Atividade · ${tituloBr(a.turma)} · ${a.data}`, a.descricao, a.abrir)] : [])),
             ...pagina.portal.atualizacoes.flatMap((a) => (a.abrir ? [comando(`Novidade · ${tituloBr(a.turma)}`, a.descricao, a.abrir)] : [])),
-          ],
-    [pagina],
+          ]),
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pagina, prefs.discreto],
   );
   const irParaAba = (nova: AbaPortal) => {
     if (nova === aba) {
@@ -248,6 +289,8 @@ export function App({ pagina, onVerOriginal, aoMontar }: Props) {
     setAba(nova);
     raiz.current?.scrollTo({ top: 0 });
   };
+
+  const deslizar = useDeslizarAbas(aba, irParaAba);
 
   const acoes: readonly AcaoNavegacao[] =
     pagina.tipo === 'portal-discente'
@@ -274,6 +317,7 @@ export function App({ pagina, onVerOriginal, aoMontar }: Props) {
         'tema fixed inset-0 overflow-auto font-sans text-foreground antialiased',
         !prefs.pontos && 'sem-pontos',
         !prefs.animacoes && 'sem-animacao',
+        prefs.discreto && 'modo-discreto',
       )}
       data-tema={tema}
       data-acento={prefs.acento}
@@ -370,13 +414,13 @@ export function App({ pagina, onVerOriginal, aoMontar }: Props) {
         <div className={cn(navegando && pagina.tipo !== 'login' && 'hidden')}>
         {pagina.tipo === 'login' && <TelaLogin login={pagina.login} />}
         {pagina.tipo === 'portal-discente' && (
-          <div key={aba} className="animate-entrar">
+          <div key={aba} className="animate-entrar" {...deslizar}>
             <Portal portal={pagina.portal} aba={aba} onAba={irParaAba} />
           </div>
         )}
         {pagina.tipo === 'turma' && <Turma turma={pagina.turma} />}
         {pagina.tipo === 'relatorio' && <RelatorioUI relatorio={pagina.relatorio} />}
-        {pagina.tipo === 'erro' && <TelaErro erro={pagina.erro} />}
+        {pagina.tipo === 'erro' && <TelaErro erro={pagina.erro} onVerOriginal={onVerOriginal} onRelatar={abrirRelato} />}
         {pagina.tipo === 'caixa-postal' && <CaixaPostalUI caixa={pagina.caixa} />}
         {pagina.tipo === 'mensagem' && <MensagemUI mensagem={pagina.mensagem} />}
         {pagina.tipo === 'compor-mensagem' && <CompositorUI compositor={pagina.compositor} />}

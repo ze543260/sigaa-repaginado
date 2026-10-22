@@ -49,7 +49,13 @@ function quandoSalvo(ms: number): string {
   return hoje ? `hoje às ${d.toTimeString().slice(0, 5)}` : d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 }
 
-export function TelaErro({ erro }: { readonly erro: ErroPagina }) {
+interface Props {
+  readonly erro: ErroPagina;
+  readonly onVerOriginal: () => void;
+  readonly onRelatar: () => void;
+}
+
+export function TelaErro({ erro, onVerOriginal, onRelatar }: Props) {
   const salvo = lerPortalSalvo();
   const turmas: Turma[] = salvo?.turmas.map((t) => ({ ...t, acessar: erro.tentar })) ?? [];
   const pendentes = salvo?.atividades.filter((a) => a.status !== 'passada') ?? [];
@@ -64,9 +70,21 @@ export function TelaErro({ erro }: { readonly erro: ErroPagina }) {
         {erro.tipo === 'indisponivel' && erro.mensagem && (
           <p className="max-w-prose rounded-2xl border px-4 py-3 font-mono text-xs text-muted-foreground">{erro.mensagem}</p>
         )}
-        <Button variant="destaque" size="lg" onClick={erro.tentar}>
-          {erro.tipo === 'sessao' ? 'Entrar de novo' : 'Tentar de novo'}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="destaque" size="lg" onClick={erro.tentar}>
+            {erro.tipo === 'sessao' ? 'Entrar de novo' : 'Tentar de novo'}
+          </Button>
+          {erro.tipo === 'indisponivel' && (
+            <>
+              <Button variant="outline" size="lg" onClick={onVerOriginal}>
+                Ver página do SIGAA
+              </Button>
+              <Button variant="ghost" size="lg" onClick={onRelatar}>
+                Relatar problema
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       {salvo && (

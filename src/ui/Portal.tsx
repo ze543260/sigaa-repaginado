@@ -83,7 +83,10 @@ function LinhaAtividade({ atividade: a }: { readonly atividade: Atividade }) {
           role="checkbox"
           aria-checked={ok}
           aria-label={ok ? 'Marcar como pendente' : 'Marcar como feita'}
-          onClick={() => alternar(a)}
+          onClick={() => {
+            if (!ok) navigator.vibrate?.(10);
+            alternar(a);
+          }}
           className="grid w-12 shrink-0 place-items-center pl-3 active:scale-90"
         >
           <span
@@ -202,6 +205,49 @@ function ListaAtividades({ atividades }: { readonly atividades: readonly Ativida
   );
 }
 
+type TurmaEmRisco = { readonly turma: PortalDiscente['turmas'][number]; readonly faltas: number; readonly maximo: number };
+
+function LinhaRisco({ turma, faltas, maximo }: TurmaEmRisco) {
+  const restantes = maximo - faltas;
+  return (
+    <button type="button" onClick={turma.acessar} className="flex w-full max-w-md flex-col gap-1.5 text-left text-sm">
+      <span className="flex items-center gap-2">
+        <Sinal />
+        <span>
+          <strong className="font-medium">{tituloBr(turma.nome)}</strong>
+          {restantes < 0 ? ` passou do limite de faltas (${faltas}/${maximo})` : restantes === 0 ? ': no limite de faltas' : `: só pode faltar mais ${restantes}`}
+        </span>
+      </span>
+      <span
+        className="ml-4 h-1.5 overflow-hidden rounded-full bg-foreground/10"
+        role="meter"
+        aria-valuemin={0}
+        aria-valuemax={maximo}
+        aria-valuenow={faltas}
+        aria-label={`Faltas em ${tituloBr(turma.nome)}`}
+      >
+        <span className="block h-full rounded-full bg-destaque" style={{ width: `${Math.min(100, maximo > 0 ? (faltas / maximo) * 100 : 100)}%` }} />
+      </span>
+    </button>
+  );
+}
+
+/** Turmas perto do limite de faltas, com barra de quanto do limite já foi usado; acima de duas, recolhe. */
+function AvisoFaltas({ itens }: { readonly itens: readonly TurmaEmRisco[] }) {
+  if (itens.length === 0) return null;
+  const linhas = itens.map((r) => <LinhaRisco key={r.turma.nome} {...r} />);
+  if (itens.length <= 2) return <div className="space-y-3">{linhas}</div>;
+  return (
+    <details className="text-sm">
+      <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+        <Sinal />
+        {itens.length} turmas no limite de faltas ou acima
+      </summary>
+      <div className="mt-3 space-y-3 pl-4">{linhas}</div>
+    </details>
+  );
+}
+
 export function DadosPessoais({ portal }: Props) {
   const iniciais = portal.nome.split(' ').filter(Boolean).map((p) => p[0]).slice(0, 2).join('');
   return (
@@ -287,7 +333,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
           <h1 className="font-dot text-4xl font-extrabold capitalize leading-[0.95] sm:text-7xl">{primeiroNome || 'olá'}</h1>
           {estilo === 'retro' && (
             <div className="pt-2 lg:hidden">
-              <HudRetro nome={primeiroNome} ira={ira?.valor} integralizado={portal.percentualIntegralizado} semestre={portal.semestre} />
+              <div className="sensivel"><HudRetro nome={primeiroNome} ira={ira?.valor} integralizado={portal.percentualIntegralizado} semestre={portal.semestre} /></div>
             </div>
           )}
           {estilo !== 'retro' && (ira || portal.percentualIntegralizado !== null) && (
@@ -296,7 +342,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
                 <div>
                   <dt className="text-xs text-muted-foreground">IRA</dt>
                   <dd>
-                    <ContagemPontos className="text-4xl" valor={ira.valor} />
+                    <ContagemPontos className="sensivel text-4xl" valor={ira.valor} />
                   </dd>
                 </div>
               )}
@@ -315,37 +361,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
               )}
             </dl>
           )}
-          {perigoFaltas.length > 2 ? (
-            <details className="text-sm">
-              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
-                <Sinal />
-                {perigoFaltas.length} turmas no limite de faltas ou acima
-              </summary>
-              <div className="mt-2 space-y-1 pl-4">
-                {perigoFaltas.map(({ turma, faltas, maximo }) => (
-                  <button key={turma.nome} type="button" onClick={turma.acessar} className="flex items-center gap-2 text-left text-sm">
-                    <Sinal />
-                    <span>
-                      <strong className="font-medium">{tituloBr(turma.nome)}</strong>
-                      {maximo - faltas < 0 ? ` passou do limite de faltas (${faltas}/${maximo})` : maximo === faltas ? ': no limite de faltas' : `: só pode faltar mais ${maximo - faltas}`}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </details>
-          ) : (
-            <>
-          {perigoFaltas.map(({ turma, faltas, maximo }) => (
-            <button key={turma.nome} type="button" onClick={turma.acessar} className="flex items-center gap-2 text-left text-sm">
-              <Sinal />
-              <span>
-                <strong className="font-medium">{tituloBr(turma.nome)}</strong>
-                {maximo - faltas < 0 ? ` passou do limite de faltas (${faltas}/${maximo})` : maximo === faltas ? ': no limite de faltas' : `: só pode faltar mais ${maximo - faltas}`}
-              </span>
-            </button>
-          ))}
-            </>
-          )}
+          <AvisoFaltas itens={perigoFaltas} />
           {urgentes > 0 && (
             <p className="flex items-center gap-2 text-sm">
               <Sinal />
@@ -479,7 +495,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
             {ira && (
               <div title={ira.descricao}>
                 <p className="text-sm text-muted-foreground">{ira.descricao ?? ira.rotulo}</p>
-                <ContagemPontos className="mt-2 block text-7xl" valor={ira.valor} />
+                <ContagemPontos className="sensivel mt-2 block text-7xl" valor={ira.valor} />
               </div>
             )}
             {portal.percentualIntegralizado !== null && (
@@ -493,7 +509,7 @@ export function Portal({ portal, aba, onAba }: PropsPortal) {
                 {outrosIndices.map((i) => (
                   <div key={i.rotulo} title={i.descricao}>
                     <dt className="text-xs text-muted-foreground">{i.rotulo}</dt>
-                    <dd className="font-mono text-sm">{i.valor}</dd>
+                    <dd className="sensivel font-mono text-sm">{i.valor}</dd>
                   </div>
                 ))}
               </dl>
@@ -638,7 +654,7 @@ function Documentos({ portal, className }: { readonly portal: PortalDiscente; re
             }}
             className="flex min-h-16 flex-col justify-between gap-2 rounded-2xl border bg-card p-3 text-left text-sm transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
           >
-            <span className="font-mono text-[10px] text-muted-foreground">{d.arquivo ? 'PDF' : 'SIGAA'}</span>
+            <span className="font-mono text-xs text-muted-foreground">{d.arquivo ? 'PDF' : 'SIGAA'}</span>
             <span className="font-medium leading-tight">{d.rotulo}</span>
           </button>
         ))}
