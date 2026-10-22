@@ -17,7 +17,7 @@ android {
         applicationId = 'br.sigaa.v2'
         minSdk = 29
         targetSdk = 35
-        versionCode = 43
+        versionCode = 44
         versionName = '0.6.20'
         // "dono/repositorio" no GitHub com as versões publicadas em Releases; vazio desliga a busca.
         buildConfigField 'boolean', 'DIAGNOSTICO', 'false'

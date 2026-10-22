@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
         super.onCreate(estado);
         boolean compat = modoCompatibilidade(getIntent());
         // Em compatibilidade usa a interface do APK: se a baixada for a culpada, ela fica de fora.
-        script = compat ? lerAsset("sigaa.js") : Ota.script(this, lerAsset("sigaa.js"));
+        script = compat ? lerAsset("sigaa.js") : Ota.script(this, () -> lerAsset("sigaa.js"));
         Ota.buscar(getApplicationContext());
 
         raiz = new FrameLayout(this);
@@ -195,6 +195,21 @@ public class MainActivity extends Activity {
                 if (HOST_SIGAA.equals(uri.getHost()) || HOST_CAIXA_POSTAL.equals(uri.getHost())) return false;
                 abrirFora(uri);
                 return true;
+            }
+
+            @Override
+            public android.webkit.WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest pedido) {
+                Uri uri = pedido.getUrl();
+                String host = uri.getHost();
+                String caminho = uri.getPath();
+                if (HOST_SIGAA.equals(host) && caminho != null && caminho.startsWith(PREFIXO_FONTES)) {
+                    return fonte(caminho.substring(PREFIXO_FONTES.length()));
+                }
+                // Métricas do Google que o SIGAA carrega: custam rede e CPU na abertura e a interface não usa.
+                if (host != null && (host.endsWith("google-analytics.com") || host.endsWith("googletagmanager.com"))) {
+                    return new android.webkit.WebResourceResponse("text/javascript", "utf-8", new java.io.ByteArrayInputStream(new byte[0]));
+                }
+                return null;
             }
 
             @Override
@@ -369,6 +384,23 @@ public class MainActivity extends Activity {
         String chrome = versao.find() ? versao.group(1) : "130.0.0.0";
         return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
                 + chrome + " Safari/537.36";
+    }
+
+    private static final String PREFIXO_FONTES = "/__sigaa-v2/fonts/";
+    private static final Pattern NOME_FONTE = Pattern.compile("[a-z0-9-]+\\.woff2");
+
+    /** Fontes da interface, servidas do APK só quando a página pede; a caixa postal (outro host) também as usa. */
+    private android.webkit.WebResourceResponse fonte(String arquivo) {
+        if (!NOME_FONTE.matcher(arquivo).matches()) return null;
+        try {
+            InputStream entrada = getAssets().open("fonts/" + arquivo);
+            java.util.Map<String, String> cabecalhos = new java.util.HashMap<>();
+            cabecalhos.put("Access-Control-Allow-Origin", "*");
+            cabecalhos.put("Cache-Control", "max-age=31536000, immutable");
+            return new android.webkit.WebResourceResponse("font/woff2", null, 200, "OK", cabecalhos, entrada);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private String lerAsset(String nome) {

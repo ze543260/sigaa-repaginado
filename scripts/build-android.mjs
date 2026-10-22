@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { build } from 'esbuild';
 
@@ -16,12 +16,16 @@ execFileSync(
   { cwd: raiz, stdio: 'inherit' },
 );
 
+// As fontes vão no APK e o app as serve sob demanda (MainActivity.FONTES): embutidas em base64 eram
+// ~930 kB de script compilado a cada página, para usar 3 ou 4 fontes de 36.
 const pastaFontes = join(raiz, 'src/public/fonts');
+const destinoFontes = join(destino, 'fonts');
+mkdirSync(destinoFontes, { recursive: true });
 const fontes = Object.fromEntries(
-  readdirSync(pastaFontes).map((arquivo) => [
-    arquivo,
-    `data:font/woff2;base64,${readFileSync(join(pastaFontes, arquivo)).toString('base64')}`,
-  ]),
+  readdirSync(pastaFontes).map((arquivo) => {
+    copyFileSync(join(pastaFontes, arquivo), join(destinoFontes, arquivo));
+    return [arquivo, `https://sigaa.unifei.edu.br/__sigaa-v2/fonts/${arquivo}`];
+  }),
 );
 
 const comum = { bundle: true, minify: true, format: 'iife', target: 'chrome100', jsx: 'automatic', write: false };

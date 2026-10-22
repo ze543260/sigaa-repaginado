@@ -46,7 +46,7 @@ final class Ota {
     }
 
     /** Script a injetar: o baixado, se for mais novo e saudável; senão o que veio no APK. */
-    static String script(Context ctx, String embutido) {
+    static String script(Context ctx, java.util.function.Supplier<String> embutido) {
         usandoBaixada = false;
         SharedPreferences p = prefs(ctx);
         String versao = p.getString("versao", null);
@@ -54,12 +54,12 @@ final class Ota {
         if (versao == null || !arquivo.exists()
                 || Atualizador.comparar(versao, BuildConfig.VERSION_NAME) <= 0
                 || p.getInt("minNativo", Integer.MAX_VALUE) > BuildConfig.VERSION_CODE) {
-            return embutido;
+            return embutido.get();
         }
         int falhas = p.getInt("falhas", 0);
         if (falhas >= FALHAS_MAX) {
             descartar(ctx);
-            return embutido;
+            return embutido.get();
         }
         try {
             String js = new String(Files.readAllBytes(arquivo.toPath()), StandardCharsets.UTF_8);
@@ -69,7 +69,7 @@ final class Ota {
             return js;
         } catch (Exception e) {
             descartar(ctx);
-            return embutido;
+            return embutido.get();
         }
     }
 

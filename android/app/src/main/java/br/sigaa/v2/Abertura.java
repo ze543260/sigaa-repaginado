@@ -26,7 +26,8 @@ final class Abertura extends View {
     private static final int COLUNAS = LETRAS.length * 6 - 1;
     private static final int LINHAS = 7;
     private static final long ENTRADA_MS = 900;
-    private static final long MINIMO_MS = 1900;
+    // O último ponto do logo acaba de acender em ~1,13 s ((colunas + linhas) × 22 ms + 380 ms); segurar além disso só atrasa a abertura.
+    private static final long MINIMO_MS = 1150;
     private static final long LIMITE_MS = 9000;
     private static final int VERMELHO = Color.rgb(0xD7, 0x19, 0x1F);
 
@@ -98,7 +99,7 @@ final class Abertura extends View {
             return;
         }
         saindo = true;
-        ValueAnimator animador = ValueAnimator.ofFloat(0f, 1f).setDuration(520);
+        ValueAnimator animador = ValueAnimator.ofFloat(0f, 1f).setDuration(320);
         animador.setInterpolator(new PathInterpolator(0.6f, 0f, 0.4f, 1f));
         animador.addUpdateListener(a -> {
             saida = (float) a.getAnimatedValue();
