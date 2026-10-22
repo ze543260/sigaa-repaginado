@@ -57,8 +57,8 @@ export function CaixaPostalUI({ caixa }: { readonly caixa: CaixaPostal }) {
                       </span>
                       <span className={cn('block text-sm leading-snug', !m.lida && 'font-semibold')}>{titulo}</span>
                       <span className="flex gap-2">
-                        {etiqueta && <span className="rounded-full border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">{etiqueta}</span>}
-                        {m.anexo && <span className="rounded-full border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">anexo</span>}
+                        {etiqueta && <span className="rounded-full border px-2 py-0.5 font-mono text-xs text-muted-foreground">{etiqueta}</span>}
+                        {m.anexo && <span className="rounded-full border px-2 py-0.5 font-mono text-xs text-muted-foreground">anexo</span>}
                       </span>
                     </span>
                   </button>

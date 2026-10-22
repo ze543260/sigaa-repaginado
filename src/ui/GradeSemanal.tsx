@@ -97,7 +97,7 @@ export function GradeSemanal({ turmas }: Props) {
             >
               <span className="text-right leading-tight">
                 {rotuloLinha(h)}
-                <span className="block text-[9px] opacity-70">{faixaHoraria(h)?.[0]}</span>
+                <span className="block text-[10px] opacity-70">{faixaHoraria(h)?.[0]}</span>
               </span>
             </div>
           );

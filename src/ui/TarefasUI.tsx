@@ -57,7 +57,7 @@ function CartaoTarefa({ t, agora }: { readonly t: Tarefa; readonly agora: Date }
         <h3 className="font-medium leading-snug">{t.titulo}</h3>
         <span
           className={cn(
-            'shrink-0 rounded-full border px-2 py-0.5 font-mono text-[11px]',
+            'shrink-0 rounded-full border px-2 py-0.5 font-mono text-xs',
             estado === 'urgente' && 'border-transparent bg-destaque text-white',
             estado === 'enviada' && 'border-destaque/60',
           )}

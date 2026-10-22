@@ -81,7 +81,7 @@ export function LadderHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
             <span className={cn('h-0.5 w-3 shrink-0', ligado ? 'bg-destaque' : 'bg-foreground/50')} />
             <span className="min-w-0 flex-1 px-2">
               <span className="block truncate text-sm font-medium uppercase tracking-wide">{tituloBr(turma.nome)}</span>
-              <span className="block font-mono text-[11px] text-muted-foreground">{quando} · {turma.local}</span>
+              <span className="block font-mono text-xs text-muted-foreground">{quando} · {turma.local}</span>
             </span>
             <span className={cn('h-0.5 w-3 shrink-0', ligado ? 'bg-destaque' : 'bg-foreground/50')} />
             <span
@@ -475,7 +475,7 @@ export function TrilhaHoje({ turmas }: { readonly turmas: readonly Turma[] }) {
               <span className={cn('h-3 w-3 shrink-0 rounded-full', estado === 'agora' ? 'bg-destaque pulso' : estado === 'passou' ? 'bg-muted-foreground' : 'border-2 border-destaque')} />
               <span className="min-w-0">
                 <span className="block truncate text-sm font-semibold">{tituloBr(turma.nome)}</span>
-                <span className="block font-mono text-[11px] text-muted-foreground">{quando}</span>
+                <span className="block font-mono text-xs text-muted-foreground">{quando}</span>
               </span>
             </button>
           </li>

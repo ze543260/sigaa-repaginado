@@ -38,7 +38,7 @@ export function SeletorEstilo() {
             </span>
             <span className="block space-y-0.5 p-3">
               <span className="block text-sm font-medium">{info.nome}</span>
-              {info.curso && <span className="block font-mono text-[10px] uppercase tracking-wide text-destaque-texto">{info.curso}</span>}
+              {info.curso && <span className="block font-mono text-xs uppercase tracking-wide text-destaque-texto">{info.curso}</span>}
               <span className="block text-xs leading-snug text-muted-foreground">{info.descricao}</span>
             </span>
           </button>
